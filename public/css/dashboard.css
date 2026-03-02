@@ -1,110 +1,314 @@
 body {
-    background: #f6f7fb;
+  background: #f6f7fb;
 }
 
 .card {
-    border: none;
-    border-radius: 18px;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
 }
 
 .muted {
-    color: #64748b;
+  color: #64748b;
 }
 
 .badge-soft {
-    background: rgba(34, 197, 94, .12);
-    color: #15803d;
-    border: 1px solid rgba(34, 197, 94, .25);
-}
-
-.badge-soft-red {
-    background: rgba(239, 68, 68, .10);
-    color: #b91c1c;
-    border: 1px solid rgba(239, 68, 68, .20);
+  background: rgba(34, 197, 94, .12);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, .25);
 }
 
 /* ===== Calendar ===== */
 
 .calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
 }
 
 .cal-head {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    margin-bottom: 10px;
-    font-weight: 600;
-    color: #64748b;
-    font-size: 12px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #64748b;
+  font-size: 12px;
 }
 
 .cal-cell {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    height: 64px;
-    padding: 10px;
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    color: #0f172a;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  height: 64px;
+  padding: 10px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: #0f172a;
 }
 
 .cal-cell.inactive {
-    background: #f8fafc;
-    color: #94a3b8;
+  background: #f8fafc;
+  color: #94a3b8;
 }
 
 .cal-cell.green {
-    border-color: rgba(34, 197, 94, .35);
-    background: rgba(34, 197, 94, .10);
+  border-color: rgba(34, 197, 94, .35);
+  background: rgba(34, 197, 94, .10);
 }
 
 .cal-day {
-    font-weight: 700;
-    font-size: 14px;
+  font-weight: 800;
+  font-size: 14px;
 }
 
 .cal-dot {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: #22c55e;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
 }
 
 /* ===== Progress ===== */
 
 .progress {
-    height: 10px;
-    border-radius: 999px;
-    background: #e2e8f0;
+  height: 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
 }
 
 .progress-bar {
-    border-radius: 999px;
+  border-radius: 999px;
 }
 
 /* ===== Target Card ===== */
 
 .target-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 16px;
-    background: #fff;
-}
-
-.target-title {
-    font-weight: 700;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fff;
 }
 
 .money {
-    font-weight: 800;
+  font-weight: 800;
+}
+
+/* ===== Panel Bawah ===== */
+
+.mini-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px;
+  background: #fff;
+}
+
+.mini-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.mini-value {
+  font-size: 22px;
+  font-weight: 900;
+  margin-top: 6px;
+  line-height: 1.1;
+}
+
+.mini-sub {
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.table thead th {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table td, .table th {
+  padding: 10px 10px;
+}
+
+.insight {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(34, 197, 94, .08);
+  border: 1px solid rgba(34, 197, 94, .18);
+}
+
+.insight-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
+  margin-top: 6px;
+}
+/* =========================
+   RESPONSIVE PATCH (Sakuin)
+   Tempel di paling bawah
+   ========================= */
+
+/* Biar tombol header rapi & ga kepanjangan */
+.header-actions .btn { white-space: nowrap; }
+
+/* (Optional) kasih class di wrapper tombol header:
+   <div class="d-flex gap-2 header-actions"> ... </div>
+*/
+
+/* Kalender: default desktop oke, mobile diperkecil */
+@media (max-width: 575.98px) {
+  body { padding-top: 12px; padding-bottom: 12px; }
+
+  .container { padding-left: 12px; padding-right: 12px; }
+
+  .card { border-radius: 16px; }
+
+  /* Header: judul & tombol jadi stack rapi */
+  .d-flex.justify-content-between.align-items-start.mb-4 {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .d-flex.gap-2 {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .d-flex.gap-2 > a,
+  .d-flex.gap-2 > form,
+  .d-flex.gap-2 > form button {
+    width: 100%;
+  }
+
+  /* Kalender: lebih rapat */
+  .calendar,
+  .cal-head { gap: 6px; }
+
+  .cal-cell {
+    height: 46px;
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .cal-day { font-size: 12px; }
+
+  .cal-dot {
+    width: 8px; height: 8px;
+    right: 8px; bottom: 8px;
+  }
+
+  /* Target card */
+  .target-card { padding: 14px; border-radius: 14px; }
+
+  /* Mini card panel bawah */
+  .mini-card { padding: 12px; border-radius: 14px; }
+  .mini-value { font-size: 18px; }
+}
+
+/* Tablet: sedikit ditingkatkan */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .calendar,
+  .cal-head { gap: 8px; }
+
+  .cal-cell { height: 56px; }
+}
+
+/* Desktop: kalender sedikit lebih lega */
+@media (min-width: 992px) {
+  .cal-cell { height: 72px; }
+}
+
+/* Tabel riwayat: jadi "card list" di mobile supaya tidak kepotong */
+@media (max-width: 767.98px) {
+  .table-responsive { overflow: visible; } /* biar layout baru */
+  table.table { display: block; }
+  table.table thead { display: none; }
+  table.table tbody { display: grid; gap: 10px; }
+
+  table.table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, .06);
+  }
+
+  table.table tbody td {
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  /* kasih label kecil sebelum value */
+  table.table tbody td:nth-child(1)::before { content: "Tanggal"; }
+  table.table tbody td:nth-child(2)::before { content: "Target"; }
+  table.table tbody td:nth-child(3)::before { content: "Nominal"; }
+  table.table tbody td:nth-child(4)::before { content: "Catatan"; }
+
+  table.table tbody td::before {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+}
+
+/* Form input lebih enak di mobile */
+@media (max-width: 575.98px) {
+  .form-control { padding-top: 12px; padding-bottom: 12px; border-radius: 14px; }
+  .btn { padding-top: 12px; padding-bottom: 12px; border-radius: 14px; }
+}
+
+/* Perbaikan kecil: progress biar selalu terlihat rapi */
+.progress { overflow: hidden; }
+
+/* =========================
+   ANIMATION: reveal on scroll
+   ========================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .55s ease, transform .55s ease;
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* delay opsional biar bertahap */
+.delay-1 { transition-delay: .08s; }
+.delay-2 { transition-delay: .16s; }
+.delay-3 { transition-delay: .24s; }
+
+/* hover halus biar ga plain */
+.card, .target-card, .mini-card {
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover, .target-card:hover, .mini-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .10);
+}
+
+/* Aksesibilitas: kalau user prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .card, .target-card, .mini-card {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+.progress-bar {
+  transition: width .9s ease;
 }

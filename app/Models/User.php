@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -30,7 +31,7 @@ class User extends Authenticatable
     }
 
     // ✅ Relasi: 1 User punya banyak Target
-    public function targets()
+    public function targets(): HasMany
     {
         return $this->hasMany(\App\Models\Target::class);
     }

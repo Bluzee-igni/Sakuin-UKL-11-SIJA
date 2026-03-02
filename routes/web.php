@@ -1,9 +1,12 @@
 <?php
 
+
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TabungController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\DashboardController;
 
 // root
 Route::get('/', function () {
@@ -26,4 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/targets/{target}/active', [TabungController::class, 'setActive'])->name('targets.active');
 
     Route::post('/checkins', [TabungController::class, 'storeCheckin'])->name('checkins.store');
+});
+
+Route::get('/tes-error', function () {
+    dd('masuk tes-error', Auth::user());
 });

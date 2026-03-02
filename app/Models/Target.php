@@ -19,15 +19,14 @@ class Target extends Model
         'is_done',
     ];
 
-    // ✅ Target milik User
+    public function checkins()
+{
+    return $this->hasMany(\App\Models\Checkin::class);
+}
+
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
     }
-
-    // ✅ 1 Target punya banyak Checkin
-    public function checkins()
-    {
-        return $this->hasMany(\App\Models\Checkin::class);
-    }
+    
 }

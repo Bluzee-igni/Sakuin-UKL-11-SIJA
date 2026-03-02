@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tabung;
 use App\Models\Target;
 use App\Models\Checkin;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TabungController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        /** @var User|null $user */
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
 
         // Ambil semua target user
         $targets = $user->targets()->get();
