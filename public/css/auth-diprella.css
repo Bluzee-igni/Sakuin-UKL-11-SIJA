@@ -1,0 +1,138 @@
+:root{
+  --green:#2bb7a7;
+  --green-dark:#219e90;
+  --text:#334155;
+  --muted:#64748b;
+  --bg:#f3f6f7;
+  --card:#ffffff;
+  --shadow:0 20px 35px rgba(15, 23, 42, .12);
+  --radius:18px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; font-family:'Poppins', sans-serif; }
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 10% 85%, rgba(245, 158, 11, .35) 0 120px, transparent 121px),
+    radial-gradient(circle at 90% 10%, rgba(239, 68, 68, .35) 0 140px, transparent 141px),
+    var(--bg);
+  padding:24px;
+  color:var(--text);
+}
+
+.auth-wrap{
+  width:100%;
+  max-width:980px;
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  display:grid;
+  grid-template-columns: 1fr 1.2fr;
+  min-height:560px;
+}
+
+.left{
+  background:linear-gradient(135deg, var(--green), var(--green-dark));
+  color:#fff;
+  padding:56px 44px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:600;
+  margin-bottom:48px;
+}
+
+.brand-badge{
+  width:34px; height:34px;
+  border-radius:10px;
+  background:rgba(255,255,255,.18);
+  display:grid;
+  place-items:center;
+}
+
+.left h1{
+  font-size:34px;
+  margin-bottom:14px;
+}
+
+.left p{
+  font-size:14px;
+  opacity:.9;
+  margin-bottom:28px;
+}
+
+.ghost-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:11px 18px;
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,.65);
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  font-size:13px;
+  width:160px;
+}
+
+.right{
+  padding:56px 54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.form-box{
+  width:100%;
+  max-width:380px;
+  text-align:center;
+}
+
+.form-box h2{
+  font-size:30px;
+  margin-bottom:18px;
+  color:var(--green-dark);
+}
+
+.field{
+  margin-bottom:12px;
+}
+
+.field input{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  background:#f8fafc;
+}
+
+.primary-btn{
+  width:100%;
+  padding:12px 14px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--green), var(--green-dark));
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.small-link{
+  margin-top:14px;
+  font-size:13px;
+}
+
+.small-link a{
+  color:var(--green-dark);
+  font-weight:700;
+  text-decoration:none;
+}

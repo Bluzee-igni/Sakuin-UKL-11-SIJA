@@ -2,102 +2,84 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tabung; // <-- PENTING: Koneksi ke Model Database
+use App\Models\Target;
+use App\Models\Checkin;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TabungController extends Controller
 {
-    /**
-     * Menampilkan daftar tabungan (READ)
-     */
     public function index()
     {
-        // Ambil semua data, urutkan dari yang terbaru (id terbesar)
-        $data = Tabung::latest()->get();
-        return view('tabung.index', compact('data'));
-    }
+        $user = auth()->user();
 
-    /**
-     * Menampilkan form tambah data (View Create)
-     */
-    public function create()
-    {
-        return view('tabung.create');
-    }
+        // Ambil semua target user
+        $targets = $user->targets()->get();
 
-    /**
-     * Menyimpan data baru (CREATE)
-     * Fitur: Otomatis hitung Total & Tanggal Hari Ini
-     */
-    public function store(Request $request)
-    {
-        // Validasi: Cuma butuh Nama & Jumlah (Total & Tanggal diurus sistem)
-        $request->validate([
-            'nama'           => 'required|string|max:255',
-            'jumlah_tabung'  => 'required|numeric',
-        ]);
+        // Ambil target aktif
+        $activeTarget = $user->targets()->where('is_active', true)->first();
 
-        // Hitung total dari semua uang yang sudah ada sebelumnya
-        $total_sebelumnya = Tabung::sum('jumlah_tabung');
-        
-        // Tambah dengan uang yang baru disetor
-        $total_baru = $total_sebelumnya + $request->jumlah_tabung;
+        if (!$activeTarget) {
+            $activeTarget = $targets->first();
+        }
 
-        // Simpan
-        Tabung::create([
-            'nama'           => $request->nama,
-            'jumlah_tabung'  => $request->jumlah_tabung,
-            'total_tabungan' => $total_baru, // <-- Hasil hitungan
-            'tanggal'        => now(),       // <-- Otomatis hari ini
-        ]);
+        $checkins = collect();
+        $total = 0;
+        $streak = 0;
+        $estimasiTanggal = null;
 
-        return redirect()->route('tabung.index')
-                         ->with('success', 'Data berhasil ditambahkan!');
-    }
+        if ($activeTarget) {
 
-    /**
-     * Menampilkan form edit (View Edit)
-     */
-    public function edit(Tabung $tabung)
-    {
-        return view('tabung.edit', compact('tabung'));
-    }
+            // Ambil checkin bulan ini
+            $checkins = $activeTarget->checkins()
+                ->whereMonth('tanggal', now()->month)
+                ->whereYear('tanggal', now()->year)
+                ->get();
 
-    /**
-     * Mengupdate data (UPDATE)
-     * Fitur: Otomatis Hitung Ulang Total jika jumlah diubah
-     */
-    public function update(Request $request, Tabung $tabung)
-    {
-        // 1. Validasi: Cuma Nama & Jumlah (Tanggal dihapus karena otomatis)
-        $request->validate([
-            'nama'           => 'required|string|max:255',
-            'jumlah_tabung'  => 'required|numeric',
-        ]);
+            // Total terkumpul
+            $total = $activeTarget->checkins()->sum('nominal');
 
-        // 2. Logika Hitung Ulang Total
-        $total_sebelumnya = Tabung::where('id', '<', $tabung->id)->sum('jumlah_tabung');
-        $total_baru = $total_sebelumnya + $request->jumlah_tabung;
+            // Hitung streak
+            $dates = $activeTarget->checkins()
+                ->orderBy('tanggal', 'desc')
+                ->pluck('tanggal')
+                ->map(fn($d) => Carbon::parse($d)->format('Y-m-d'))
+                ->toArray();
 
-        // 3. Update ke database
-        $tabung->update([
-            'nama'           => $request->nama,
-            'jumlah_tabung'  => $request->jumlah_tabung,
-            'total_tabungan' => $total_baru,
-            'tanggal'        => now(), // <-- OTOMATIS TANGGAL HARI INI
-        ]);
+            $today = now()->format('Y-m-d');
+            $current = $today;
 
-        return redirect()->route('tabung.index')
-                         ->with('success', 'Data berhasil diperbarui! Tanggal tercatat hari ini.');
-    }
+            foreach ($dates as $date) {
+                if ($date === $current) {
+                    $streak++;
+                    $current = Carbon::parse($current)->subDay()->format('Y-m-d');
+                } else {
+                    break;
+                }
+            }
 
-    /**
-     * Menghapus data (DELETE)
-     */
-    public function destroy(Tabung $tabung)
-    {
-        $tabung->delete();
-        return redirect()->route('tabung.index')
-                         ->with('success', 'Data berhasil dihapus!');
+            // Estimasi selesai
+            $sisa = $activeTarget->harga_target - $total;
+
+            if ($total > 0) {
+                $rataRata = $activeTarget->checkins()
+                    ->where('tanggal', '>=', now()->subDays(14))
+                    ->avg('nominal');
+
+                if ($rataRata > 0) {
+                    $hariButuh = ceil($sisa / $rataRata);
+                    $estimasiTanggal = now()->addDays($hariButuh);
+                }
+            }
+        }
+
+        return view('tabung.index', compact(
+            'targets',
+            'activeTarget',
+            'checkins',
+            'total',
+            'streak',
+            'estimasiTanggal'
+        ));
     }
 }

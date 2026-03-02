@@ -3,19 +3,27 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TabungController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
 
-// 1. Ubah ini: Jika belum login, lempar ke halaman login
+// root
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// 2. Route Login tetap bisa diakses publik
+// auth public
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// 3. Bungkus route tabungan dengan Middleware 'auth'
-// Ini gunanya biar kalau orang ngetik /tabung tanpa login, bakal ditendang balik ke login
+Route::get('/register', [RegisterController::class, 'index'])->name('register');
+Route::post('/register', [RegisterController::class, 'store']);
+
+// protected (wajib login)
 Route::middleware('auth')->group(function () {
     Route::resource('tabung', TabungController::class);
+
+    Route::post('/targets', [TabungController::class, 'storeTarget'])->name('targets.store');
+    Route::post('/targets/{target}/active', [TabungController::class, 'setActive'])->name('targets.active');
+
+    Route::post('/checkins', [TabungController::class, 'storeCheckin'])->name('checkins.store');
 });
