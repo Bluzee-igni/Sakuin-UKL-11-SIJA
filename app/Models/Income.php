@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Checkin extends Model
+class Income extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'target_id',
-        'tanggal',
+        'user_id',
+        'tipe',
+        'sumber',
         'nominal',
+        'tanggal',
         'catatan',
     ];
 
@@ -21,8 +23,8 @@ class Checkin extends Model
         'tanggal' => 'date',
     ];
 
-    public function target(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Target::class);
+        return $this->belongsTo(User::class);
     }
 }

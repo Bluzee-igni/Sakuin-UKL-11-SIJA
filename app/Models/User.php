@@ -30,9 +30,28 @@ class User extends Authenticatable
         ];
     }
 
-    // ✅ Relasi: 1 User punya banyak Target
     public function targets(): HasMany
     {
-        return $this->hasMany(\App\Models\Target::class);
+        return $this->hasMany(Target::class);
+    }
+
+    public function incomes(): HasMany
+    {
+        return $this->hasMany(Income::class);
+    }
+
+    public function expenseCategories(): HasMany
+    {
+        return $this->hasMany(ExpenseCategory::class);
+    }
+
+    public function budgetPlans(): HasMany
+    {
+        return $this->hasMany(BudgetPlan::class);
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
     }
 }

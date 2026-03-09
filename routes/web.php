@@ -1,25 +1,31 @@
 <?php
 
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TabungController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IncomeController;
+
 
 // root
 Route::get('/', function () {
-    return redirect()->route('login');
+    return Auth::check()
+        ? redirect()->route('tabung.index')
+        : redirect()->route('login');
 });
 
-// auth public
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'authenticate']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+// auth public (guest only)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'authenticate']);
 
-Route::get('/register', [RegisterController::class, 'index'])->name('register');
-Route::post('/register', [RegisterController::class, 'store']);
+    Route::get('/register', [RegisterController::class, 'index'])->name('register');
+    Route::post('/register', [RegisterController::class, 'store']);
+});
+
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 // protected (wajib login)
 Route::middleware('auth')->group(function () {
@@ -31,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkins', [TabungController::class, 'storeCheckin'])->name('checkins.store');
 });
 
-Route::get('/tes-error', function () {
-    dd('masuk tes-error', Auth::user());
+Route::middleware('auth')->group(function () {
+    Route::get('/incomes/create', [IncomeController::class, 'create'])->name('incomes.create');
+    Route::post('/incomes', [IncomeController::class, 'store'])->name('incomes.store');
 });

@@ -7,26 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Target extends Model
+class ExpenseCategory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
         'nama',
-        'harga_target',
-        'rencana_per_hari',
-        'mulai',
-        'target_tanggal',
-        'is_active',
-        'is_done',
-    ];
-
-    protected $casts = [
-        'mulai' => 'date',
-        'target_tanggal' => 'date',
-        'is_active' => 'boolean',
-        'is_done' => 'boolean',
+        'icon',
+        'warna',
     ];
 
     public function user(): BelongsTo
@@ -34,8 +23,13 @@ class Target extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function checkins(): HasMany
+    public function expenses(): HasMany
     {
-        return $this->hasMany(Checkin::class);
+        return $this->hasMany(Expense::class);
+    }
+
+    public function budgetPlanItems(): HasMany
+    {
+        return $this->hasMany(BudgetPlanItem::class);
     }
 }
