@@ -159,6 +159,7 @@ class TabungController extends Controller
 
         $hasTarget = Target::where('user_id', $user->id)->exists();
 
+        // dd($request);
         Target::create([
             'user_id' => $user->id,
             'nama' => $request->nama,
@@ -168,6 +169,7 @@ class TabungController extends Controller
             'is_active' => $hasTarget ? 0 : 1,
             'is_done' => 0,
         ]);
+
 
         return redirect()
             ->route('tabung.index')
@@ -256,11 +258,11 @@ class TabungController extends Controller
             ->whereDate('tanggal', $request->tanggal)
             ->first();
 
-        if ($existing) {
-            return redirect()
-                ->route('tabung.index')
-                ->with('success', 'Check-in di tanggal itu sudah ada. Silakan pilih tanggal lain.');
-        }
+        // if ($existing) {
+        //     return redirect()
+        //         ->route('tabung.index')
+        //         ->with('success', 'Check-in di tanggal itu sudah ada. Silakan pilih tanggal lain.');
+        // }
 
         Checkin::create([
             'target_id' => $target->id,
