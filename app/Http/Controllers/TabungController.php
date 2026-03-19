@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Target;
 use App\Models\Checkin;
+use App\Models\Expense;
+use App\Models\Income;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +127,22 @@ class TabungController extends Controller
             ->take(5)
             ->get();
 
+        $totalIncome = Income::forUser($user->id)->sum('nominal');
+
+        $recentIncomes = Income::forUser($user->id)
+            ->latest('tanggal')
+            ->take(5)
+            ->get();
+
+        $usedForSaving = Checkin::whereHas('target', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->sum('nominal');
+
+        $usedForExpense = Expense::where('user_id', $user->id)->sum('nominal');
+
+        $saldo = $totalIncome - $usedForSaving - $usedForExpense;
+
         return view('tabung.index', compact(
             'targets',
             'activeTarget',
@@ -137,7 +155,12 @@ class TabungController extends Controller
             'rata2PerCheckin',
             'lastCheckinDate',
             'recentCheckins',
-            'calendarEvents'
+            'calendarEvents',
+            'totalIncome',
+            'recentIncomes',
+            'usedForSaving',
+            'usedForExpense',
+            'saldo'
         ));
     }
 

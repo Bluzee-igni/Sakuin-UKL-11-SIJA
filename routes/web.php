@@ -9,6 +9,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\IncomeController;
 
 
+
 // root
 Route::get('/', function () {
     return Auth::check()

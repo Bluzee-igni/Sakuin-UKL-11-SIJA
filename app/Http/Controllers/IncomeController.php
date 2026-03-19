@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Income;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +14,7 @@ class IncomeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'tipe' => 'required',
             'sumber' => 'nullable|string|max:255',
             'nominal' => 'required|numeric|min:1',
@@ -23,14 +22,7 @@ class IncomeController extends Controller
             'catatan' => 'nullable|string|max:255',
         ]);
 
-        Income::create([
-            'user_id' => Auth::id(),
-            'tipe' => $request->tipe,
-            'sumber' => $request->sumber,
-            'nominal' => $request->nominal,
-            'tanggal' => $request->tanggal,
-            'catatan' => $request->catatan,
-        ]);
+        Auth::user()->incomes()->create($validated);
 
         return redirect()->route('incomes.create')->with('success', 'Pemasukan berhasil ditambahkan');
     }

@@ -225,6 +225,34 @@
                 </div>
             </div>
 
+                        <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h6 class="mb-3">Ringkasan Saldo</h6>
+
+                    <div class="small text-muted">Total Income</div>
+                    <div class="fs-4 fw-bold text-primary">
+                        Rp {{ number_format($totalIncome ?? 0, 0, ',', '.') }}
+                    </div>
+
+                    <hr>
+
+                    <div class="small text-muted">Dipakai Nabung</div>
+                    <div class="fw-semibold text-success">
+                        Rp {{ number_format($usedForSaving ?? 0, 0, ',', '.') }}
+                    </div>
+
+                    <div class="small text-muted mt-2">Dipakai Management</div>
+                    <div class="fw-semibold text-warning">
+                        Rp {{ number_format($usedForExpense ?? 0, 0, ',', '.') }}
+                    </div>
+
+                    <div class="small text-muted mt-2">Sisa Saldo</div>
+                    <div class="fw-bold text-dark">
+                        Rp {{ number_format($saldo ?? 0, 0, ',', '.') }}
+                    </div>
+                </div>
+            </div>                    
+
             {{-- FORM CHECKIN --}}
             <div class="card shadow-sm border-0 rounded-4">
                 <div class="card-body p-4">
@@ -273,6 +301,53 @@
                 </div>
             </div>
         </div>
+    </div>
+
+        {{-- DAFTAR INCOME --}}
+    <div class="mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h6 class="mb-0">Income Terbaru</h6>
+            <span class="badge text-bg-light border">Income</span>
+        </div>
+
+        @if(!empty($recentIncomes) && count($recentIncomes))
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th>Tanggal</th>
+                            <th>Tipe</th>
+                            <th>Sumber</th>
+                            <th>Nominal</th>
+                            <th>Catatan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($recentIncomes as $inc)
+                            <tr>
+                                <td class="text-muted">
+                                    {{ \Carbon\Carbon::parse($inc->tanggal)->format('d M Y') }}
+                                </td>
+                                <td class="fw-semibold">
+                                    {{ ucfirst(str_replace('_', ' ', $inc->tipe)) }}
+                                </td>
+                                <td class="text-muted">
+                                    {{ $inc->sumber ?? '-' }}
+                                </td>
+                                <td class="fw-bold text-primary">
+                                    Rp {{ number_format($inc->nominal, 0, ',', '.') }}
+                                </td>
+                                <td class="text-muted">
+                                    {{ $inc->catatan ?? '-' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="text-muted">Belum ada income.</div>
+        @endif
     </div>
 
     {{-- RINGKASAN BAWAH --}}
