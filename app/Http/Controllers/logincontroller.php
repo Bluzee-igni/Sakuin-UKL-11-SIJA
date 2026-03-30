@@ -9,24 +9,22 @@ class LoginController extends Controller
 {
     public function index()
     {
-        return view('login'); // Ini akan memanggil file login.blade.php
+        return view('auth', ['mode' => 'login']);
     }
 
     public function authenticate(Request $request)
     {
-        // Validasi input email dan password
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
+        $remember = $request->boolean('remember');
 
-        // Cek kecocokan di database
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             return redirect()->intended('/tabung');
         }
 
-        // Jika gagal, balik lagi ke login
         return back()->with('loginError', 'Login Gagal! Cek email/password.');
     }
 
