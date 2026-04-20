@@ -12,6 +12,8 @@
   --ease-panel:cubic-bezier(.22, 1, .36, 1);
   --ease-soft:cubic-bezier(.4, 0, .2, 1);
   --panel-speed:.72s;
+  --overlay-speed:1.02s;
+  --overlay-ease:cubic-bezier(.16, .84, .24, 1);
   --content-speed:.3s;
   --content-delay:.12s;
 }
@@ -230,6 +232,7 @@ button{
   width:100%;
   max-width:360px;
   margin-bottom:14px;
+  position:relative;
 }
 
 .remember-row{
@@ -271,6 +274,53 @@ button{
   box-shadow:0 0 0 4px rgba(43, 183, 167, .12);
   background:#fff;
   transform:translateY(-1px);
+}
+
+.password-field input{
+  padding-right:74px;
+}
+
+.password-toggle{
+  position:absolute;
+  top:50%;
+  right:14px;
+  transform:translateY(-50%);
+  border:none;
+  background:transparent;
+  color:var(--green-dark);
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border-radius:50%;
+}
+
+.password-toggle:hover{
+  background:rgba(43, 183, 167, .08);
+}
+
+.eye-icon{
+  width:19px;
+  height:19px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  transition:opacity .18s ease, transform .18s ease;
+}
+
+.eye-closed{
+  display:none;
+}
+
+.password-toggle.is-visible .eye-open{
+  display:none;
+}
+
+.password-toggle.is-visible .eye-closed{
+  display:block;
 }
 
 .primary-btn,
@@ -341,8 +391,8 @@ button{
   overflow:hidden;
   border-radius:150px 0 0 100px;
   transition:
-    transform calc(var(--panel-speed) + .04s) var(--ease-panel),
-    border-radius calc(var(--panel-speed) + .04s) var(--ease-panel);
+    transform var(--overlay-speed) var(--overlay-ease),
+    border-radius var(--overlay-speed) var(--overlay-ease);
   z-index:100;
   will-change:transform;
 }
@@ -363,7 +413,7 @@ button{
     linear-gradient(135deg, #2bb7a7 0%, #1f8d82 50%, #157267 100%);
   color:#fff;
   transform:translateX(0);
-  transition:transform calc(var(--panel-speed) + .12s) var(--ease-panel);
+  transition:transform calc(var(--overlay-speed) + .08s) var(--overlay-ease);
 }
 
 .toggle-track::before{
@@ -393,8 +443,8 @@ button{
   padding:48px;
   text-align:center;
   transition:
-    transform var(--panel-speed) var(--ease-panel),
-    opacity var(--content-speed) var(--ease-soft);
+    transform calc(var(--overlay-speed) - .18s) var(--overlay-ease),
+    opacity .38s ease;
   will-change:transform, opacity;
 }
 

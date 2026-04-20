@@ -1,5 +1,6 @@
 const container = document.querySelector('.auth-container');
 const toggleButtons = document.querySelectorAll('[data-auth-toggle]');
+const passwordToggleButtons = document.querySelectorAll('[data-password-toggle]');
 
 if (container && toggleButtons.length) {
     let isAnimating = false;
@@ -33,6 +34,25 @@ if (container && toggleButtons.length) {
         button.addEventListener('click', (event) => {
             event.preventDefault();
             setMode(button.dataset.authToggle);
+        });
+    });
+}
+
+if (passwordToggleButtons.length) {
+    passwordToggleButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const field = button.closest('.password-field');
+            const input = field?.querySelector('[data-password-input]');
+
+            if (!input) {
+                return;
+            }
+
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            button.classList.toggle('is-visible', isHidden);
+            button.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+            button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
         });
     });
 }

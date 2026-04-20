@@ -40,8 +40,20 @@
                         <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
                     </div>
 
-                    <div class="field">
-                        <input type="password" name="password" placeholder="Password (min 6)" required>
+                    <div class="field password-field">
+                        <input type="password" name="password" placeholder="Password (min 6)" required data-password-input>
+                        <button type="button" class="password-toggle" data-password-toggle aria-label="Tampilkan password" aria-pressed="false">
+                            <svg class="eye-icon eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M1.5 12s3.8-6.5 10.5-6.5S22.5 12 22.5 12 18.7 18.5 12 18.5 1.5 12 1.5 12Z" />
+                                <circle cx="12" cy="12" r="3.2" />
+                            </svg>
+                            <svg class="eye-icon eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 3l18 18" />
+                                <path d="M10.6 5.7A10.9 10.9 0 0 1 12 5.5C18.7 5.5 22.5 12 22.5 12a18.2 18.2 0 0 1-3.6 4.3" />
+                                <path d="M14.8 14.9A3.2 3.2 0 0 1 9.1 9.2" />
+                                <path d="M6.5 6.6A18.7 18.7 0 0 0 1.5 12s3.8 6.5 10.5 6.5a10.7 10.7 0 0 0 4.1-.8" />
+                            </svg>
+                        </button>
                     </div>
 
                     <button type="submit" class="primary-btn">SIGN UP</button>
@@ -93,14 +105,27 @@
                         >
                     </div>
 
-                    <div class="field">
+                    <div class="field password-field">
                         <input
                             type="password"
                             name="password"
                             placeholder="Password"
                             required
                             autocomplete="current-password"
+                            data-password-input
                         >
+                        <button type="button" class="password-toggle" data-password-toggle aria-label="Tampilkan password" aria-pressed="false">
+                            <svg class="eye-icon eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M1.5 12s3.8-6.5 10.5-6.5S22.5 12 22.5 12 18.7 18.5 12 18.5 1.5 12 1.5 12Z" />
+                                <circle cx="12" cy="12" r="3.2" />
+                            </svg>
+                            <svg class="eye-icon eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 3l18 18" />
+                                <path d="M10.6 5.7A10.9 10.9 0 0 1 12 5.5C18.7 5.5 22.5 12 22.5 12a18.2 18.2 0 0 1-3.6 4.3" />
+                                <path d="M14.8 14.9A3.2 3.2 0 0 1 9.1 9.2" />
+                                <path d="M6.5 6.6A18.7 18.7 0 0 0 1.5 12s3.8 6.5 10.5 6.5a10.7 10.7 0 0 0 4.1-.8" />
+                            </svg>
+                        </button>
                     </div>
 
                     <label class="remember-row">
