@@ -12,8 +12,8 @@ class Income extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tipe',
-        'sumber',
+        'user_id',
+        'nama',
         'nominal',
         'tanggal',
         'catatan',

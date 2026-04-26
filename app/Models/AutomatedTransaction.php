@@ -5,32 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
 
-class Expense extends Model
+class AutomatedTransaction extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
+        'tipe',
         'nama',
         'nominal',
         'kategori',
-        'tanggal',
-        'catatan',
-    ];
-
-    protected $casts = [
-        'tanggal' => 'date',
+        'tanggal_rutin',
+        'last_processed_month',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function scopeForUser(Builder $query, int $userId): Builder
-    {
-        return $query->where('user_id', $userId);
     }
 }

@@ -34,4 +34,12 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/incomes/create', [\App\Http\Controllers\IncomeController::class, 'create'])->name('incomes.create');
     Route::post('/incomes', [\App\Http\Controllers\IncomeController::class, 'store'])->name('incomes.store');
+    
+    // Manajemen Keuangan (Full Backend)
+    Route::get('/management', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
+    Route::post('/management/income', [\App\Http\Controllers\ManagementController::class, 'storeIncome'])->name('management.income.store');
+    Route::post('/management/expense', [\App\Http\Controllers\ManagementController::class, 'storeExpense'])->name('management.expense.store');
+    Route::post('/management/budget', [\App\Http\Controllers\ManagementController::class, 'setBudget'])->name('management.budget.set');
+    Route::post('/management/automation', [\App\Http\Controllers\ManagementController::class, 'storeAutomation'])->name('management.automation.store');
+    Route::post('/management/automation/{id}/delete', [\App\Http\Controllers\ManagementController::class, 'destroyAutomation'])->name('management.automation.destroy');
 });

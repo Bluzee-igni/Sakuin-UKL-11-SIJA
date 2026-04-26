@@ -3,173 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $mode === 'register' ? 'Register' : 'Login' }} - Sakuin Aja</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/auth-diprella.css') }}">
+    <title>{{ $mode === 'register' ? 'Daftar' : 'Login' }} - Sakuin</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Custom Dedicated Login CSS -->
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}?v={{ time() }}">
 </head>
 <body>
-    <div class="auth-shell">
-        <div class="auth-container {{ $mode === 'register' ? 'active' : '' }}">
-            <div class="form-panel sign-up-panel">
-                <form action="{{ route('register') }}" method="POST" novalidate>
-                    @csrf
 
-                    <div class="brand brand-mobile">
-                        <div class="brand-badge">SA</div>
-                        <div>SakuinAja</div>
+    {{-- AESTHETIC BACKGROUND BLOBS --}}
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    {{-- SPLASH SCREEN ANIMATION (Dedicated Login) --}}
+    <div id="splash-screen">
+        <div class="splash-logo">
+            <i class="ph-fill ph-wallet" style="font-size: 3.5rem;"></i>
+        </div>
+        <h2 class="font-poppins fw-bold text-primary splash-text">Sakuin</h2>
+        <p class="text-muted small splash-text" style="animation-delay: 0.3s;">Mengatur keuangan dengan cerdas</p>
+    </div>
+
+    {{-- MAIN LOGIN/REGISTER CONTENT --}}
+    <div class="login-wrapper">
+        <div class="login-card mx-auto" id="main-auth-content">
+            
+            {{-- KIRI: FORM LOGIN / REGISTER --}}
+            <div class="login-left order-2 order-md-1">
+                
+                {{-- LOGO BALANCE DI ATAS FORM --}}
+                <div class="logo-container">
+                    <div class="icon-box">
+                        <i class="ph-fill ph-wallet"></i>
                     </div>
+                    <h1 class="logo-text text-primary">Sakuin</h1>
+                </div>
 
-                    <h1>Create Account</h1>
-                    <p class="form-copy">Buat akun baru untuk mulai mengelola tabunganmu.</p>
+                <div class="mb-4 text-center">
+                    <h3 class="font-poppins fw-bold">
+                        {{ $mode === 'register' ? 'Buat Akun Baru' : 'Selamat Datang Kembali' }}
+                    </h3>
+                    <p class="text-muted small">
+                        {{ $mode === 'register' ? 'Mulai kelola keuanganmu dengan langkah mudah.' : 'Masuk ke akunmu untuk mengontrol anggaran hari ini.' }}
+                    </p>
+                </div>
 
-                    @if($mode === 'register' && $errors->any())
-                        <div class="error-msg">
-                            <ul>
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                @if($mode === 'login' && session('loginError'))
+                    <div class="alert bg-danger bg-opacity-10 text-danger border-0 rounded-3 py-2 small d-flex align-items-center gap-2">
+                        <i class="ph-fill ph-warning-circle fs-5"></i> {{ session('loginError') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert bg-danger bg-opacity-10 text-danger border-0 rounded-3 py-2 small">
+                        <ul class="mb-0 ps-3">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ $mode === 'register' ? route('register') : route('login') }}" method="POST">
+                    @csrf
+                    
+                    @if($mode === 'register')
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-medium">Nama Lengkap</label>
+                        <div class="input-group">
+                            <span class="input-group-text input-group-text-custom">
+                                <i class="ph ph-user"></i>
+                            </span>
+                            <input type="text" name="name" class="form-control form-control-custom border-start-0 ps-2" placeholder="John Doe" value="{{ old('name') }}" required autofocus>
                         </div>
+                    </div>
                     @endif
 
-                    <div class="field">
-                        <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" required>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-medium">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text input-group-text-custom">
+                                <i class="ph ph-envelope-simple"></i>
+                            </span>
+                            <input type="email" name="email" class="form-control form-control-custom border-start-0 ps-2" placeholder="nama@email.com" value="{{ old('email') }}" required {{ $mode === 'login' ? 'autofocus' : '' }}>
+                        </div>
                     </div>
 
-                    <div class="field">
-                        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-medium">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text input-group-text-custom">
+                                <i class="ph ph-lock-key"></i>
+                            </span>
+                            <input type="password" name="password" class="form-control form-control-custom border-start-0 ps-2" placeholder="••••••••" required>
+                        </div>
                     </div>
 
-                    <div class="field password-field">
-                        <input type="password" name="password" placeholder="Password (min 6)" required data-password-input>
-                        <button type="button" class="password-toggle" data-password-toggle aria-label="Tampilkan password" aria-pressed="false">
-                            <svg class="eye-icon eye-open" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M1.5 12s3.8-6.5 10.5-6.5S22.5 12 22.5 12 18.7 18.5 12 18.5 1.5 12 1.5 12Z" />
-                                <circle cx="12" cy="12" r="3.2" />
-                            </svg>
-                            <svg class="eye-icon eye-closed" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M3 3l18 18" />
-                                <path d="M10.6 5.7A10.9 10.9 0 0 1 12 5.5C18.7 5.5 22.5 12 22.5 12a18.2 18.2 0 0 1-3.6 4.3" />
-                                <path d="M14.8 14.9A3.2 3.2 0 0 1 9.1 9.2" />
-                                <path d="M6.5 6.6A18.7 18.7 0 0 0 1.5 12s3.8 6.5 10.5 6.5a10.7 10.7 0 0 0 4.1-.8" />
-                            </svg>
-                        </button>
+                    @if($mode === 'login')
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
+                            <label class="form-check-label text-muted small" for="remember">
+                                Ingat saya
+                            </label>
+                        </div>
+                        <a href="#" class="small text-primary fw-medium text-decoration-none" style="transition: opacity 0.3s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">Lupa Password?</a>
                     </div>
+                    @else
+                    <div class="mb-4"></div>
+                    @endif
 
-                    <button type="submit" class="primary-btn">SIGN UP</button>
-
-                    <p class="small-link">
-                        Sudah punya akun?
-                        <a href="{{ route('login') }}" data-auth-toggle="login">Login</a>
-                    </p>
+                    <button type="submit" class="btn btn-primary-custom w-100 py-3 mb-2">
+                        {{ $mode === 'register' ? 'Daftar Sekarang' : 'Masuk ke Dashboard' }}
+                    </button>
                 </form>
             </div>
 
-            <div class="form-panel sign-in-panel">
-                <form action="{{ route('login') }}" method="POST" novalidate>
-                    @csrf
-
-                    <div class="brand brand-mobile">
-                        <div class="brand-badge">SA</div>
-                        <div>SakuinAja</div>
-                    </div>
-
-                    <h1>Sign In</h1>
-                    <p class="form-copy">Masuk dan lanjutkan perjalanan nabungmu.</p>
-
-                    @if($mode === 'login' && session('loginError'))
-                        <div class="error-msg">
-                            {{ session('loginError') }}
-                        </div>
+            {{-- KANAN: INFO / BRANDING --}}
+            <div class="login-right order-1 order-md-2 d-none d-md-flex">
+                <div class="mb-4">
+                    <i class="ph-fill ph-shield-check text-white" style="font-size: 4rem; opacity: 0.9;"></i>
+                </div>
+                
+                <h2 class="font-poppins fw-bold mb-3">Keamanan Terjamin</h2>
+                <p class="text-white-50 mb-0" style="max-width: 300px; line-height: 1.6;">
+                    Data keuangan Anda dienkripsi dan disimpan dengan aman. Pantau pemasukan dan capai target tabungan tanpa khawatir.
+                </p>
+                
+                <div class="mt-5 pt-4 border-top border-light border-opacity-25" style="width: 80%;">
+                    @if($mode === 'login')
+                        <p class="small text-white-50 mb-2">Ingin memulai perjalanan menabung?</p>
+                        <a href="{{ route('register') }}" class="btn btn-outline-light rounded-pill py-2 px-4 w-100 fw-medium" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3);">Buat Akun Gratis</a>
+                    @else
+                        <p class="small text-white-50 mb-2">Sudah jadi pengguna Sakuin?</p>
+                        <a href="{{ route('login') }}" class="btn btn-outline-light rounded-pill py-2 px-4 w-100 fw-medium" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3);">Kembali Login</a>
                     @endif
-
-                    @if($mode === 'login' && $errors->any())
-                        <div class="error-msg">
-                            <ul>
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <div class="field">
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value="{{ old('email') }}"
-                            required
-                            autofocus
-                            autocomplete="email"
-                        >
-                    </div>
-
-                    <div class="field password-field">
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            required
-                            autocomplete="current-password"
-                            data-password-input
-                        >
-                        <button type="button" class="password-toggle" data-password-toggle aria-label="Tampilkan password" aria-pressed="false">
-                            <svg class="eye-icon eye-open" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M1.5 12s3.8-6.5 10.5-6.5S22.5 12 22.5 12 18.7 18.5 12 18.5 1.5 12 1.5 12Z" />
-                                <circle cx="12" cy="12" r="3.2" />
-                            </svg>
-                            <svg class="eye-icon eye-closed" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M3 3l18 18" />
-                                <path d="M10.6 5.7A10.9 10.9 0 0 1 12 5.5C18.7 5.5 22.5 12 22.5 12a18.2 18.2 0 0 1-3.6 4.3" />
-                                <path d="M14.8 14.9A3.2 3.2 0 0 1 9.1 9.2" />
-                                <path d="M6.5 6.6A18.7 18.7 0 0 0 1.5 12s3.8 6.5 10.5 6.5a10.7 10.7 0 0 0 4.1-.8" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <label class="remember-row">
-                        <input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
-                        <span>Remember me</span>
-                    </label>
-
-                    <button type="submit" class="primary-btn">SIGN IN</button>
-
-                    <p class="small-link">
-                        Belum punya akun?
-                        <a href="{{ route('register') }}" data-auth-toggle="register">Daftar</a>
-                    </p>
-                </form>
-            </div>
-
-            <div class="toggle-panel">
-                <div class="toggle-track">
-                    <div class="toggle-side toggle-left">
-                        <div class="brand">
-                            <div class="brand-badge">SA</div>
-                            <div>SakuinAja</div>
-                        </div>
-
-                        <h2>Welcome Back!</h2>
-                        <p>Untuk tetap terhubung, silakan login menggunakan informasi akunmu.</p>
-                        <button class="ghost-btn login-btn" type="button" data-auth-toggle="login">SIGN IN</button>
-                    </div>
-
-                    <div class="toggle-side toggle-right">
-                        <div class="brand">
-                            <div class="brand-badge">SA</div>
-                            <div>SakuinAja</div>
-                        </div>
-
-                        <h2>Hello, Friend!</h2>
-                        <p>Buat akun baru untuk mulai mengelola tabunganmu dan pantau target dengan lebih rapi.</p>
-                        <button class="ghost-btn register-btn" type="button" data-auth-toggle="register">SIGN UP</button>
-                    </div>
                 </div>
             </div>
+            
         </div>
     </div>
 
-    <script src="{{ asset('js/auth-toggle.js') }}" defer></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dedicated Login JS -->
+    <script src="{{ asset('js/login.js') }}?v={{ time() }}"></script>
 </body>
 </html>

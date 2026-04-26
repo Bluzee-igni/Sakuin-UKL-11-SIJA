@@ -15,8 +15,7 @@ class IncomeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'tipe' => 'required',
-            'sumber' => 'nullable|string|max:255',
+            'nama' => 'required|string|max:255',
             'nominal' => 'required|numeric|min:1',
             'tanggal' => 'required|date',
             'catatan' => 'nullable|string|max:255',

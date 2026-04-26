@@ -1,513 +1,478 @@
+/* public/css/dashboard.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap');
+
+:root {
+    /* Colors */
+    --primary: #059669; /* Soft Emerald Green */
+    --primary-hover: #047857;
+    --primary-light: #ECFDF5;
+    --success: #10B981; /* Lighter Emerald for success */
+    --success-hover: #059669;
+    --success-light: #D1FAE5;
+    --danger: #4B5563; /* Neutral Gray (no red) */
+    --danger-hover: #374151;
+    --danger-light: #F3F4F6;
+    --warning: #6B7280; /* Neutral Gray (no amber) */
+    --warning-light: #F9FAFB;
+    
+    --bg-main: #F3F4F6;
+    --bg-card: #FFFFFF;
+    --text-main: #111827;
+    --text-muted: #6B7280;
+    --border-color: #E5E7EB;
+
+    /* Shadow & Radius - Reduced for compact look */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+}
+
+[data-theme="dark"] {
+    --primary: #059669;
+    --primary-light: rgba(5, 150, 105, 0.15);
+    --success: #10B981;
+    --success-light: rgba(16, 185, 129, 0.15);
+    --danger: #9CA3AF; /* Light Gray for dark mode */
+    --danger-light: rgba(156, 163, 175, 0.15);
+    --warning: #D1D5DB;
+    --warning-light: rgba(209, 213, 219, 0.15);
+    
+    --bg-main: #111827;
+    --bg-card: #1F2937;
+    --text-main: #F9FAFB;
+    --text-muted: #9CA3AF;
+    --border-color: #374151;
+}
+
 body {
-  background: #f6f7fb;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-.card {
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+h1, h2, h3, h4, h5, h6, .font-poppins {
+    font-family: 'Poppins', sans-serif;
 }
 
-.muted {
-  color: #64748b;
+/* Cards */
+.fintech-card {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    overflow: hidden;
 }
 
-.badge-soft {
-  background: rgba(34, 197, 94, .12);
-  color: #15803d;
-  border: 1px solid rgba(34, 197, 94, .25);
+.fintech-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
 }
 
-/* ===== Calendar ===== */
-
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+.card-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #064E3B 100%);
+    color: white;
+    border: none;
+    position: relative;
+    overflow: hidden;
 }
 
-.cal-head {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  margin-bottom: 10px;
-  font-weight: 700;
-  color: #64748b;
-  font-size: 12px;
+.card-hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
 }
 
-.cal-cell {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  height: 64px;
-  padding: 10px;
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  color: #0f172a;
+.card-hero [data-theme="dark"] & {
+    background: linear-gradient(135deg, var(--primary) 0%, #022C22 100%);
 }
 
-.cal-cell.inactive {
-  background: #f8fafc;
-  color: #94a3b8;
-}
-
-.cal-cell.green {
-  border-color: rgba(34, 197, 94, .35);
-  background: rgba(34, 197, 94, .10);
-}
-
-.cal-day {
-  font-weight: 800;
-  font-size: 14px;
-}
-
-.cal-dot {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: #22c55e;
-}
-
-/* ===== Progress ===== */
-
-.progress {
-  height: 10px;
-  border-radius: 999px;
-  background: #e2e8f0;
-}
-
-.progress-bar {
-  border-radius: 999px;
-}
-
-/* ===== Target Card ===== */
-
-.target-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 16px;
-  background: #fff;
-}
-
-.money {
-  font-weight: 800;
-}
-
-/* ===== Panel Bawah ===== */
-
-.mini-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 14px;
-  background: #fff;
-}
-
-.mini-label {
-  font-size: 12px;
-  color: #64748b;
-  font-weight: 700;
-}
-
-.mini-value {
-  font-size: 22px;
-  font-weight: 900;
-  margin-top: 6px;
-  line-height: 1.1;
-}
-
-.mini-sub {
-  font-size: 12px;
-  margin-top: 6px;
-}
-
-.table thead th {
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.table td, .table th {
-  padding: 10px 10px;
-}
-
-.insight {
-  display: flex;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 14px;
-  background: rgba(34, 197, 94, .08);
-  border: 1px solid rgba(34, 197, 94, .18);
-}
-
-.insight-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: #22c55e;
-  margin-top: 6px;
-}
-/* =========================
-   RESPONSIVE PATCH (Sakuin)
-   Tempel di paling bawah
-   ========================= */
-
-/* Biar tombol header rapi & ga kepanjangan */
-.header-actions .btn { white-space: nowrap; }
-
-/* (Optional) kasih class di wrapper tombol header:
-   <div class="d-flex gap-2 header-actions"> ... </div>
-*/
-
-/* Kalender: default desktop oke, mobile diperkecil */
-@media (max-width: 575.98px) {
-  body { padding-top: 12px; padding-bottom: 12px; }
-
-  .container { padding-left: 12px; padding-right: 12px; }
-
-  .card { border-radius: 16px; }
-
-  /* Header: judul & tombol jadi stack rapi */
-  .d-flex.justify-content-between.align-items-start.mb-4 {
-    flex-direction: column;
-    align-items: stretch !important;
-  }
-
-  .d-flex.gap-2 {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  .d-flex.gap-2 > a,
-  .d-flex.gap-2 > form,
-  .d-flex.gap-2 > form button {
-    width: 100%;
-  }
-
-  /* Kalender: lebih rapat */
-  .calendar,
-  .cal-head { gap: 6px; }
-
-  .cal-cell {
-    height: 46px;
-    padding: 8px;
-    border-radius: 12px;
-  }
-
-  .cal-day { font-size: 12px; }
-
-  .cal-dot {
-    width: 8px; height: 8px;
-    right: 8px; bottom: 8px;
-  }
-
-  /* Target card */
-  .target-card { padding: 14px; border-radius: 14px; }
-
-  /* Mini card panel bawah */
-  .mini-card { padding: 12px; border-radius: 14px; }
-  .mini-value { font-size: 18px; }
-}
-
-/* Tablet: sedikit ditingkatkan */
-@media (min-width: 576px) and (max-width: 991.98px) {
-  .calendar,
-  .cal-head { gap: 8px; }
-
-  .cal-cell { height: 56px; }
-}
-
-/* Desktop: kalender sedikit lebih lega */
-@media (min-width: 992px) {
-  .cal-cell { height: 72px; }
-}
-
-/* Tabel riwayat: jadi "card list" di mobile supaya tidak kepotong */
-@media (max-width: 767.98px) {
-  .table-responsive { overflow: visible; } /* biar layout baru */
-  table.table { display: block; }
-  table.table thead { display: none; }
-  table.table tbody { display: grid; gap: 10px; }
-
-  table.table tbody tr {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 6px;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 12px;
-    background: #fff;
-    box-shadow: 0 6px 16px rgba(15, 23, 42, .06);
-  }
-
-  table.table tbody td {
-    padding: 0 !important;
-    border: none !important;
-  }
-
-  /* kasih label kecil sebelum value */
-  table.table tbody td:nth-child(1)::before { content: "Tanggal"; }
-  table.table tbody td:nth-child(2)::before { content: "Target"; }
-  table.table tbody td:nth-child(3)::before { content: "Nominal"; }
-  table.table tbody td:nth-child(4)::before { content: "Catatan"; }
-
-  table.table tbody td::before {
-    display: block;
-    font-size: 11px;
-    color: #64748b;
+.text-hero-balance {
+    font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 2px;
-  }
+    letter-spacing: -1px;
 }
 
-/* Form input lebih enak di mobile */
-@media (max-width: 575.98px) {
-  .form-control { padding-top: 12px; padding-bottom: 12px; border-radius: 14px; }
-  .btn { padding-top: 12px; padding-bottom: 12px; border-radius: 14px; }
+/* Typography Overrides */
+.text-primary { color: var(--primary) !important; }
+.text-success { color: var(--success) !important; }
+.text-danger { color: var(--danger) !important; }
+.text-warning { color: var(--warning) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.bg-light-primary { background-color: var(--primary-light) !important; }
+.bg-light-success { background-color: var(--success-light) !important; }
+.bg-light-danger { background-color: var(--danger-light) !important; }
+.bg-light-warning { background-color: var(--warning-light) !important; }
+
+/* Bootstrap Background Overrides */
+.bg-primary { background-color: var(--primary) !important; }
+.bg-success { background-color: var(--success) !important; }
+.bg-danger { background-color: var(--danger) !important; }
+.bg-warning { background-color: var(--warning) !important; }
+.bg-info { background-color: var(--primary-light) !important; }
+
+/* Bootstrap Border Overrides */
+.border-primary { border-color: var(--primary) !important; }
+.border-success { border-color: var(--success) !important; }
+.border-danger { border-color: var(--danger) !important; }
+.border-warning { border-color: var(--warning) !important; }
+
+/* Bootstrap Nav Pills Override */
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+.nav-pills .nav-link {
+    color: var(--text-muted);
+}
+.nav-pills .nav-link:hover {
+    color: var(--primary);
 }
 
-/* Perbaikan kecil: progress biar selalu terlihat rapi */
-.progress { overflow: hidden; }
+/* Bootstrap Button Overrides */
+.btn-primary { background-color: var(--primary) !important; border-color: var(--primary) !important; color: white !important; }
+.btn-success { background-color: var(--success) !important; border-color: var(--success) !important; color: white !important; }
+.btn-danger { background-color: var(--danger) !important; border-color: var(--danger) !important; color: white !important; }
+.btn-warning { background-color: var(--warning) !important; border-color: var(--warning) !important; color: white !important; }
 
-/* =========================
-   ANIMATION: reveal on scroll
-   ========================= */
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity .55s ease, transform .55s ease;
-  will-change: opacity, transform;
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* delay opsional biar bertahap */
-.delay-1 { transition-delay: .08s; }
-.delay-2 { transition-delay: .16s; }
-.delay-3 { transition-delay: .24s; }
-
-/* hover halus biar ga plain */
-.card, .target-card, .mini-card {
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-.card:hover, .target-card:hover, .mini-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, .10);
+/* Custom Buttons */
+.btn-modern {
+    border-radius: var(--radius-full);
+    font-weight: 500;
+    padding: 0.6rem 1.5rem;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Aksesibilitas: kalau user prefer reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .reveal, .card, .target-card, .mini-card {
-    transition: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-  }
-}
-.progress-bar {
-  transition: width .9s ease;
-}
-/* =========================
-   FullCalendar Minimal Theme
-   Tempel di PALING BAWAH
-   ========================= */
-
-#savingCalendar {
-  --fc-border-color: #e2e8f0;
-  --fc-today-bg-color: rgba(34, 197, 94, .08);
-  font-size: 14px;
+.btn-modern:active {
+    transform: scale(0.97);
 }
 
-/* header (prev/next/today) */
-#savingCalendar .fc-header-toolbar {
-  margin-bottom: 12px;
-  gap: 10px;
+.btn-primary-modern {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px 0 rgba(5, 150, 105, 0.3);
 }
-#savingCalendar .fc-toolbar-title {
-  font-size: 16px;
-  font-weight: 900;
-  color: #0f172a;
-}
-
-/* tombol jadi minimal (ikut vibe bootstrap tapi lembut) */
-#savingCalendar .fc .fc-button {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  color: #0f172a;
-  border-radius: 12px;
-  padding: 8px 12px;
-  box-shadow: 0 6px 14px rgba(15, 23, 42, .05);
-  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
-}
-#savingCalendar .fc .fc-button:hover {
-  background: #f8fafc;
-  transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(15, 23, 42, .08);
-}
-#savingCalendar .fc .fc-button:focus {
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, .18);
-}
-#savingCalendar .fc .fc-button-primary:not(:disabled).fc-button-active,
-#savingCalendar .fc .fc-button-primary:not(:disabled):active {
-  background: rgba(34, 197, 94, .12);
-  border-color: rgba(34, 197, 94, .35);
-  color: #15803d;
+.btn-primary-modern:hover {
+    background-color: var(--primary-hover);
+    color: white;
+    box-shadow: 0 6px 15px rgba(5, 150, 105, 0.2);
 }
 
-/* grid kalender: garis tipis, rounded, clean */
-#savingCalendar .fc-scrollgrid,
-#savingCalendar .fc-scrollgrid-section > td,
-#savingCalendar .fc-daygrid-body,
-#savingCalendar .fc-daygrid-day-frame {
-  border-radius: 16px;
+.btn-success-modern {
+    background-color: var(--success);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px 0 rgba(16, 185, 129, 0.3);
 }
-#savingCalendar .fc-scrollgrid {
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  background: #fff;
+.btn-success-modern:hover {
+    background-color: var(--success-hover);
+    color: white;
 }
 
-/* nama hari */
-#savingCalendar .fc-col-header-cell-cushion {
-  color: #64748b;
-  font-weight: 800;
-  font-size: 12px;
-  padding: 10px 0;
+.btn-outline-modern {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+.btn-outline-modern:hover {
+    background-color: var(--bg-main);
 }
 
-/* cell tanggal */
-#savingCalendar .fc-daygrid-day-frame {
-  padding: 8px;
-}
-#savingCalendar .fc-daygrid-day-number {
-  font-weight: 900;
-  color: #0f172a;
-  padding: 6px 8px;
-  border-radius: 10px;
+/* Ripple Effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 600ms linear;
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* hover tanggal (minimal highlight) */
-#savingCalendar .fc-daygrid-day:hover {
-  background: #f8fafc;
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
 }
 
-/* highlight hari ini: kotak kecil di angka tanggal (lebih minimal) */
-#savingCalendar .fc-day-today {
-  background: transparent !important;
-}
-#savingCalendar .fc-day-today .fc-daygrid-day-number {
-  background: rgba(34, 197, 94, .12);
-  border: 1px solid rgba(34, 197, 94, .25);
-  color: #15803d;
-}
-
-/* event check-in: tampil sebagai "pill" kecil, gak rame */
-#savingCalendar .fc-daygrid-event {
-  background: rgba(34, 197, 94, .12);
-  border: 1px solid rgba(34, 197, 94, .25);
-  color: #15803d;
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-weight: 800;
-  box-shadow: none;
+/* Forms & Inputs */
+.form-control-modern {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    padding: 0.75rem 1rem;
+    transition: all var(--transition-fast);
 }
 
-/* rapihin teks event biar pendek */
-#savingCalendar .fc-event-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.form-control-modern:focus {
+    background-color: var(--bg-card);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    outline: none;
 }
 
-/* matiin “dot” bawaan yang kadang ganggu */
-#savingCalendar .fc-daygrid-event-dot {
-  display: none;
+/* Bootstrap Checkbox Override */
+.form-check-input:checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
 }
 
-/* mobile: tombol & teks lebih kecil */
-@media (max-width: 575.98px) {
-  #savingCalendar { font-size: 13px; }
-  #savingCalendar .fc-toolbar-title { font-size: 14px; }
-  #savingCalendar .fc .fc-button { padding: 7px 10px; border-radius: 12px; }
-  #savingCalendar .fc-daygrid-day-frame { padding: 6px; }
+/* Progress Bar */
+.progress-modern {
+    background-color: var(--bg-main);
+    border-radius: var(--radius-full);
+    height: 8px;
+    overflow: hidden;
 }
 
-#savingCalendar .fc-daygrid-event .fc-event-title {
-  display: none;
-}
-#savingCalendar .fc-daygrid-event {
-  width: 10px;
-  height: 10px;
-  padding: 0;
-  border-radius: 999px;
-  margin: 4px auto 0;
-  background: #22c55e;
-  border: none;
-}
-/* =========================
-   Progress Ring (Donut)
-   ========================= */
-.ring{
-  width: 64px;
-  height: 64px;
-  position: relative;
-  display: grid;
-  place-items: center;
+.progress-bar-modern {
+    background-color: var(--success);
+    border-radius: var(--radius-full);
+    height: 100%;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.ring-svg{
-  width: 64px;
-  height: 64px;
-  transform: rotate(-90deg);
+/* List Items */
+.list-item-modern {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--transition-fast);
+}
+.list-item-modern:last-child {
+    border-bottom: none;
+}
+.list-item-modern:hover {
+    background-color: var(--bg-main);
 }
 
-.ring-bg{
-  fill: none;
-  stroke: #e2e8f0;
-  stroke-width: 3.6;
+/* Toggle Form Animation */
+.toggle-section {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(-10px);
 }
 
-.ring-fg{
-  fill: none;
-  stroke: #22c55e;               /* hijau success */
-  stroke-width: 3.6;
-  stroke-linecap: round;
-  stroke-dasharray: 100 100;     /* default */
-  stroke-dashoffset: calc(100 - var(--p, 0));
-  transition: stroke-dashoffset .9s ease;
-  filter: drop-shadow(0 6px 12px rgba(34, 197, 94, .15));
+.toggle-section.show {
+    max-height: 800px; /* arbitrary large max-height */
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 1.5rem;
 }
 
-.ring-text{
-  position: absolute;
-  font-size: 14px;
-  font-weight: 900;
-  color: #0f172a;
+/* Calendar Overrides */
+.fc-theme-standard td, .fc-theme-standard th {
+    border-color: var(--border-color) !important;
+}
+.fc .fc-toolbar-title {
+    font-size: 1.1rem !important;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-main);
+}
+.fc .fc-button-primary {
+    background-color: var(--bg-main) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+    text-transform: capitalize !important;
+}
+.fc .fc-button-primary:hover {
+    background-color: var(--border-color) !important;
+}
+.fc-daygrid-day-number {
+    color: var(--text-main) !important;
+    text-decoration: none !important;
+}
+.fc-day-today {
+    background-color: var(--primary-light) !important;
 }
 
-/* FIX: kasih ruang kiri-kanan halaman */
-.container {
-  padding-left: 18px !important;
-  padding-right: 18px !important;
+/* Utilities */
+.icon-container {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
 }
 
-/* desktop besar: jangan kebanyakan padding */
-@media (min-width: 992px) {
-  .container {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
+.icon-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    border-radius: 8px;
 }
-/* FIX overflow row bootstrap */
-.row {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .text-hero-balance {
+        font-size: 2rem;
+    }
 }
-html, body {
-  overflow-x: hidden;
+
+/* =========================================
+   LAYOUT STRUKTUR (TOP NAVBAR & RIGHT SIDEBAR)
+   ========================================= */
+
+.top-navbar {
+    height: 70px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+}
+
+.app-wrapper {
+    display: flex;
+    min-height: calc(100vh - 70px);
+    flex-direction: row; /* Default row, but main content left, sidebar right */
+}
+
+.main-content {
+    flex-grow: 1;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Left Sidebar Default (Desktop) */
+.left-sidebar {
+    width: 280px;
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border-color);
+    flex-shrink: 0;
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    z-index: 1030;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Sidebar Nav Links */
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.sidebar-nav .nav-link i {
+    font-size: 1.25rem;
+    transition: transform var(--transition-fast);
+}
+
+.sidebar-nav .nav-link:hover {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+.sidebar-nav .nav-link:hover i {
+    transform: scale(1.1);
+}
+
+.sidebar-nav .nav-link.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.sidebar-nav .nav-link.active i {
+    color: var(--primary);
+}
+
+/* Mobile Sidebar (Off-canvas) */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+@media (max-width: 991.98px) {
+    .left-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1050;
+        transform: translateX(-100%);
+    }
+
+    .left-sidebar.show {
+        transform: translateX(0);
+        box-shadow: 10px 0 20px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-overlay.show {
+        display: block;
+        opacity: 1;
+    }
+}
+
+/* =========================================
+   SPLASH SCREEN ANIMATION
+   ========================================= */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-main);
+    z-index: 9999;
+    display: flex;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+#splash-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
 }

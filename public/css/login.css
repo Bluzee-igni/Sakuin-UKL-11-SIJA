@@ -1,0 +1,293 @@
+/* public/css/login.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #059669;
+    --primary-hover: #047857;
+    --primary-light: #D1FAE5;
+    --bg-main: #F3F4F6;
+    --bg-card: #FFFFFF;
+    --text-main: #111827;
+    --text-muted: #6B7280;
+    --radius-md: 12px;
+    --radius-lg: 24px;
+}
+
+body {
+    background-color: var(--bg-main);
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Bootstrap Overrides */
+.text-primary {
+    color: var(--primary) !important;
+}
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+/* =========================================
+   AESTHETIC BACKGROUND & FLOATING ELEMENTS
+   ========================================= */
+.bg-blobs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: float 10s infinite ease-in-out alternate;
+}
+
+.blob-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--primary-light);
+    top: -10%;
+    left: -10%;
+}
+
+.blob-2 {
+    width: 500px;
+    height: 500px;
+    background: rgba(5, 150, 105, 0.2);
+    bottom: -20%;
+    right: -10%;
+    animation-delay: -5s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-30px) scale(1.05); }
+}
+
+/* =========================================
+   LOGIN CARD
+   ========================================= */
+.login-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.login-card {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+    width: 100%;
+    max-width: 950px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .login-card {
+        flex-direction: row;
+    }
+}
+
+/* Kiri: Form */
+.login-left {
+    padding: 3rem 2.5rem;
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Kanan: Branding */
+.login-right {
+    background: linear-gradient(135deg, var(--primary) 0%, #064E3B 100%);
+    padding: 3rem 2.5rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-right::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    top: -50px;
+    right: -50px;
+}
+
+/* =========================================
+   LOGO ALIGNMENT
+   ========================================= */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    background-color: white;
+    color: var(--primary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.icon-box i {
+    font-size: 1.75rem;
+}
+
+.logo-text {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* =========================================
+   FORM ELEMENTS
+   ========================================= */
+.form-control-custom {
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control-custom:focus {
+    background-color: #FFFFFF;
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: none;
+}
+
+.input-group-text-custom {
+    background-color: transparent;
+    border: 1px solid #E5E7EB;
+    border-right: none;
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    color: var(--text-muted);
+}
+
+.form-control-custom:focus + .input-group-text-custom,
+.input-group:focus-within .input-group-text-custom {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Button */
+.btn-primary-custom {
+    background: linear-gradient(135deg, var(--primary) 0%, #047857 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+    color: white;
+}
+
+/* =========================================
+   SPLASH SCREEN (NO LOOP)
+   ========================================= */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-card);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease-out;
+}
+
+#splash-screen.fade-out {
+    opacity: 0;
+}
+
+.splash-logo {
+    width: 80px;
+    height: 80px;
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: splashBounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes splashBounceIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.splash-text {
+    margin-top: 1rem;
+    animation: splashFadeInUp 0.8s ease forwards 0.2s;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes splashFadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Main Content Animation */
+#main-auth-content {
+    animation: contentFadeIn 0.8s ease forwards 1s; /* Delay until splash finishes */
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes contentFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,34 +1,31 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Income</title>
+@extends('layouts.app')
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-</head>
-<body class="bg-light py-4">
+@section('title', 'Tambah Pemasukan')
 
-<div class="container" style="max-width: 600px;">
+@section('content')
+<div class="container-fluid p-0" style="max-width: 800px; margin: 0 auto;">
 
     {{-- HEADER --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0">Tambah Income</h4>
-        <a href="{{ route('tabung.index') }}" class="btn btn-outline-secondary btn-sm">
-            ← Kembali
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0 fw-bold font-poppins text-primary d-flex align-items-center gap-2">
+            <i class="ph-fill ph-wallet"></i> Tambah Pemasukan
+        </h4>
+        <a href="{{ route('tabung.index') }}" class="btn btn-outline-modern btn-sm d-flex align-items-center gap-1">
+            <i class="ph ph-arrow-left"></i> Kembali
         </a>
     </div>
 
     {{-- ALERT --}}
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div class="alert bg-light-success text-success border-0 rounded-4 alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+            <i class="ph-fill ph-check-circle fs-4"></i>
+            <div>{{ session('success') }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
     @if($errors->any())
-        <div class="alert alert-danger">
+        <div class="alert bg-light-danger text-danger border-0 rounded-4">
             <ul class="mb-0">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -38,62 +35,45 @@
     @endif
 
     {{-- FORM --}}
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4">
+    <div class="fintech-card p-4 p-md-5">
+        <form action="{{ route('incomes.store') }}" method="POST">
+            @csrf
 
-            <form action="{{ route('incomes.store') }}" method="POST">
-                @csrf
+            {{-- NAMA PEMASUKAN --}}
+            <div class="mb-4">
+                <label class="form-label text-muted small fw-medium">Nama Pemasukan</label>
+                <input type="text" name="nama" class="form-control form-control-modern"
+                       placeholder="Contoh: Gaji, Bonus, Freelance" required>
+            </div>
 
-                {{-- TIPE --}}
-                <div class="mb-3">
-                    <label class="form-label">Tipe Income</label>
-                    <select name="tipe" class="form-control" required>
-                        <option value="">-- Pilih tipe --</option>
-                        <option value="gaji">Gaji</option>
-                        <option value="uang_bulanan">Uang Bulanan</option>
-                        <option value="freelance">Freelance</option>
-                        <option value="bonus">Bonus</option>
-                        <option value="lainnya">Lainnya</option>
-                    </select>
-                </div>
+            {{-- NOMINAL --}}
+            <div class="mb-4">
+                <label class="form-label text-muted small fw-medium">Nominal (Rp)</label>
+                <input type="text" name="nominal" class="form-control form-control-modern js-currency-format"
+                       placeholder="Contoh: 3.000.000" required>
+            </div>
 
-                {{-- SUMBER --}}
-                <div class="mb-3">
-                    <label class="form-label">Sumber</label>
-                    <input type="text" name="sumber" class="form-control"
-                           placeholder="Contoh: Kantor / Orang tua">
-                </div>
-
-                {{-- NOMINAL --}}
-                <div class="mb-3">
-                    <label class="form-label">Nominal</label>
-                    <input type="number" name="nominal" class="form-control"
-                           placeholder="Contoh: 3000000" required>
-                </div>
-
+            <div class="row g-4 mb-5">
                 {{-- TANGGAL --}}
-                <div class="mb-3">
-                    <label class="form-label">Tanggal</label>
-                    <input type="date" name="tanggal" class="form-control"
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-medium">Tanggal</label>
+                    <input type="date" name="tanggal" class="form-control form-control-modern"
                            value="{{ now()->format('Y-m-d') }}" required>
                 </div>
 
                 {{-- CATATAN --}}
-                <div class="mb-3">
-                    <label class="form-label">Catatan</label>
-                    <input type="text" name="catatan" class="form-control"
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-medium">Catatan</label>
+                    <input type="text" name="catatan" class="form-control form-control-modern"
                            placeholder="Opsional">
                 </div>
+            </div>
 
-                {{-- BUTTON --}}
-                <button type="submit" class="btn btn-success w-100">
-                    Simpan Income
-                </button>
-
-            </form>
-        </div>
+            {{-- BUTTON --}}
+            <button type="submit" class="btn btn-primary-modern w-100 py-3 d-flex justify-content-center align-items-center gap-2">
+                <i class="ph ph-plus-circle fs-4"></i> Simpan Pemasukan
+            </button>
+        </form>
     </div>
 </div>
-
-</body>
-</html>
+@endsection

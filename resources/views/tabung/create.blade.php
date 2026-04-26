@@ -1,102 +1,86 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Target - Sakuin Aja</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow border-0 rounded-4">
-                    <div class="card-header bg-success text-white rounded-top-4">
-                        <h5 class="mb-0">🎯 Tambah Target Tabungan</h5>
-                    </div>
+@extends('layouts.app')
 
-                    <div class="card-body p-4">
+@section('title', 'Tambah Target Tabungan')
 
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul class="mb-0 ps-3">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+@section('content')
+<div class="container-fluid p-0" style="max-width: 800px; margin: 0 auto;">
 
-                        <form action="{{ route('tabung.store') }}" method="POST">
-                            @csrf
+    {{-- HEADER --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0 fw-bold font-poppins text-primary d-flex align-items-center gap-2">
+            <i class="ph-fill ph-target"></i> Target Baru
+        </h4>
+        <a href="{{ route('tabung.index') }}" class="btn btn-outline-modern btn-sm d-flex align-items-center gap-1">
+            <i class="ph ph-arrow-left"></i> Kembali
+        </a>
+    </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Nama Target</label>
-                                <input
-                                    type="text"
-                                    name="nama"
-                                    class="form-control"
-                                    placeholder="Contoh: Beli Laptop"
-                                    value="{{ old('nama') }}"
-                                    required
-                                >
-                            </div>
+    @if ($errors->any())
+        <div class="alert bg-light-danger text-danger border-0 rounded-4">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Harga Target</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input
-                                        type="number"
-                                        name="harga_target"
-                                        class="form-control"
-                                        placeholder="Contoh: 5000000"
-                                        value="{{ old('harga_target') }}"
-                                        required
-                                    >
-                                </div>
-                            </div>
+    {{-- FORM --}}
+    <div class="fintech-card p-4 p-md-5">
+        <form action="{{ route('tabung.store') }}" method="POST">
+            @csrf
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Rencana Nabung per Hari</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input
-                                        type="number"
-                                        name="rencana_per_hari"
-                                        class="form-control"
-                                        placeholder="Opsional, misal 10000"
-                                        value="{{ old('rencana_per_hari') }}"
-                                    >
-                                </div>
-                                <small class="text-muted">Boleh dikosongkan kalau belum ada target harian.</small>
-                            </div>
+            <div class="mb-4">
+                <label class="form-label text-muted small fw-medium">Nama Target</label>
+                <input
+                    type="text"
+                    name="nama"
+                    class="form-control form-control-modern"
+                    placeholder="Contoh: Beli Laptop Baru"
+                    value="{{ old('nama') }}"
+                    required
+                >
+            </div>
 
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold">Tanggal Mulai</label>
-                                <input
-                                    type="date"
-                                    name="mulai"
-                                    class="form-control"
-                                    value="{{ old('mulai', now()->format('Y-m-d')) }}"
-                                >
-                                <small class="text-muted">Opsional, tapi bagus untuk pencatatan progress.</small>
-                            </div>
+            <div class="mb-4">
+                <label class="form-label text-muted small fw-medium">Harga Target (Rp)</label>
+                <input
+                    type="text"
+                    name="harga_target"
+                    class="form-control form-control-modern js-currency-format"
+                    placeholder="Contoh: 10.000.000"
+                    value="{{ old('harga_target') }}"
+                    required
+                >
+            </div>
 
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-success fw-bold">
-                                    Simpan Target
-                                </button>
-                                <a href="{{ route('tabung.index') }}" class="btn btn-light border text-secondary">
-                                    Batal
-                                </a>
-                            </div>
-                        </form>
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-medium">Rencana Nabung/Hari (Rp)</label>
+                    <input
+                        type="text"
+                        name="rencana_per_hari"
+                        class="form-control form-control-modern js-currency-format"
+                        placeholder="Contoh: 50.000 (Opsional)"
+                        value="{{ old('rencana_per_hari') }}"
+                    >
+                </div>
 
-                    </div>
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-medium">Tanggal Mulai</label>
+                    <input
+                        type="date"
+                        name="mulai"
+                        class="form-control form-control-modern"
+                        value="{{ old('mulai', now()->format('Y-m-d')) }}"
+                    >
                 </div>
             </div>
-        </div>
+
+            <button type="submit" class="btn btn-primary-modern w-100 py-3 d-flex justify-content-center align-items-center gap-2">
+                <i class="ph ph-plus-circle fs-4"></i> Simpan Target
+            </button>
+        </form>
     </div>
-</body>
-</html>
+</div>
+@endsection
