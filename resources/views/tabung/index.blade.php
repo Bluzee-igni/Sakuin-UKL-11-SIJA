@@ -4,6 +4,93 @@
 
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+    <style>
+        /* Modern Fintech Aesthetics */
+        :root {
+            --primary-modern: #0d6efd;
+            --success-modern: #198754;
+            --bg-light-success: #e9f7ef;
+            --border-radius-lg: 1.25rem;
+        }
+
+        .fintech-card {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .fintech-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        }
+
+        .card-hero {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            border: none;
+        }
+
+        .text-hero-balance {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Standardized Buttons */
+        .btn-primary-modern, .btn-success-modern, .btn-outline-modern {
+            border-radius: 1rem;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.2s ease;
+            height: 100%; /* Ensure equal height in row */
+            min-height: 70px;
+        }
+
+        .btn-primary-modern { background-color: #0d6efd; color: white; border: none; }
+        .btn-success-modern { background-color: #198754; color: white; border: none; }
+        .btn-outline-modern { background-color: white; border: 1px solid #dee2e6; color: #495057; }
+
+        .btn-primary-modern:hover { background-color: #0b5ed7; transform: translateY(-2px); }
+        .btn-success-modern:hover { background-color: #157347; transform: translateY(-2px); }
+        .btn-outline-modern:hover { background-color: #f8f9fa; border-color: #ced4da; transform: translateY(-2px); }
+
+        /* Progress Bar */
+        .progress-modern {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-modern {
+            background: linear-gradient(90deg, #198754 0%, #20c997 100%);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        /* Sidebar Widgets */
+        .icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .icon-sm { width: 32px; height: 32px; font-size: 1.2rem; }
+
+        /* Responsive Tweaks */
+        @media (max-width: 768px) {
+            .text-hero-balance { font-size: 1.8rem; }
+            .btn-primary-modern, .btn-success-modern, .btn-outline-modern { min-height: 60px; }
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -29,8 +116,8 @@
     @endif
 
     {{-- HERO SECTION : BALANCE --}}
-    <div class="fintech-card card-hero p-4 mb-3 rounded-4 shadow-lg">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4 position-relative" style="z-index: 1;">
+    <div class="fintech-card card-hero p-4 mb-4 rounded-4 shadow-sm">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 position-relative" style="z-index: 1;">
             <div>
                 <p class="mb-1 text-white-50 fw-medium">Total Saldo Tersedia</p>
                 <div class="text-hero-balance font-poppins js-count-up" data-value="{{ $saldo ?? 0 }}" data-currency="true">
@@ -38,14 +125,14 @@
                 </div>
             </div>
             
-            <div class="d-flex gap-4">
+            <div class="d-flex gap-4 border-start border-white-50 ps-md-4">
                 <div>
-                    <div class="small text-white-50 mb-1"><i class="ph ph-arrow-down-left text-success"></i> Total Pemasukan</div>
-                    <div class="fw-semibold fs-5">Rp {{ number_format($totalIncome ?? 0, 0, ',', '.') }}</div>
+                    <div class="small text-white-50 mb-1"><i class="ph ph-arrow-down-left text-light"></i> Total Pemasukan</div>
+                    <div class="fw-bold fs-5">Rp {{ number_format($totalIncome ?? 0, 0, ',', '.') }}</div>
                 </div>
                 <div>
-                    <div class="small text-white-50 mb-1"><i class="ph ph-arrow-up-right text-warning"></i> Total Keluar</div>
-                    <div class="fw-semibold fs-5">Rp {{ number_format(($usedForSaving ?? 0) + ($usedForExpense ?? 0), 0, ',', '.') }}</div>
+                    <div class="small text-white-50 mb-1"><i class="ph ph-arrow-up-right text-light"></i> Total Keluar</div>
+                    <div class="fw-bold fs-5">Rp {{ number_format(($usedForSaving ?? 0) + ($usedForExpense ?? 0), 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>
@@ -137,17 +224,17 @@
                         <div class="fintech-card h-100 p-4 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
-                                    <h6 class="font-poppins fw-semibold mb-1 d-flex align-items-center gap-2">
+                                    <h6 class="font-poppins fw-bold mb-1 d-flex align-items-center gap-2">
                                         {{ $tg->nama }}
                                         @if($activeTarget && $activeTarget->id === $tg->id)
-                                            <span class="badge bg-light-success text-success border border-success rounded-pill small">Aktif</span>
+                                            <span class="badge bg-light-success text-success border border-success rounded-pill small" style="font-size: 0.7rem;">Aktif</span>
                                         @endif
                                     </h6>
                                     <small class="text-muted">Target: Rp {{ number_format($tg->harga_target, 0, ',', '.') }}</small>
                                 </div>
                                 <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-modern border-0" type="button" data-bs-toggle="dropdown">
-                                        <i class="ph ph-dots-three fs-4"></i>
+                                    <button class="btn btn-sm btn-light border-0 rounded-circle" type="button" data-bs-toggle="dropdown" style="width: 32px; height: 32px; padding: 0;">
+                                        <i class="ph ph-dots-three-vertical fs-5"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
                                         <li><a class="dropdown-item" href="{{ route('tabung.edit', $tg->id) }}"><i class="ph ph-pencil-simple me-2"></i>Edit</a></li>
@@ -165,25 +252,33 @@
                             <div class="mt-auto">
                                 <div class="d-flex justify-content-between align-items-end mb-2">
                                     <span class="fw-bold text-success">Rp {{ number_format($totalTarget, 0, ',', '.') }}</span>
-                                    <span class="small fw-semibold">{{ number_format($progress, 1) }}%</span>
+                                    <span class="small fw-bold">{{ number_format($progress, 1) }}%</span>
                                 </div>
 
                                 <div class="progress-modern w-100 mb-2">
-                                    <div class="progress-bar-modern js-progress-bar-modern" data-progress="{{ number_format($progress, 2, '.', '') }}"></div>
+                                    <div class="progress-bar-modern js-progress-bar-modern" style="width: {{ $progress }}%" data-progress="{{ number_format($progress, 2, '.', '') }}"></div>
                                 </div>
 
-                                <div class="small text-muted text-end">
+                                <div class="small text-muted text-end mb-3">
                                     Sisa: Rp {{ number_format(max(0, $tg->harga_target - $totalTarget), 0, ',', '.') }}
                                 </div>
                                 
-                                @if($activeTarget && $activeTarget->id !== $tg->id)
-                                    <form action="{{ route('targets.active', $tg->id) }}" method="POST" class="mt-3">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-modern w-100 btn-sm py-2">
-                                            Jadikan Target Aktif
+                                <div class="mt-auto">
+                                    @if($activeTarget && $activeTarget->id !== $tg->id)
+                                        <form action="{{ route('targets.active', $tg->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-modern w-100 btn-sm py-2" style="min-height: 40px;">
+                                                Jadikan Target Aktif
+                                            </button>
+                                        </form>
+                                    @elseif($activeTarget && $activeTarget->id === $tg->id)
+                                        <button class="btn btn-success-modern w-100 btn-sm py-2 disabled" style="min-height: 40px; opacity: 0.7;">
+                                            <i class="ph-fill ph-check-circle"></i> Target Aktif
                                         </button>
-                                    </form>
-                                @endif
+                                    @else
+                                        <div style="height: 40px;"></div> {{-- Spacer for symmetry --}}
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -278,37 +373,37 @@
                 $ringProgress = max(0, min(100, $ringProgress));
             @endphp
 
-            <div class="fintech-card p-4 mb-3 text-center">
-                <div class="icon-container bg-light-warning text-warning mx-auto mb-3" style="width: 56px; height: 56px;">
+            <div class="fintech-card p-4 mb-4 text-center">
+                <div class="icon-container bg-light-warning text-warning mx-auto mb-3" style="width: 60px; height: 60px; background-color: #fff3cd; border-radius: 50%;">
                     <i class="ph-fill ph-fire fs-2"></i>
                 </div>
-                <h2 class="font-poppins fw-bold text-warning mb-0 js-count-up" data-value="{{ $streak ?? 0 }}">
+                <h2 class="font-poppins fw-bold text-warning mb-1 js-count-up" data-value="{{ $streak ?? 0 }}" style="font-size: 3rem;">
                     {{ $streak ?? 0 }}
                 </h2>
-                <div class="fw-medium mb-1">Hari Streak 🔥</div>
-                <p class="small text-muted mb-4">Terus konsisten menabung untuk mencapai targetmu!</p>
+                <div class="fw-bold text-dark mb-1">Hari Streak 🔥</div>
+                <p class="small text-muted mb-4 px-2">Terus konsisten menabung untuk mencapai targetmu!</p>
                 
-                <div class="p-3 bg-main rounded-3 text-start">
-                    <div class="d-flex justify-content-between mb-1">
+                <div class="p-3 rounded-4 text-start" style="background-color: #f8f9fa; border: 1px solid rgba(0,0,0,0.03);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="small fw-semibold text-muted">Bulan Ini</span>
                         <span class="small fw-bold text-success">Rp {{ number_format($totalBulanIni ?? 0, 0, ',', '.') }}</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="small text-muted">Frekuensi</span>
-                        <span class="small fw-medium">{{ $jumlahCheckinBulanIni ?? 0 }}x Nabung</span>
+                        <span class="small fw-bold text-dark">{{ $jumlahCheckinBulanIni ?? 0 }}x Nabung</span>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                         <span class="small text-muted">Rata-rata</span>
-                        <span class="small fw-medium">Rp {{ number_format($rata2PerCheckin ?? 0, 0, ',', '.') }}</span>
+                        <span class="small fw-bold text-dark">Rp {{ number_format($rata2PerCheckin ?? 0, 0, ',', '.') }}</span>
                     </div>
                 </div>
                 
                 @if($estimasiTanggal)
-                    <div class="mt-3 pt-3 border-top border-color">
-                        <div class="small text-muted mb-1">Estimasi Target "<b>{{ $activeTarget->nama ?? '-' }}</b>" Tercapai</div>
-                        <div class="fw-semibold text-primary d-flex align-items-center justify-content-center gap-2">
-                            <i class="ph-fill ph-flag-checkered"></i>
-                            {{ $estimasiTanggal->format('d M Y') }}
+                    <div class="mt-4 pt-3 border-top border-color">
+                        <div class="small text-muted mb-2">Estimasi Target Tercapai:</div>
+                        <div class="fw-bold text-primary d-flex align-items-center justify-content-center gap-2">
+                            <i class="ph-fill ph-flag-checkered fs-5"></i>
+                            <span class="font-poppins">{{ $estimasiTanggal->format('d M Y') }}</span>
                         </div>
                     </div>
                 @endif
@@ -317,13 +412,13 @@
             {{-- CALENDAR WIDGET --}}
             <div class="fintech-card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="font-poppins fw-semibold mb-0">Kalender Aktivitas</h6>
-                    <span class="badge bg-light-primary text-primary border border-primary-subtle rounded-pill" id="pickedDateBadge"></span>
+                    <h6 class="font-poppins fw-bold mb-0">Kalender Aktivitas</h6>
+                    <span class="badge bg-light-primary text-primary border border-primary-subtle rounded-pill" id="pickedDateBadge" style="font-size: 0.7rem;"></span>
                 </div>
                 <div class="small text-muted mb-3">Klik tanggal untuk mencatat tabungan di hari tersebut.</div>
                 
                 <!-- FullCalendar Element -->
-                <div id="savingCalendar" class="font-inter" style="font-size: 0.85rem;"></div>
+                <div id="savingCalendar" class="font-inter" style="font-size: 0.8rem; border: none;"></div>
             </div>
 
         </div>

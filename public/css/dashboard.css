@@ -476,3 +476,8 @@ h1, h2, h3, h4, h5, h6, .font-poppins {
     0% { transform: translateY(20px); opacity: 0; }
     100% { transform: translateY(0); opacity: 1; }
 }
+
+/* Page Transition Wrapper */
+.page-transition {
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

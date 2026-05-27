@@ -80,7 +80,7 @@
                             <span class="input-group-text input-group-text-custom">
                                 <i class="ph ph-user"></i>
                             </span>
-                            <input type="text" name="name" class="form-control form-control-custom border-start-0 ps-2" placeholder="John Doe" value="{{ old('name') }}" required autofocus>
+                            <input type="text" name="name" class="form-control form-control-custom border-start-0 ps-2" placeholder="Budi Santoso" value="{{ old('name') }}" required autofocus>
                         </div>
                     </div>
                     @endif

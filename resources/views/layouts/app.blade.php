@@ -117,7 +117,7 @@
 
         {{-- MAIN CONTENT (Kanan) --}}
         <main class="main-content">
-            <div class="p-4 p-md-5">
+            <div class="p-4 p-md-5 page-transition">
                 @yield('content')
             </div>
         </main>

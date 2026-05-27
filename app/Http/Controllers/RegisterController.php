@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Pengguna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,10 +21,10 @@ class RegisterController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
+        $user = Pengguna::create([
+            'nama' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password'],
+            'kata_sandi' => $validated['password'],
         ]);
 
         Auth::login($user);
