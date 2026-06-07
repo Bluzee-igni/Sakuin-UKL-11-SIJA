@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="{{ $userTheme ?? 'light' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}?v={{ time() }}">
 </head>
-<body class="bg-main">
+<body class="bg-main {{ isset($compactMode) && $compactMode ? 'compact-mode' : '' }} {{ isset($animasiAktif) && !$animasiAktif ? 'no-animations' : '' }} {{ isset($modePrivasi) && $modePrivasi ? 'privasi-mode' : '' }}">
 
     {{-- TOP NAVBAR --}}
     <nav class="top-navbar d-flex justify-content-between align-items-center px-4 shadow-sm">
@@ -34,20 +34,77 @@
             <span class="fs-5 fw-bold font-poppins text-primary d-none d-sm-block">Sakuin</span>
         </div>
 
-        <!-- Profil & Dark Mode (Kanan) -->
+        <!-- Profil & Notifikasi (Kanan) -->
         <div class="d-flex align-items-center gap-3">
-            <button id="theme-toggle" class="btn btn-outline-modern rounded-circle d-flex p-2" title="Toggle Dark Mode">
-                <i id="theme-icon" class="ph ph-moon fs-5"></i>
-            </button>
+            
+            {{-- Notification Dropdown --}}
+            <div class="dropdown">
+                <button class="btn btn-outline-modern rounded-circle p-2 position-relative border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifikasi" style="background: var(--bg-main); color: var(--text-main);">
+                    <i class="ph ph-bell fs-5"></i>
+                    @if(isset($unreadCount) && $unreadCount > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white" style="font-size: 0.6rem; transform: translate(-30%, 30%) !important;">
+                            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                            <span class="visually-hidden">notifikasi belum dibaca</span>
+                        </span>
+                    @endif
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-md border-color mt-2 rounded-4 p-0" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                    <div class="p-3 border-bottom border-color d-flex justify-content-between align-items-center bg-light sticky-top" style="z-index: 10;">
+                        <h6 class="mb-0 font-poppins fw-bold text-dark">Notifikasi</h6>
+                        @if(isset($unreadCount) && $unreadCount > 0)
+                            <form action="{{ route('notifikasi.readAll') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-link text-primary text-decoration-none p-0 fw-medium" style="font-size: 0.8rem;">Tandai Dibaca</button>
+                            </form>
+                        @endif
+                    </div>
+                    
+                    <div class="notifikasi-list">
+                        @if(isset($unreadNotifs) && count($unreadNotifs) > 0)
+                            @foreach($unreadNotifs as $notif)
+                                <div class="dropdown-item p-3 border-bottom border-color text-wrap position-relative">
+                                    <div class="d-flex gap-3">
+                                        <div class="icon-container rounded-circle flex-shrink-0
+                                            {{ $notif->tipe == 'pencapaian' ? 'bg-light-success text-success' : 
+                                               ($notif->tipe == 'peringatan' ? 'bg-light-warning text-warning' : 
+                                               ($notif->tipe == 'pengingat' ? 'bg-light-primary text-primary' : 'bg-light-info text-info')) }}" 
+                                            style="width: 36px; height: 36px;">
+                                            <i class="ph-fill {{ $notif->tipe == 'pencapaian' ? 'ph-trophy' : 
+                                                                ($notif->tipe == 'peringatan' ? 'ph-warning' : 
+                                                                ($notif->tipe == 'pengingat' ? 'ph-clock' : 'ph-info')) }} fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.85rem;">{{ $notif->judul }}</h6>
+                                            <p class="text-muted mb-1" style="font-size: 0.75rem;">{{ $notif->pesan }}</p>
+                                            <small class="text-muted" style="font-size: 0.65rem;">{{ $notif->created_at->diffForHumans() }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            <div class="p-2 text-center bg-light border-top border-color">
+                                <a href="#" class="text-decoration-none small text-primary fw-medium">Lihat Semua Notifikasi</a>
+                            </div>
+                        @else
+                            <div class="p-4 text-center">
+                                <div class="icon-container bg-light-secondary text-muted mx-auto rounded-circle mb-2" style="width: 48px; height: 48px;">
+                                    <i class="ph ph-bell-slash fs-4"></i>
+                                </div>
+                                <p class="text-muted small mb-0">Belum ada notifikasi baru.</p>
+                            </div>
+                        @endif
+                    </div>
+                </ul>
+            </div>
+
             <div class="dropdown">
                 <button class="btn btn-light rounded-pill d-flex align-items-center gap-2 px-3 py-2 border border-color dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: var(--bg-card); color: var(--text-main);">
                     <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.8rem; font-weight: bold;">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
+                        {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 1)) }}
                     </div>
-                    <span class="d-none d-md-block fw-medium small">{{ auth()->user()->name ?? 'User' }}</span>
+                    <span class="d-none d-md-block fw-medium small">{{ auth()->user()->nama ?? 'User' }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2 rounded-4 p-2">
-                    <li><a class="dropdown-item rounded-3 mb-1" href="#"><i class="ph ph-user me-2"></i>Profil</a></li>
+                    <li><a class="dropdown-item rounded-3 mb-1" href="{{ route('profil.index') }}"><i class="ph ph-user me-2"></i>Profil</a></li>
                     <li>
                         <form action="{{ route('logout') }}" method="POST" class="m-0">
                             @csrf
@@ -90,7 +147,7 @@
                         <i class="ph ph-target"></i>
                         <span>Target Tabungan</span>
                     </a>
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('riwayat.index') }}" class="nav-link {{ request()->routeIs('riwayat.index') ? 'active' : '' }}">
                         <i class="ph ph-clock-counter-clockwise"></i>
                         <span>Riwayat Transaksi</span>
                     </a>
@@ -99,7 +156,7 @@
                 <div class="mt-4">
                     <h6 class="font-poppins text-muted small fw-semibold text-uppercase mb-3 px-2">Sistem</h6>
                     <nav class="nav flex-column gap-2 sidebar-nav">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('pengaturan.index') }}" class="nav-link {{ request()->routeIs('pengaturan.*') ? 'active' : '' }}">
                             <i class="ph ph-gear"></i>
                             <span>Pengaturan</span>
                         </a>

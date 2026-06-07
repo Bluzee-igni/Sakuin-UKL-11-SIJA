@@ -1,39 +1,10 @@
 /* public/js/dashboard.js */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Dark Mode Toggle
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    
-    // Check local storage or system preference
-    const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
-    if (currentTheme) {
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark' && themeIcon) {
-            themeIcon.classList.replace('ph-moon', 'ph-sun');
-        }
-    }
-
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', (e) => {
-            const current = document.documentElement.getAttribute('data-theme');
-            let targetTheme = 'light';
-
-            if (current === 'light' || !current) {
-                targetTheme = 'dark';
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
-            } else {
-                targetTheme = 'light';
-                themeIcon.classList.replace('ph-sun', 'ph-moon');
-            }
-
-            document.documentElement.setAttribute('data-theme', targetTheme);
-            localStorage.setItem('theme', targetTheme);
-            
-            // Create ripple effect for theme toggle
-            createRipple(e, themeToggleBtn);
-        });
-    }
+    // 1. Theme is now controlled by server-side settings (data-theme attribute)
+    //    No more localStorage toggle — theme comes from database via middleware.
+    //    We only clean up any leftover localStorage from the old system.
+    localStorage.removeItem('theme');
 
     // 2. Ripple Effect for buttons
     const buttons = document.querySelectorAll('.btn-modern');
@@ -50,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const rect = button.getBoundingClientRect();
         
-        // Check if event is from keyboard (no clientX/Y)
         const x = event.clientX ? event.clientX - rect.left - radius : button.clientWidth / 2 - radius;
         const y = event.clientY ? event.clientY - rect.top - radius : button.clientHeight / 2 - radius;
 
@@ -75,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (entry.isIntersecting) {
                 const el = entry.target;
                 const targetValue = parseFloat(el.getAttribute('data-value')) || 0;
-                const duration = 1500; // ms
+                const duration = 1500;
                 const isCurrency = el.hasAttribute('data-currency');
                 
                 let startTimestamp = null;
@@ -83,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!startTimestamp) startTimestamp = timestamp;
                     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                     
-                    // easeOutQuart
                     const easeProgress = 1 - Math.pow(1 - progress, 4);
                     const currentVal = easeProgress * targetValue;
                     
@@ -120,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             nabungSection.classList.toggle('show');
             
-            // Scroll smoothly to section if it's opened
             if (nabungSection.classList.contains('show')) {
                 setTimeout(() => {
                     nabungSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -144,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const badge = document.getElementById('pickedDateBadge');
         const dateInput = document.getElementById('input-tanggal');
         
-        // Fetch events data from script tag
         const eventsDataEl = document.getElementById('calendarEventsData');
         const events = eventsDataEl ? JSON.parse(eventsDataEl.textContent || '[]') : [];
 
@@ -168,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (dateInput) {
                     dateInput.value = picked;
-                    // Auto open form if it's hidden
                     if (nabungSection && !nabungSection.classList.contains('show')) {
                         nabungSection.classList.add('show');
                         setTimeout(() => {
@@ -189,9 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currencyInputs = document.querySelectorAll('.js-currency-format');
     
     currencyInputs.forEach(input => {
-        // Format on input
         input.addEventListener('input', function(e) {
-            let value = this.value.replace(/[^0-9]/g, ''); // Remove non-numeric
+            let value = this.value.replace(/[^0-9]/g, '');
             if (value !== '') {
                 this.value = parseInt(value, 10).toLocaleString('id-ID');
             } else {
@@ -199,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Format on initial load if there's a value
         if (input.value) {
             let value = input.value.replace(/[^0-9]/g, '');
             if (value !== '') {
@@ -228,26 +192,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarOverlay = document.getElementById('sidebarOverlay');
 
     if (sidebarBtn && leftSidebar && sidebarOverlay) {
-        // Open Sidebar
         sidebarBtn.addEventListener('click', () => {
             leftSidebar.classList.add('show');
             sidebarOverlay.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
         });
 
-        // Close Sidebar function
         const closeSidebar = () => {
             leftSidebar.classList.remove('show');
             sidebarOverlay.classList.remove('show');
             document.body.style.overflow = '';
         };
 
-        // Close on X button
         if (sidebarCloseBtn) {
             sidebarCloseBtn.addEventListener('click', closeSidebar);
         }
 
-        // Close on Overlay click
         sidebarOverlay.addEventListener('click', closeSidebar);
     }
+
+    // 9. Sembunyikan Saldo — permanent dots replacement (no hover reveal)
+    //    Applied via .saldo-hidden class from blade, but we also handle it here
+    //    as a fallback for JS-rendered count-up values
+    document.querySelectorAll('.saldo-hidden').forEach(el => {
+        el.removeAttribute('data-value');
+        el.classList.remove('js-count-up');
+        // Content is already set to dots via blade, but ensure count-up doesn't override
+    });
+
+    // 10. Privacy Mode — blur all sensitive monetary data site-wide
+    //     Uses .privasi-sensitif class added in blade
+    //     The CSS handles blur/hover. Here we just stop count-up for those elements.
+    if (document.body.classList.contains('privasi-mode')) {
+        document.querySelectorAll('.privasi-sensitif.js-count-up').forEach(el => {
+            el.removeAttribute('data-value');
+            el.classList.remove('js-count-up');
+        });
+    }
 });
+

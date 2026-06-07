@@ -1,59 +1,95 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sakuin - Modern Financial & Savings Tracker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Sakuin** adalah aplikasi manajemen keuangan berbasis web yang didesain khusus untuk membantu pengguna melacak pemasukan, pengeluaran, serta mewujudkan target tabungan impian dengan sentuhan gamifikasi yang memotivasi. 
 
-## About Laravel
+Dibangun dengan pendekatan desain UI/UX bergaya *fintech modern*, Sakuin tidak hanya sekadar alat pencatat, tetapi juga pendamping finansial yang menumbuhkan kebiasaan (habit) menabung yang konsisten.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. 📊 Dashboard Fintech Modern
+Dashboard didesain dengan sistem **Full Width 3-Column Z-Pattern Layout** yang secara optimal memanfaatkan seluruh lebar layar monitor desktop untuk menyajikan informasi krusial tanpa terasa sesak:
+- **Hero Balance:** Menampilkan secara instan total saldo tersedia, beserta ringkasan pemasukan dan pengeluaran bulan ini.
+- **Combined Target & Action Card:** Progres target tabungan aktif yang disandingkan langsung dengan form pencatatan tabungan yang *compact*, mempermudah alur kerja (lihat progres -> langsung nabung).
 
-## Learning Laravel
+### 2. 🎮 Gamifikasi & Motivasi
+Aplikasi ini meminjam elemen *habit tracker* untuk menjaga konsistensi pengguna:
+- **🔥 Rekor Streak:** Menghitung hari menabung secara berturut-turut. Streak dihitung secara global per *user* (bukan per target), memberikan kebebasan menabung di berbagai target tanpa merusak kedisiplinan.
+- **🟩 Heatmap Aktivitas (GitHub Style):** Menggantikan kalender tradisional yang membosankan dengan visualisasi grid berbasis bulan (Monthly View). Semakin besar nominal yang ditabung dalam sehari, semakin pekat warna hijau pada kotak di hari tersebut. Dilengkapi fitur *hover tooltip* untuk detail histori.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 3. 🎯 Manajemen Target Impian
+- Pengguna dapat membuat berbagai target tabungan (misal: "Beli Laptop Baru", "Dana Darurat", "Liburan").
+- Menampilkan persentase pencapaian (*progress bar*) dan nominal yang telah terkumpul secara *real-time*.
+- Fitur *Set Active Target* untuk memprioritaskan satu tujuan utama pada satu waktu.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 4. 🗄️ Histori & Transaksi
+- Pemisahan riwayat transaksi menjadi dua tab intuitif: **Riwayat Tabungan** dan **Riwayat Pemasukan** untuk kemudahan pemantauan.
 
-## Laravel Sponsors
+### 5. 🔌 Internal API Endpoint
+Sakuin dilengkapi dengan *internal API* yang dilindungi oleh *middleware* (`web` & `auth`) untuk pengambilan data secara asinkron (AJAX/Fetch):
+- `GET /api/saldo` — Mengambil sisa saldo secara cepat dan teroptimasi melalui *query* SQL yang di-join langsung, menghindari operasi koleksi PHP yang berat.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 6. 💱 Multi-Currency Support (Dinamis)
+- Mendukung penyesuaian mata uang (seperti IDR, USD, dll) sesuai preferensi pengguna.
+- Perubahan mata uang diterapkan secara instan (*real-time*) di seluruh antarmuka aplikasi termasuk dashboard, riwayat transaksi, dan profil pengguna.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🛠️ Stack Teknologi
 
-## Contributing
+Sakuin dibangun di atas fondasi teknologi modern dan stabil:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **Backend Framework:** [Laravel 11.x](https://laravel.com/) (PHP)
+- **Frontend:** Laravel Blade Templating Engine
+- **Styling:** CSS3 & [Bootstrap 5](https://getbootstrap.com/) (Custom UI/UX variables)
+- **Database:** MySQL
+- **Iconography:** [Phosphor Icons](https://phosphoricons.com/)
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Cara Menjalankan Project (Local Development)
 
-## Security Vulnerabilities
+Ikuti langkah-langkah berikut untuk menjalankan Sakuin di komputer lokal Anda:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Clone Repository**
+   ```bash
+   git clone <url-repo-kamu>
+   cd Sakuin_aja
+   ```
 
-## License
+2. **Install Dependencies**
+   Pastikan Anda sudah menginstal PHP dan Composer.
+   ```bash
+   composer install
+   npm install
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. **Konfigurasi Environment**
+   Salin file konfigurasi dan hasilkan *app key*.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *Jangan lupa atur kredensial database (DB_DATABASE, DB_USERNAME, DB_PASSWORD) di dalam file `.env`.*
+
+4. **Jalankan Migrasi Database**
+   Membuat struktur tabel yang diperlukan.
+   ```bash
+   php artisan migrate
+   ```
+
+5. **Jalankan Server**
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi sekarang dapat diakses di `http://127.0.0.1:8000`.
+
+---
+
+## 💡 Filosofi Desain
+
+Sakuin dirancang dengan menjauhi tampilan kaku aplikasi akuntansi tradisional. Mengusung *Soft Green Identity*, *glassmorphism hints*, *rounded corners*, dan transisi *smooth*, aplikasi ini dibuat agar proses mengelola uang terasa "ringan" dan "menyenangkan". Penempatan komponen yang sarat akan *action* diletakkan di tengah mata (*center of attention*), sementara riwayat historis diletakkan di pinggiran sebagai referensi pasif.
+
+---
+*Dibangun dengan ❤️ untuk masa depan finansial yang lebih baik.*

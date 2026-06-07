@@ -68,8 +68,8 @@
                                     <input type="text" name="nama" class="form-control form-control-modern" placeholder="Contoh: Bonus Bulanan" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label text-muted small fw-medium">Nominal (Rp)</label>
-                                    <input type="text" name="nominal" class="form-control form-control-modern js-currency-format" placeholder="0" required>
+                                    <label class="form-label text-muted small fw-medium">Nominal ({{ $currencySymbol }})</label>
+                                    <input type="text" name="jumlah" class="form-control form-control-modern js-currency-format" placeholder="0" required>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label text-muted small fw-medium">Tanggal</label>
@@ -95,8 +95,8 @@
                                     <input type="text" name="nama" class="form-control form-control-modern" placeholder="Contoh: Beli Baju, Cicilan" required>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label text-muted small fw-medium">Nominal (Rp)</label>
-                                    <input type="text" name="nominal" class="form-control form-control-modern js-currency-format" placeholder="0" required>
+                                    <label class="form-label text-muted small fw-medium">Nominal ({{ $currencySymbol }})</label>
+                                    <input type="text" name="jumlah" class="form-control form-control-modern js-currency-format" placeholder="0" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label text-muted small fw-medium">Kategori</label>
@@ -135,8 +135,8 @@
                                 <div class="col-md-3">
                                     <label class="form-label text-muted small fw-medium">Tipe</label>
                                     <select name="tipe" class="form-control form-control-modern" required>
-                                        <option value="income">Pemasukan (Gaji)</option>
-                                        <option value="expense">Pengeluaran (Tagihan)</option>
+                                        <option value="pemasukan">Pemasukan (Gaji)</option>
+                                        <option value="pengeluaran">Pengeluaran (Tagihan)</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -144,8 +144,8 @@
                                     <input type="text" name="nama" class="form-control form-control-modern" placeholder="Misal: Gaji PT ABC" required>
                                 </div>
                                 <div class="col-md-5">
-                                    <label class="form-label text-muted small fw-medium">Nominal (Rp)</label>
-                                    <input type="text" name="nominal" class="form-control form-control-modern js-currency-format" required>
+                                    <label class="form-label text-muted small fw-medium">Nominal ({{ $currencySymbol }})</label>
+                                    <input type="text" name="jumlah" class="form-control form-control-modern js-currency-format" required>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label text-muted small fw-medium">Kategori</label>
@@ -167,12 +167,12 @@
                     @forelse($automations as $auto)
                         <div class="d-flex align-items-center justify-content-between p-3 bg-white rounded-3 shadow-sm border border-light mb-2">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="icon-container {{ $auto->tipe == 'income' ? 'bg-light-success text-success' : 'bg-light-danger text-danger' }}" style="width:40px;height:40px;">
-                                    <i class="ph-fill {{ $auto->tipe == 'income' ? 'ph-trend-up' : 'ph-trend-down' }}"></i>
+                                <div class="icon-container {{ $auto->tipe == 'pemasukan' ? 'bg-light-success text-success' : 'bg-light-danger text-danger' }}" style="width:40px;height:40px;">
+                                    <i class="ph-fill {{ $auto->tipe == 'pemasukan' ? 'ph-trend-up' : 'ph-trend-down' }}"></i>
                                 </div>
                                 <div>
                                     <div class="fw-semibold">{{ $auto->nama }}</div>
-                                    <div class="small text-muted">Tgl {{ $auto->tanggal_rutin }} setiap bulan • Rp {{ number_format($auto->nominal,0,',','.') }}</div>
+                                    <div class="small text-muted">Tgl {{ $auto->tanggal_rutin }} setiap bulan • {{ format_currency($auto->jumlah) }}</div>
                                 </div>
                             </div>
                             <form action="{{ route('management.automation.destroy', $auto->id) }}" method="POST" onsubmit="return confirm('Hapus automasi ini?');">
@@ -197,7 +197,7 @@
                 <div class="position-absolute" style="bottom: -20px; left: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                 
                 <h6 class="mb-2 fw-medium text-white-50">Saldo Anda</h6>
-                <h2 class="font-poppins fw-bold mb-4">Rp {{ number_format($saldo, 0, ',', '.') }}</h2>
+                <h2 class="font-poppins fw-bold mb-4">{{ format_currency($saldo) }}</h2>
                 
                 <div class="row g-2">
                     <div class="col-6">
@@ -205,7 +205,7 @@
                             <div class="small text-white-50 mb-1 d-flex justify-content-center align-items-center gap-1">
                                 <i class="ph ph-arrow-down-left text-success bg-white rounded-circle p-1"></i> Masuk Bln Ini
                             </div>
-                            <div class="fw-semibold">Rp {{ number_format($totalIncome, 0, ',', '.') }}</div>
+                            <div class="fw-semibold">{{ format_currency($totalIncome) }}</div>
                         </div>
                     </div>
                     <div class="col-6">
@@ -213,7 +213,7 @@
                             <div class="small text-white-50 mb-1 d-flex justify-content-center align-items-center gap-1">
                                 <i class="ph ph-arrow-up-right text-danger bg-white rounded-circle p-1"></i> Keluar Bln Ini
                             </div>
-                            <div class="fw-semibold">Rp {{ number_format($totalExpense, 0, ',', '.') }}</div>
+                            <div class="fw-semibold">{{ format_currency($totalExpense) }}</div>
                         </div>
                     </div>
                 </div>
@@ -229,8 +229,8 @@
                 @if($budget > 0)
                     @php $pct = min(100, ($totalExpense / $budget) * 100); @endphp
                     <div class="d-flex justify-content-between small mb-1">
-                        <span class="text-muted">Terpakai: Rp {{ number_format($totalExpense, 0, ',', '.') }}</span>
-                        <span class="{{ $isOverBudget ? 'text-danger fw-bold' : 'text-success fw-bold' }}">Sisa: Rp {{ number_format($sisaBudget, 0, ',', '.') }}</span>
+                        <span class="text-muted">Terpakai: {{ format_currency($totalExpense) }}</span>
+                        <span class="{{ $isOverBudget ? 'text-danger fw-bold' : 'text-success fw-bold' }}">Sisa: {{ format_currency($sisaBudget) }}</span>
                     </div>
                     <div class="progress" style="height: 8px;">
                         <div class="progress-bar {{ $isOverBudget ? 'bg-danger' : 'bg-success' }}" style="width: {{ $pct }}%"></div>
@@ -276,8 +276,8 @@
           </div>
           <div class="modal-body">
             <p class="text-muted small">Tentukan batas maksimal pengeluaran bulanan Anda. Sakuin akan membantu memantau pengeluaran Anda.</p>
-            <label class="form-label text-muted small fw-medium">Nominal Budget (Rp)</label>
-            <input type="text" name="budget_bulanan" class="form-control form-control-modern js-currency-format" value="{{ number_format($budget,0,'','') }}" required>
+            <label class="form-label text-muted small fw-medium">Nominal Budget ({{ $currencySymbol }})</label>
+            <input type="text" name="anggaran_bulanan" class="form-control form-control-modern js-currency-format" value="{{ number_format($budget,0,'','') }}" required>
           </div>
           <div class="modal-footer border-0 pt-0">
             <button type="submit" class="btn btn-primary-modern w-100">Simpan Budget</button>

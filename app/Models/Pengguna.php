@@ -69,4 +69,18 @@ class Pengguna extends Authenticatable
     {
         return $this->hasMany(TransaksiOtomatis::class, 'pengguna_id');
     }
+
+    public function pengaturan(): HasMany
+    {
+        return $this->hasMany(PengaturanPengguna::class, 'pengguna_id');
+    }
+
+    /**
+     * Get a single setting value with a default fallback.
+     */
+    public function getSetting(string $kunci, $default = null)
+    {
+        $setting = $this->pengaturan()->where('kunci', $kunci)->first();
+        return $setting ? $setting->nilai : $default;
+    }
 }

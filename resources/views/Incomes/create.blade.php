@@ -48,7 +48,7 @@
 
             {{-- NOMINAL --}}
             <div class="mb-4">
-                <label class="form-label text-muted small fw-medium">Nominal (Rp)</label>
+                <label class="form-label text-muted small fw-medium">Nominal ({{ $currencySymbol }})</label>
                 <input type="text" name="nominal" class="form-control form-control-modern js-currency-format"
                        placeholder="Contoh: 3.000.000" required>
             </div>

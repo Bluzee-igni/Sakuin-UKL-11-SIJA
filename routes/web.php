@@ -43,3 +43,29 @@ Route::middleware('auth')->group(function () {
     Route::post('/management/automation', [\App\Http\Controllers\ManagementController::class, 'storeAutomation'])->name('management.automation.store');
     Route::post('/management/automation/{id}/delete', [\App\Http\Controllers\ManagementController::class, 'destroyAutomation'])->name('management.automation.destroy');
 });
+
+// Pengaturan (Settings)
+Route::middleware('auth')->prefix('pengaturan')->group(function () {
+    Route::get('/', [\App\Http\Controllers\PengaturanController::class, 'index'])->name('pengaturan.index');
+    Route::post('/tampilan', [\App\Http\Controllers\PengaturanController::class, 'updateTampilan'])->name('pengaturan.tampilan');
+    Route::post('/dashboard', [\App\Http\Controllers\PengaturanController::class, 'updateDashboard'])->name('pengaturan.dashboard');
+    Route::post('/notifikasi', [\App\Http\Controllers\PengaturanController::class, 'updateNotifikasi'])->name('pengaturan.notifikasi');
+    Route::post('/keuangan', [\App\Http\Controllers\PengaturanController::class, 'updateKeuangan'])->name('pengaturan.keuangan');
+    Route::post('/privasi', [\App\Http\Controllers\PengaturanController::class, 'updatePrivasi'])->name('pengaturan.privasi');
+});
+
+// Notifikasi
+Route::middleware('auth')->group(function () {
+    Route::post('/notifikasi/read-all', [\App\Http\Controllers\NotifikasiController::class, 'readAll'])->name('notifikasi.readAll');
+});
+
+// Profil
+Route::middleware('auth')->group(function () {
+    Route::get('/profil', [\App\Http\Controllers\ProfilController::class, 'index'])->name('profil.index');
+    Route::post('/profil/update', [\App\Http\Controllers\ProfilController::class, 'update'])->name('profil.update');
+});
+
+// Riwayat Transaksi
+Route::middleware('auth')->group(function () {
+    Route::get('/riwayat-transaksi', [\App\Http\Controllers\RiwayatController::class, 'index'])->name('riwayat.index');
+});

@@ -3,73 +3,85 @@
 @section('title', 'Dashboard')
 
 @push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
     <style>
         /* Modern Fintech Aesthetics */
         :root {
-            --primary-modern: #0d6efd;
-            --success-modern: #198754;
-            --bg-light-success: #e9f7ef;
+            --primary-modern: #059669; /* Soft Green */
+            --success-modern: #10B981;
+            --warning-modern: #F59E0B;
+            --bg-light-success: #ecfdf5;
+            --bg-light-warning: #fffbeb;
             --border-radius-lg: 1.25rem;
+            --border-radius-xl: 1.5rem;
         }
 
         .fintech-card {
             background: #fff;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.04);
             border-radius: var(--border-radius-lg);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .fintech-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
         }
 
         .card-hero {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            background: linear-gradient(135deg, var(--primary-modern) 0%, #047857 100%);
             color: white;
             border: none;
+            box-shadow: 0 10px 30px rgba(5, 150, 105, 0.2);
         }
 
         .text-hero-balance {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 800;
             letter-spacing: -0.5px;
         }
 
         /* Standardized Buttons */
-        .btn-primary-modern, .btn-success-modern, .btn-outline-modern {
+        .btn-modern {
             border-radius: 1rem;
             font-weight: 600;
-            padding: 1rem 1.5rem;
-            display: flex;
+            padding: 0.8rem 1.2rem;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             transition: all 0.2s ease;
-            height: 100%; /* Ensure equal height in row */
-            min-height: 70px;
+        }
+        
+        .btn-light-modern {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .btn-light-modern:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
         }
 
-        .btn-primary-modern { background-color: #0d6efd; color: white; border: none; }
-        .btn-success-modern { background-color: #198754; color: white; border: none; }
-        .btn-outline-modern { background-color: white; border: 1px solid #dee2e6; color: #495057; }
-
-        .btn-primary-modern:hover { background-color: #0b5ed7; transform: translateY(-2px); }
-        .btn-success-modern:hover { background-color: #157347; transform: translateY(-2px); }
-        .btn-outline-modern:hover { background-color: #f8f9fa; border-color: #ced4da; transform: translateY(-2px); }
+        .btn-success-modern { background-color: var(--success-modern); color: white; border: none; }
+        .btn-success-modern:hover { background-color: #059669; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(16, 185, 129, 0.2); }
+        
+        .btn-outline-modern { background-color: white; border: 1px solid #e5e7eb; color: #4b5563; }
+        .btn-outline-modern:hover { background-color: #f9fafb; border-color: #d1d5db; transform: translateY(-2px); }
 
         /* Progress Bar */
         .progress-modern {
             height: 8px;
-            background-color: #e9ecef;
+            background-color: #f3f4f6;
             border-radius: 10px;
             overflow: hidden;
         }
 
         .progress-bar-modern {
-            background: linear-gradient(90deg, #198754 0%, #20c997 100%);
+            background: linear-gradient(90deg, var(--success-modern) 0%, #34d399 100%);
             border-radius: 10px;
             transition: width 0.6s ease;
         }
@@ -83,343 +95,480 @@
             flex-shrink: 0;
         }
 
-        .icon-sm { width: 32px; height: 32px; font-size: 1.2rem; }
+        .icon-sm { width: 36px; height: 36px; font-size: 1.2rem; }
+        
+        .icon-bg-hero {
+            position: absolute;
+            right: -20px;
+            bottom: -30px;
+            font-size: 10rem;
+            color: rgba(255, 255, 255, 0.05);
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+
+        /* Heatmap Activity */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        .heatmap-box {
+            aspect-ratio: 1;
+            border-radius: 6px;
+            transition: transform 0.1s ease;
+        }
+        .heatmap-box:hover:not(.heatmap-empty) {
+            transform: scale(1.15);
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            z-index: 2;
+            position: relative;
+        }
+        .heatmap-empty { background-color: transparent; border: 1px dashed rgba(0,0,0,0.05); }
+        .heatmap-level-0 { background-color: #f3f4f6; }
+        .heatmap-level-1 { background-color: #d1fae5; }
+        .heatmap-level-2 { background-color: #6ee7b7; }
+        .heatmap-level-3 { background-color: #10b981; }
+        .heatmap-level-4 { background-color: #047857; }
+        .heatmap-box.is-today { border: 2px solid var(--warning-modern); }
 
         /* Responsive Tweaks */
         @media (max-width: 768px) {
             .text-hero-balance { font-size: 1.8rem; }
-            .btn-primary-modern, .btn-success-modern, .btn-outline-modern { min-height: 60px; }
+            .btn-modern { width: 100%; margin-bottom: 0.5rem; }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            padding: 3rem 1.5rem;
+            text-align: center;
+            background-color: #f9fafb;
+            border-radius: var(--border-radius-lg);
+            border: 2px dashed #e5e7eb;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 @endpush
 
 @section('content')
-<div class="container-fluid p-0" style="max-width: 1200px; margin: 0 auto;">
+<!-- MENGGUNAKAN CONTAINER-FLUID PENUH TANPA MAX-WIDTH UNTUK MEMANFAATKAN LAYAR DESKTOP -->
+<div class="container-fluid px-3 px-xl-4 py-2">
 
     {{-- HEADER --}}
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="mb-0 fw-bold font-poppins d-flex align-items-center gap-2">
-                Halo, <span class="text-primary">{{ auth()->user()->name }}</span> 👋
+            <h4 class="mb-0 fw-bold font-poppins text-dark">
+                Halo, <span style="color: var(--primary-modern);">{{ auth()->user()->nama }}</span> 👋
             </h4>
-            <small class="text-muted">Pantau keuangan dan progres tabunganmu hari ini.</small>
+            <p class="text-muted small mb-0 mt-1">Mari wujudkan mimpimu, satu langkah setiap hari.</p>
+        </div>
+        <div class="d-none d-md-flex gap-2">
+            <a href="{{ route('incomes.create') }}" class="btn btn-sm btn-outline-modern rounded-pill px-3">
+                <i class="ph ph-plus me-1"></i> Pemasukan Baru
+            </a>
+            <a href="{{ route('tabung.create') }}" class="btn btn-sm btn-outline-modern rounded-pill px-3">
+                <i class="ph ph-target me-1"></i> Target Baru
+            </a>
         </div>
     </div>
 
     {{-- FLASH MESSAGE --}}
     @if(session('success'))
-        <div class="alert bg-light-success text-success border-0 rounded-4 alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+        <div class="alert bg-light-success text-success border border-success border-opacity-25 rounded-4 alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm" role="alert">
             <i class="ph-fill ph-check-circle fs-4"></i>
-            <div>{{ session('success') }}</div>
+            <div class="fw-medium">{{ session('success') }}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    {{-- HERO SECTION : BALANCE --}}
-    <div class="fintech-card card-hero p-4 mb-4 rounded-4 shadow-sm">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 position-relative" style="z-index: 1;">
-            <div>
-                <p class="mb-1 text-white-50 fw-medium">Total Saldo Tersedia</p>
-                <div class="text-hero-balance font-poppins js-count-up" data-value="{{ $saldo ?? 0 }}" data-currency="true">
-                    Rp {{ number_format($saldo ?? 0, 0, ',', '.') }}
-                </div>
+    @if(session('error'))
+        <div class="alert bg-light-danger text-danger border border-danger border-opacity-25 rounded-4 alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm" role="alert">
+            <i class="ph-fill ph-warning-circle fs-4"></i>
+            <div class="fw-medium">{{ session('error') }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert bg-light-danger text-danger border border-danger border-opacity-25 rounded-4 alert-dismissible fade show shadow-sm" role="alert">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="ph-fill ph-warning-circle fs-4"></i>
+                <div class="fw-bold">Terjadi kesalahan!</div>
             </div>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    {{-- 3-COLUMN LAYOUT UNTUK LAYAR LEBAR --}}
+    <div class="row g-4">
+        
+        {{-- KOLOM 1 KIRI: SALDO & MOTIVASI (col-xl-3 col-lg-4) --}}
+        <div class="col-xl-3 col-lg-4 d-flex flex-column gap-4">
             
-            <div class="d-flex gap-4 border-start border-white-50 ps-md-4">
-                <div>
-                    <div class="small text-white-50 mb-1"><i class="ph ph-arrow-down-left text-light"></i> Total Pemasukan</div>
-                    <div class="fw-bold fs-5">Rp {{ number_format($totalIncome ?? 0, 0, ',', '.') }}</div>
-                </div>
-                <div>
-                    <div class="small text-white-50 mb-1"><i class="ph ph-arrow-up-right text-light"></i> Total Keluar</div>
-                    <div class="fw-bold fs-5">Rp {{ number_format(($usedForSaving ?? 0) + ($usedForExpense ?? 0), 0, ',', '.') }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
+            {{-- Privacy helper --}}
+            @php
+                $dots = '••••••••';
+                // Priority: sembunyikanSaldo (permanent) > blurSaldo (hover reveal)
+                $privacyClass = '';
+                if (isset($sembunyikanSaldo) && $sembunyikanSaldo) {
+                    $privacyClass = 'saldo-hidden';
+                } elseif (isset($blurSaldo) && $blurSaldo) {
+                    $privacyClass = 'saldo-blur';
+                }
+                // modePrivasi adds .privasi-sensitif to all monetary amounts
+                $privasiSensitif = isset($modePrivasi) && $modePrivasi ? 'privasi-sensitif' : '';
+            @endphp
 
-    {{-- ACTION BUTTONS --}}
-    <div class="row g-3 mb-3">
-        <div class="col-md-4">
-            <a href="{{ route('incomes.create') }}" class="btn btn-primary-modern w-100 py-3 text-decoration-none">
-                <i class="ph ph-plus-circle fs-4"></i>
-                Pemasukan Baru
-            </a>
-        </div>
-        <div class="col-md-4">
-            <button id="btn-toggle-nabung" class="btn btn-success-modern w-100 py-3">
-                <i class="ph ph-piggy-bank fs-4"></i>
-                Catat Tabungan
-            </button>
-        </div>
-        <div class="col-md-4">
-            <a href="{{ route('tabung.create') }}" class="btn btn-outline-modern w-100 py-3 bg-card text-decoration-none border">
-                <i class="ph ph-target fs-4"></i>
-                Target Baru
-            </a>
-        </div>
-    </div>
-
-    {{-- HIDDEN FORM: NABUNG / CHECK-IN --}}
-    <div id="section-nabung" class="toggle-section mb-3">
-        <div class="fintech-card p-4 border-success" style="border-width: 2px;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0 font-poppins text-success d-flex align-items-center gap-2">
-                    <i class="ph-fill ph-coins"></i> Nabung Hari Ini
-                </h5>
-            </div>
-
-            @if($activeTarget)
-                <form action="{{ route('checkins.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="target_id" value="{{ $activeTarget->id }}">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-medium">Tanggal</label>
-                            <input type="date" id="input-tanggal" name="tanggal" class="form-control form-control-modern" value="{{ now()->format('Y-m-d') }}" required>
+            {{-- HERO BALANCE --}}
+            <div class="fintech-card card-hero p-4 rounded-4 flex-grow-0" data-widget-id="saldo">
+                <i class="ph-fill ph-wallet icon-bg-hero"></i>
+                <div class="position-relative" style="z-index: 1;">
+                    <p class="mb-1 text-white-50 fw-medium small text-uppercase tracking-wide">Total Saldo</p>
+                    @if($privacyClass === 'saldo-hidden')
+                        <div class="text-hero-balance font-poppins mb-4 saldo-hidden" style="font-size: 2rem;">{{ $currencySymbol }} {{ $dots }}</div>
+                    @else
+                        <div class="text-hero-balance font-poppins js-count-up mb-4 {{ $privacyClass }} {{ $privasiSensitif }}" data-value="{{ $saldo ?? 0 }}" data-currency="true" style="font-size: 2rem;">
+                            {{ format_currency($saldo ?? 0) }}
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label text-muted small fw-medium">Nominal (Rp)</label>
-                            <input type="text" name="nominal" class="form-control form-control-modern js-currency-format" placeholder="Contoh: 20.000" required>
+                    @endif
+                    
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3 mt-auto">
+                        <div class="d-flex justify-content-between align-items-center border-bottom border-white-50 pb-2 mb-2">
+                            <span class="small text-white-50 d-flex align-items-center gap-1"><i class="ph-fill ph-arrow-circle-down text-light"></i> Pemasukan</span>
+                            @if($privacyClass === 'saldo-hidden')
+                                <span class="fw-bold fs-6 saldo-hidden">{{ $currencySymbol }} {{ $dots }}</span>
+                            @else
+                                <span class="fw-bold fs-6 {{ $privacyClass }} {{ $privasiSensitif }}">{{ format_currency($totalIncome ?? 0) }}</span>
+                            @endif
                         </div>
-                        <div class="col-md-5">
-                            <label class="form-label text-muted small fw-medium">Catatan (Opsional)</label>
-                            <div class="d-flex gap-2">
-                                <input type="text" name="catatan" class="form-control form-control-modern" placeholder="Misal: Sisa uang jajan">
-                                <button type="submit" class="btn btn-success-modern px-4">Simpan</button>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-white-50 d-flex align-items-center gap-1"><i class="ph-fill ph-arrow-circle-up text-light"></i> Pengeluaran</span>
+                            @if($privacyClass === 'saldo-hidden')
+                                <span class="fw-bold fs-6 saldo-hidden">{{ $currencySymbol }} {{ $dots }}</span>
+                            @else
+                                <span class="fw-bold fs-6 {{ $privacyClass }} {{ $privasiSensitif }}">{{ format_currency(($usedForSaving ?? 0) + ($usedForExpense ?? 0)) }}</span>
+                            @endif
                         </div>
                     </div>
-                </form>
-            @else
-                <div class="alert bg-light-warning text-warning border-0 d-flex align-items-center gap-2 mb-0 rounded-3">
-                    <i class="ph-fill ph-warning-circle fs-4"></i>
-                    <span>Kamu belum punya target aktif. Silakan buat target terlebih dahulu.</span>
-                </div>
-            @endif
-        </div>
-    </div>
-
-    <div class="row g-3">
-        {{-- LEFT COLUMN: TARGETS & HISTORY --}}
-        <div class="col-lg-8">
-            
-            {{-- DAFTAR TARGET --}}
-            <div class="d-flex justify-content-between align-items-end mb-3">
-                <div>
-                    <h5 class="font-poppins fw-semibold mb-1">Target Tabungan</h5>
-                    <small class="text-muted">Pantau progres mimpimu</small>
                 </div>
             </div>
 
-            <div class="row g-3 mb-4">
-                @forelse($targets as $tg)
-                    @php
-                        $totalTarget = $tg->checkins->sum('nominal');
-                        $progress = $tg->harga_target > 0 ? ($totalTarget / $tg->harga_target) * 100 : 0;
-                        $progress = min(100, max(0, $progress));
-                    @endphp
+            {{-- MOTIVATIONAL STREAK --}}
+            @if(!isset($widgetVisibility) || $widgetVisibility['streak'])
+            <div class="fintech-card p-4 rounded-4 text-center border-0 flex-grow-1 d-flex flex-column justify-content-center" data-widget-id="streak" style="background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);">
+                <div class="icon-container bg-white text-warning mx-auto mb-3 shadow-sm" style="width: 56px; height: 56px; border-radius: 50%;">
+                    <i class="ph-fill ph-fire" style="font-size: 2rem;"></i>
+                </div>
+                <h3 class="font-poppins fw-bold text-warning mb-1 js-count-up" data-value="{{ $streak ?? 0 }}" style="font-size: 2.5rem; letter-spacing: -1px;">
+                    {{ $streak ?? 0 }} Hari
+                </h3>
+                <h6 class="fw-bold text-dark mb-2">Konsistensi Menabung!</h6>
+                <p class="small text-muted mb-4 px-2">Pertahankan streakmu agar target impian semakin cepat tercapai.</p>
+                
+                <div class="d-flex justify-content-around bg-white p-3 rounded-4 shadow-sm mx-1 mt-auto">
+                    <div>
+                        <div class="small text-muted mb-1" style="font-size: 0.7rem;">Bulan Ini</div>
+                        @if($privacyClass === 'saldo-hidden')
+                            <div class="fw-bold text-success saldo-hidden" style="font-size: 0.9rem;">{{ $currencySymbol }} {{ $dots }}</div>
+                        @else
+                            <div class="fw-bold text-success {{ $privasiSensitif }}" style="font-size: 0.9rem;">{{ format_currency($totalBulanIni ?? 0) }}</div>
+                        @endif
+                    </div>
+                    <div class="border-start"></div>
+                    <div>
+                        <div class="small text-muted mb-1" style="font-size: 0.7rem;">Rata-rata</div>
+                        @if($privacyClass === 'saldo-hidden')
+                            <div class="fw-bold text-dark saldo-hidden" style="font-size: 0.9rem;">{{ $currencySymbol }} {{ $dots }}</div>
+                        @else
+                            <div class="fw-bold text-dark {{ $privasiSensitif }}" style="font-size: 0.9rem;">{{ format_currency($rata2PerCheckin ?? 0) }}</div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
 
-                    <div class="col-md-6">
-                        <div class="fintech-card h-100 p-4 d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h6 class="font-poppins fw-bold mb-1 d-flex align-items-center gap-2">
-                                        {{ $tg->nama }}
-                                        @if($activeTarget && $activeTarget->id === $tg->id)
-                                            <span class="badge bg-light-success text-success border border-success rounded-pill small" style="font-size: 0.7rem;">Aktif</span>
-                                        @endif
-                                    </h6>
-                                    <small class="text-muted">Target: Rp {{ number_format($tg->harga_target, 0, ',', '.') }}</small>
-                                </div>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-light border-0 rounded-circle" type="button" data-bs-toggle="dropdown" style="width: 32px; height: 32px; padding: 0;">
-                                        <i class="ph ph-dots-three-vertical fs-5"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-                                        <li><a class="dropdown-item" href="{{ route('tabung.edit', $tg->id) }}"><i class="ph ph-pencil-simple me-2"></i>Edit</a></li>
-                                        <li>
-                                            <form action="{{ route('tabung.destroy', $tg->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus target ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger"><i class="ph ph-trash me-2"></i>Hapus</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+        </div>
 
+        {{-- KOLOM 2 TENGAH: AKSI UTAMA & VISUALISASI (col-xl-6 col-lg-8) --}}
+        <div class="col-xl-6 col-lg-8 d-flex flex-column gap-4" style="order: -1;">
+            
+            {{-- COMBINED CARD: TARGET AKTIF & FORM NABUNG --}}
+            @if(!isset($widgetVisibility) || $widgetVisibility['target'])
+            <div class="fintech-card p-0 border-success shadow-sm" data-widget-id="target_aktif" style="border-width: 2px;">
+                <div class="row g-0 h-100">
+                    
+                    {{-- Target Progress --}}
+                    <div class="col-md-6 p-4 border-end-md" style="background-color: var(--bg-light-success);">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="ph-fill ph-target text-success fs-4"></i>
+                            <h6 class="mb-0 font-poppins fw-bold text-dark text-uppercase tracking-wide" style="font-size: 0.8rem;">Target Aktif</h6>
+                        </div>
+                        
+                        @if($activeTarget)
+                            <h4 class="fw-bold text-dark mb-3">{{ $activeTarget->nama }}</h4>
                             <div class="mt-auto">
                                 <div class="d-flex justify-content-between align-items-end mb-2">
-                                    <span class="fw-bold text-success">Rp {{ number_format($totalTarget, 0, ',', '.') }}</span>
-                                    <span class="small fw-bold">{{ number_format($progress, 1) }}%</span>
-                                </div>
-
-                                <div class="progress-modern w-100 mb-2">
-                                    <div class="progress-bar-modern js-progress-bar-modern" style="width: {{ $progress }}%" data-progress="{{ number_format($progress, 2, '.', '') }}"></div>
-                                </div>
-
-                                <div class="small text-muted text-end mb-3">
-                                    Sisa: Rp {{ number_format(max(0, $tg->harga_target - $totalTarget), 0, ',', '.') }}
-                                </div>
-                                
-                                <div class="mt-auto">
-                                    @if($activeTarget && $activeTarget->id !== $tg->id)
-                                        <form action="{{ route('targets.active', $tg->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-outline-modern w-100 btn-sm py-2" style="min-height: 40px;">
-                                                Jadikan Target Aktif
-                                            </button>
-                                        </form>
-                                    @elseif($activeTarget && $activeTarget->id === $tg->id)
-                                        <button class="btn btn-success-modern w-100 btn-sm py-2 disabled" style="min-height: 40px; opacity: 0.7;">
-                                            <i class="ph-fill ph-check-circle"></i> Target Aktif
-                                        </button>
+                                    @if($privacyClass === 'saldo-hidden')
+                                        <span class="fw-bold text-success fs-5 saldo-hidden">{{ $currencySymbol }} {{ $dots }}</span>
                                     @else
-                                        <div style="height: 40px;"></div> {{-- Spacer for symmetry --}}
+                                        <span class="fw-bold text-success fs-5 {{ $privasiSensitif }}">{{ format_currency($activeTarget->total_terkumpul) }}</span>
+                                    @endif
+                                    <span class="small fw-bold text-muted bg-white px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.75rem;">{{ number_format($activeTarget->persentase_progres, 1) }}%</span>
+                                </div>
+                                <div class="progress-modern w-100 shadow-sm" style="height: 10px;">
+                                    <div class="progress-bar-modern js-progress-bar-modern" style="width: {{ $activeTarget->persentase_progres }}%" data-progress="{{ number_format($activeTarget->persentase_progres, 2, '.', '') }}"></div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-muted" style="font-size: 0.7rem;">0</small>
+                                    @if($privacyClass === 'saldo-hidden')
+                                        <small class="text-muted fw-bold saldo-hidden" style="font-size: 0.7rem;">{{ $currencySymbol }} {{ $dots }}</small>
+                                    @else
+                                        <small class="text-muted fw-bold {{ $privasiSensitif }}" style="font-size: 0.7rem;">{{ format_currency($activeTarget->jumlah_target) }}</small>
                                     @endif
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-12">
-                        <div class="fintech-card p-5 text-center text-muted d-flex flex-column align-items-center justify-content-center">
-                            <div class="icon-container bg-light-primary text-primary mb-3 mx-auto" style="width: 64px; height: 64px;">
-                                <i class="ph ph-target fs-1"></i>
+                        @else
+                            <div class="empty-state bg-transparent border-0 p-2 text-start align-items-start">
+                                <span class="fw-bold d-block mb-1">Belum Ada Target</span>
+                                <p class="small text-muted mb-3">Buat target pertamamu untuk mulai menabung terarah.</p>
+                                <a href="{{ route('tabung.create') }}" class="btn btn-sm btn-success-modern rounded-pill px-3">Buat Target Baru</a>
                             </div>
-                            <h6>Belum ada target tabungan</h6>
-                            <p class="small mb-0">Klik tombol Target Baru untuk mulai.</p>
-                        </div>
+                        @endif
                     </div>
-                @endforelse
+
+                    {{-- Form Nabung Compact --}}
+                    <div class="col-md-6 p-4 bg-white d-flex flex-column justify-content-center">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="ph-fill ph-coins text-warning fs-4"></i>
+                            <h6 class="mb-0 font-poppins fw-bold text-dark text-uppercase tracking-wide" style="font-size: 0.8rem;">Catat Tabungan</h6>
+                        </div>
+
+                        @if($activeTarget)
+                            <form action="{{ route('checkins.store') }}" method="POST" class="d-flex flex-column gap-3">
+                                @csrf
+                                <input type="hidden" name="target_tabungan_id" value="{{ $activeTarget->id }}">
+                                
+                                <div class="input-group input-group-lg shadow-sm rounded-3">
+                                    <span class="input-group-text bg-light border-0 fw-bold text-success">{{ $currencySymbol }}</span>
+                                    <input type="text" name="jumlah" class="form-control border-0 bg-light js-currency-format fw-bold" placeholder="Nominal" required>
+                                </div>
+
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="input-group shadow-sm rounded-3">
+                                            <span class="input-group-text bg-light border-0 px-2"><i class="ph ph-calendar-blank text-muted"></i></span>
+                                            <input type="date" name="tanggal_transaksi" class="form-control border-0 bg-light small" style="font-size: 0.85rem;" value="{{ now()->format('Y-m-d') }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" name="catatan" class="form-control border-0 bg-light shadow-sm small h-100" style="font-size: 0.85rem;" placeholder="Catatan (opsional)">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-success-modern w-100 py-2 mt-1 rounded-3 fw-bold shadow-sm">
+                                    <i class="ph-fill ph-paper-plane-right me-1"></i> Simpan
+                                </button>
+                            </form>
+                        @else
+                            <div class="text-center py-4">
+                                <i class="ph ph-lock-key fs-1 text-muted opacity-50 mb-2"></i>
+                                <p class="small text-muted mb-0">Form terkunci. Buat target terlebih dahulu.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
+            @endif
+
+            {{-- HEATMAP ACTIVITY --}}
+            @if(!isset($widgetVisibility) || $widgetVisibility['heatmap'])
+            <div class="fintech-card p-4 flex-grow-1" data-widget-id="heatmap">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h6 class="font-poppins fw-bold mb-0">Aktivitas Menabung</h6>
+                        <small class="text-muted">Progres tabungan harian Anda</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-1 bg-light rounded-pill p-1 shadow-sm">
+                        <a href="{{ route('tabung.index', ['month' => $heatmapPrevMonth]) }}" class="btn btn-sm rounded-circle text-muted" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;"><i class="ph ph-caret-left fw-bold"></i></a>
+                        <span class="small fw-bold text-dark px-3">{{ $heatmapCurrentMonthName }}</span>
+                        @if(!$isCurrentMonth)
+                        <a href="{{ route('tabung.index', ['month' => $heatmapNextMonth]) }}" class="btn btn-sm rounded-circle text-muted" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;"><i class="ph ph-caret-right fw-bold"></i></a>
+                        @else
+                        <button class="btn btn-sm rounded-circle text-muted" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; opacity: 0.5; cursor: not-allowed;"><i class="ph ph-caret-right fw-bold"></i></button>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="heatmap-container mb-4 px-2">
+                    <div class="d-flex justify-content-between mb-2 px-1">
+                        <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Min</small>
+                        <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Sen</small>
+                        <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Sel</small>
+                        <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Rab</small>
+                        <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Kam</small>
+                        <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Jum</small>
+                        <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Sab</small>
+                    </div>
+                    <div class="heatmap-grid">
+                        @foreach($heatmapData as $box)
+                            @if(is_null($box))
+                                <div class="heatmap-box heatmap-empty"></div>
+                            @else
+                                <div class="heatmap-box heatmap-level-{{ $box['level'] }} {{ $box['isToday'] ? 'is-today shadow' : '' }}" 
+                                     data-bs-toggle="tooltip" 
+                                     data-bs-placement="top" 
+                                     title="{{ \Carbon\Carbon::parse($box['date'])->format('d M') }}: {{ format_currency($box['total']) }}">
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-center align-items-center mt-auto pt-3 border-top border-color">
+                    <small class="text-muted me-3" style="font-size: 0.75rem;">Intensitas Nominal:</small>
+                    <div class="d-flex gap-2 align-items-center">
+                        <small class="text-muted" style="font-size: 0.65rem;">Rendah</small>
+                        <div class="heatmap-box heatmap-level-0" style="width: 14px; height: 14px; border-radius: 3px;"></div>
+                        <div class="heatmap-box heatmap-level-1" style="width: 14px; height: 14px; border-radius: 3px;"></div>
+                        <div class="heatmap-box heatmap-level-2" style="width: 14px; height: 14px; border-radius: 3px;"></div>
+                        <div class="heatmap-box heatmap-level-3" style="width: 14px; height: 14px; border-radius: 3px;"></div>
+                        <div class="heatmap-box heatmap-level-4" style="width: 14px; height: 14px; border-radius: 3px;"></div>
+                        <small class="text-muted" style="font-size: 0.65rem;">Tinggi</small>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+        </div>
+
+        {{-- KOLOM 3 KANAN: RIWAYAT & TARGET TAMBAHAN (col-xl-3 col-lg-12) --}}
+        <div class="col-xl-3 col-lg-12 d-flex flex-column gap-4">
+            
+            {{-- SUMMARY STATS (Pindah dari Heatmap ke panel terpisah) --}}
+            @if(!isset($widgetVisibility) || $widgetVisibility['statistik'])
+            <div class="fintech-card p-3 rounded-4 border-0" data-widget-id="statistik" style="background-color: #f8fafc;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small fw-medium text-dark d-flex align-items-center gap-2"><i class="ph-fill ph-trophy text-warning"></i> Rekor Streak</span>
+                    <span class="small fw-bold">{{ $longestStreak }} Hari</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="small fw-medium text-dark d-flex align-items-center gap-2"><i class="ph-fill ph-calendar-check text-success"></i> Frekuensi Bulanan</span>
+                    <span class="small fw-bold">{{ $jumlahCheckinBulanIni }}x Nabung</span>
+                </div>
+            </div>
+            @endif
+
+            {{-- DAFTAR TARGET LAINNYA --}}
+            @if((!isset($widgetVisibility) || $widgetVisibility['target']) && $targets->count() > 1)
+            <div class="fintech-card" data-widget-id="target_lainnya">
+                <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                    <h6 class="font-poppins fw-bold mb-0" style="font-size: 0.9rem;">Target Lainnya</h6>
+                    <a href="{{ route('tabung.create') }}" class="small text-primary text-decoration-none"><i class="ph ph-plus"></i> Baru</a>
+                </div>
+                <div class="list-group list-group-flush" style="max-height: 250px; overflow-y: auto;">
+                    @foreach($targets as $tg)
+                        @if(!$activeTarget || $activeTarget->id !== $tg->id)
+                            <div class="list-group-item px-3 py-2 border-0 border-bottom">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.85rem; max-width: 150px;">{{ $tg->nama }}</div>
+                                    <span class="small text-muted" style="font-size: 0.7rem;">{{ number_format($tg->persentase_progres, 0) }}%</span>
+                                </div>
+                                <div class="progress-modern w-100" style="height: 4px; background-color: #f1f5f9;">
+                                    <div class="progress-bar-modern bg-secondary" style="width: {{ $tg->persentase_progres }}%"></div>
+                                </div>
+                                <form action="{{ route('targets.active', $tg->id) }}" method="POST" class="mt-2 text-end">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm text-primary p-0 shadow-none" style="font-size: 0.7rem; font-weight: 600;">Jadikan Aktif</button>
+                                </form>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            @endif
 
             {{-- TRANSACTIONS HISTORY --}}
-            <div class="fintech-card mb-3">
-                <div class="p-4 border-bottom border-color d-flex justify-content-between align-items-center">
-                    <h6 class="font-poppins fw-semibold mb-0">Riwayat Terakhir</h6>
-                    <ul class="nav nav-pills small" id="historyTab" role="tablist">
+            @if(!isset($widgetVisibility) || $widgetVisibility['riwayat'])
+            <div class="fintech-card flex-grow-1" data-widget-id="riwayat">
+                <div class="p-3 border-bottom border-color d-flex justify-content-between align-items-center bg-light">
+                    <h6 class="font-poppins fw-bold mb-0" style="font-size: 0.9rem;">Riwayat Terakhir</h6>
+                    <ul class="nav nav-pills small gap-1" id="historyTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active py-1 px-3 rounded-pill" data-bs-toggle="tab" data-bs-target="#tab-tabungan">Tabungan</button>
+                            <button class="nav-link active py-0 px-2 rounded-pill fw-medium" style="font-size: 0.75rem;" data-bs-toggle="tab" data-bs-target="#tab-tabungan">Nabung</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link py-1 px-3 rounded-pill" data-bs-toggle="tab" data-bs-target="#tab-income">Pemasukan</button>
+                            <button class="nav-link py-0 px-2 rounded-pill fw-medium" style="font-size: 0.75rem;" data-bs-toggle="tab" data-bs-target="#tab-income">Masuk</button>
                         </li>
                     </ul>
                 </div>
                 
-                <div class="tab-content" id="historyTabContent">
+                <div class="tab-content h-100" id="historyTabContent">
                     <!-- Tab Tabungan -->
-                    <div class="tab-pane fade show active" id="tab-tabungan" role="tabpanel">
+                    <div class="tab-pane fade show active h-100" id="tab-tabungan" role="tabpanel">
                         @if(!empty($recentCheckins) && count($recentCheckins))
-                            <div class="list-group list-group-flush rounded-bottom">
+                            <div class="list-group list-group-flush">
                                 @foreach($recentCheckins as $rc)
-                                    <div class="list-group-item list-item-modern d-flex justify-content-between align-items-center bg-transparent">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="icon-container bg-light-success text-success icon-sm">
-                                                <i class="ph-fill ph-piggy-bank"></i>
+                                    <div class="list-group-item px-3 py-2 d-flex justify-content-between align-items-center border-0 border-bottom" style="transition: background 0.2s;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="icon-container bg-light-success text-success rounded-circle" style="width: 28px; height: 28px;">
+                                                <i class="ph-fill ph-piggy-bank" style="font-size: 0.9rem;"></i>
                                             </div>
                                             <div>
-                                                <div class="fw-semibold">{{ $rc->target->nama ?? 'Tanpa Target' }}</div>
-                                                <div class="small text-muted">{{ \Carbon\Carbon::parse($rc->tanggal)->format('d M Y') }} • {{ $rc->catatan ?? 'Menabung' }}</div>
+                                                <div class="fw-bold text-dark text-truncate" style="font-size: 0.8rem; max-width: 100px;">{{ $rc->targetTabungan->nama ?? 'Tabungan' }}</div>
+                                                <div class="text-muted" style="font-size: 0.65rem;">{{ \Carbon\Carbon::parse($rc->tanggal_transaksi)->format('d M') }}</div>
                                             </div>
                                         </div>
-                                        <div class="fw-bold text-success">+ Rp {{ number_format($rc->nominal, 0, ',', '.') }}</div>
+                                        <div class="fw-bold text-success" style="font-size: 0.8rem;">+{{ format_currency($rc->jumlah) }}</div>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <div class="p-5 text-center text-muted small">Belum ada riwayat tabungan.</div>
+                            <div class="p-4 text-center text-muted h-100 d-flex flex-column justify-content-center">
+                                <i class="ph ph-receipt fs-3 mb-2 opacity-50"></i>
+                                <p class="small mb-0" style="font-size: 0.75rem;">Belum ada riwayat.</p>
+                            </div>
                         @endif
                     </div>
                     
                     <!-- Tab Income -->
-                    <div class="tab-pane fade" id="tab-income" role="tabpanel">
+                    <div class="tab-pane fade h-100" id="tab-income" role="tabpanel">
                         @if(!empty($recentIncomes) && count($recentIncomes))
-                            <div class="list-group list-group-flush rounded-bottom">
+                            <div class="list-group list-group-flush">
                                 @foreach($recentIncomes as $inc)
-                                    <div class="list-group-item list-item-modern d-flex justify-content-between align-items-center bg-transparent">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="icon-container bg-light-primary text-primary icon-sm">
-                                                <i class="ph-fill ph-wallet"></i>
+                                    <div class="list-group-item px-3 py-2 d-flex justify-content-between align-items-center border-0 border-bottom">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="icon-container" style="background-color: #e0e7ff; color: #4f46e5; border-radius: 50%; width: 28px; height: 28px;">
+                                                <i class="ph-fill ph-wallet" style="font-size: 0.9rem;"></i>
                                             </div>
                                             <div>
-                                                <div class="fw-semibold">{{ ucfirst($inc->nama) }}</div>
-                                                <div class="small text-muted">{{ \Carbon\Carbon::parse($inc->tanggal)->format('d M Y') }}</div>
+                                                <div class="fw-bold text-dark text-truncate" style="font-size: 0.8rem; max-width: 100px;">{{ ucfirst($inc->nama) }}</div>
+                                                <div class="text-muted" style="font-size: 0.65rem;">{{ \Carbon\Carbon::parse($inc->tanggal)->format('d M') }}</div>
                                             </div>
                                         </div>
-                                        <div class="fw-bold text-primary">+ Rp {{ number_format($inc->nominal, 0, ',', '.') }}</div>
+                                        <div class="fw-bold" style="color: #4f46e5; font-size: 0.8rem;">+{{ format_currency($inc->jumlah) }}</div>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <div class="p-5 text-center text-muted small">Belum ada riwayat pemasukan.</div>
+                            <div class="p-4 text-center text-muted h-100 d-flex flex-column justify-content-center">
+                                <i class="ph ph-wallet fs-3 mb-2 opacity-50"></i>
+                                <p class="small mb-0" style="font-size: 0.75rem;">Belum ada pemasukan.</p>
+                            </div>
                         @endif
                     </div>
                 </div>
             </div>
-
-        </div>
-
-        {{-- RIGHT COLUMN: STREAK & CALENDAR --}}
-        <div class="col-lg-4">
-            
-            {{-- STREAK CARD --}}
-            @php
-                $activeTotal = $activeTarget ? $activeTarget->checkins->sum('nominal') : 0;
-                $activeGoal  = $activeTarget ? (int) $activeTarget->harga_target : 0;
-                $ringProgress = $activeGoal > 0 ? ($activeTotal / $activeGoal) * 100 : 0;
-                $ringProgress = max(0, min(100, $ringProgress));
-            @endphp
-
-            <div class="fintech-card p-4 mb-4 text-center">
-                <div class="icon-container bg-light-warning text-warning mx-auto mb-3" style="width: 60px; height: 60px; background-color: #fff3cd; border-radius: 50%;">
-                    <i class="ph-fill ph-fire fs-2"></i>
-                </div>
-                <h2 class="font-poppins fw-bold text-warning mb-1 js-count-up" data-value="{{ $streak ?? 0 }}" style="font-size: 3rem;">
-                    {{ $streak ?? 0 }}
-                </h2>
-                <div class="fw-bold text-dark mb-1">Hari Streak 🔥</div>
-                <p class="small text-muted mb-4 px-2">Terus konsisten menabung untuk mencapai targetmu!</p>
-                
-                <div class="p-3 rounded-4 text-start" style="background-color: #f8f9fa; border: 1px solid rgba(0,0,0,0.03);">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small fw-semibold text-muted">Bulan Ini</span>
-                        <span class="small fw-bold text-success">Rp {{ number_format($totalBulanIni ?? 0, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small text-muted">Frekuensi</span>
-                        <span class="small fw-bold text-dark">{{ $jumlahCheckinBulanIni ?? 0 }}x Nabung</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="small text-muted">Rata-rata</span>
-                        <span class="small fw-bold text-dark">Rp {{ number_format($rata2PerCheckin ?? 0, 0, ',', '.') }}</span>
-                    </div>
-                </div>
-                
-                @if($estimasiTanggal)
-                    <div class="mt-4 pt-3 border-top border-color">
-                        <div class="small text-muted mb-2">Estimasi Target Tercapai:</div>
-                        <div class="fw-bold text-primary d-flex align-items-center justify-content-center gap-2">
-                            <i class="ph-fill ph-flag-checkered fs-5"></i>
-                            <span class="font-poppins">{{ $estimasiTanggal->format('d M Y') }}</span>
-                        </div>
-                    </div>
-                @endif
-            </div>
-
-            {{-- CALENDAR WIDGET --}}
-            <div class="fintech-card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="font-poppins fw-bold mb-0">Kalender Aktivitas</h6>
-                    <span class="badge bg-light-primary text-primary border border-primary-subtle rounded-pill" id="pickedDateBadge" style="font-size: 0.7rem;"></span>
-                </div>
-                <div class="small text-muted mb-3">Klik tanggal untuk mencatat tabungan di hari tersebut.</div>
-                
-                <!-- FullCalendar Element -->
-                <div id="savingCalendar" class="font-inter" style="font-size: 0.8rem; border: none;"></div>
-            </div>
+            @endif
 
         </div>
     </div>
@@ -428,6 +577,61 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-<script id="calendarEventsData" type="application/json">@json($calendarEvents ?? [])</script>
+<script>
+    // Initialize tooltips for heatmap
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Mobile Widget Reordering Logic
+        const isMobile = window.innerWidth < 992; // Bootstrap lg breakpoint
+        if (isMobile) {
+            @php
+                $urutan = json_decode($userSettings['urutan_widget'] ?? '[]', true);
+            @endphp
+            const urutanWidget = {!! json_encode($urutan ?: []) !!};
+            
+            if (urutanWidget && urutanWidget.length > 0) {
+                // Find all widgets by their data attribute
+                const widgets = {};
+                document.querySelectorAll('[data-widget-id]').forEach(el => {
+                    widgets[el.getAttribute('data-widget-id')] = el;
+                });
+
+                // Find the main row container
+                const rowContainer = document.querySelector('.row.g-4');
+                
+                if (rowContainer) {
+                    // Create a single column wrapper for mobile to stack them exactly in order
+                    const mobileWrapper = document.createElement('div');
+                    mobileWrapper.className = 'col-12 d-flex flex-column gap-4';
+                    
+                    // Append widgets in the saved order
+                    urutanWidget.forEach(id => {
+                        if (widgets[id]) {
+                            // If widget is inside a col wrapper, we pull the card out
+                            mobileWrapper.appendChild(widgets[id]);
+                            delete widgets[id]; // mark as sorted
+                        }
+                    });
+
+                    // Append any remaining widgets that weren't in the saved order (fallback)
+                    Object.values(widgets).forEach(widget => {
+                        mobileWrapper.appendChild(widget);
+                    });
+
+                    // Hide original columns (col-xl-3, col-xl-6) since they are now empty
+                    rowContainer.querySelectorAll('.col-xl-3, .col-xl-6').forEach(col => {
+                        col.style.display = 'none';
+                    });
+
+                    // Append the new mobile wrapper
+                    rowContainer.appendChild(mobileWrapper);
+                }
+            }
+        }
+    });
+</script>
 @endpush

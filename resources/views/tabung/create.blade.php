@@ -43,26 +43,23 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label text-muted small fw-medium">Harga Target (Rp)</label>
-                <input
-                    type="text"
-                    name="harga_target"
-                    class="form-control form-control-modern js-currency-format"
-                    placeholder="Contoh: 10.000.000"
-                    value="{{ old('harga_target') }}"
-                    required
-                >
+                <label class="form-label text-muted small fw-medium">Harga Target ({{ $currencySymbol }})</label>
+                <div class="input-group input-group-lg shadow-sm">
+                    <span class="input-group-text bg-light border-color border-end-0"><i class="ph ph-wallet"></i></span>
+                    <input type="text" name="jumlah_target" class="form-control form-control-modern border-start-0 ps-0 js-currency-format fw-bold" placeholder="Contoh: 5000000" value="{{ old('jumlah_target') }}" required>
+                </div>
+                <div class="invalid-feedback">Harga target harus diisi dengan angka.</div>
             </div>
 
             <div class="row g-4 mb-5">
                 <div class="col-md-6">
-                    <label class="form-label text-muted small fw-medium">Rencana Nabung/Hari (Rp)</label>
+                    <label class="form-label text-muted small fw-medium">Rencana Nabung/Hari ({{ $currencySymbol }})</label>
                     <input
                         type="text"
-                        name="rencana_per_hari"
+                        name="rencana_harian"
                         class="form-control form-control-modern js-currency-format"
                         placeholder="Contoh: 50.000 (Opsional)"
-                        value="{{ old('rencana_per_hari') }}"
+                        value="{{ old('rencana_harian') }}"
                     >
                 </div>
 
@@ -70,9 +67,9 @@
                     <label class="form-label text-muted small fw-medium">Tanggal Mulai</label>
                     <input
                         type="date"
-                        name="mulai"
+                        name="tanggal_mulai"
                         class="form-control form-control-modern"
-                        value="{{ old('mulai', now()->format('Y-m-d')) }}"
+                        value="{{ old('tanggal_mulai', now()->format('Y-m-d')) }}"
                     >
                 </div>
             </div>

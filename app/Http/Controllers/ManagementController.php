@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Income;
-use App\Models\Expense;
+use App\Models\Pemasukan;
+use App\Models\Pengeluaran;
+use App\Models\TransaksiOtomatis;
 
 class ManagementController extends Controller
 {
@@ -13,21 +14,21 @@ class ManagementController extends Controller
     {
         $userId = Auth::id();
 
-        $totalIncome = Income::where('user_id', $userId)->whereMonth('tanggal', now()->month)->sum('nominal');
-        $totalExpense = Expense::where('user_id', $userId)->whereMonth('tanggal', now()->month)->sum('nominal');
+        $totalIncome = Pemasukan::milikPengguna($userId)->whereMonth('tanggal', now()->month)->sum('jumlah');
+        $totalExpense = Pengeluaran::milikPengguna($userId)->whereMonth('tanggal', now()->month)->sum('jumlah');
         
-        $totalAllIncome = Income::where('user_id', $userId)->sum('nominal');
-        $totalAllExpense = Expense::where('user_id', $userId)->sum('nominal');
+        $totalAllIncome = Pemasukan::milikPengguna($userId)->sum('jumlah');
+        $totalAllExpense = Pengeluaran::milikPengguna($userId)->sum('jumlah');
         $saldo = $totalAllIncome - $totalAllExpense;
 
-        $budget = Auth::user()->budget_bulanan;
+        $budget = Auth::user()->anggaran_bulanan;
         $sisaBudget = max(0, $budget - $totalExpense);
         $isOverBudget = $totalExpense > $budget && $budget > 0;
 
         // Group expenses by category
-        $expensesByCategory = Expense::where('user_id', $userId)
+        $expensesByCategory = Pengeluaran::milikPengguna($userId)
             ->whereMonth('tanggal', now()->month)
-            ->selectRaw('kategori, SUM(nominal) as total')
+            ->selectRaw('kategori, SUM(jumlah) as total')
             ->groupBy('kategori')
             ->get();
         
@@ -39,7 +40,7 @@ class ManagementController extends Controller
         $chartValues = array_values($chartData);
 
         // Fetch Automations
-        $automations = \App\Models\AutomatedTransaction::where('user_id', $userId)->get();
+        $automations = TransaksiOtomatis::where('pengguna_id', $userId)->get();
 
         return view('management.index', compact(
             'totalIncome', 
@@ -58,14 +59,14 @@ class ManagementController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nominal' => 'required|numeric|min:1',
+            'jumlah' => 'required|numeric|min:1',
             'tanggal' => 'required|date',
         ]);
 
-        Income::create([
-            'user_id' => Auth::id(),
+        Pemasukan::create([
+            'pengguna_id' => Auth::id(),
             'nama' => $request->nama,
-            'nominal' => $request->nominal,
+            'jumlah' => $request->jumlah,
             'tanggal' => $request->tanggal,
         ]);
 
@@ -76,15 +77,15 @@ class ManagementController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nominal' => 'required|numeric|min:1',
+            'jumlah' => 'required|numeric|min:1',
             'kategori' => 'required|in:Kebutuhan Pokok,Mendesak,Kebutuhan Lain',
             'tanggal' => 'required|date',
         ]);
 
-        Expense::create([
-            'user_id' => Auth::id(),
+        Pengeluaran::create([
+            'pengguna_id' => Auth::id(),
             'nama' => $request->nama,
-            'nominal' => $request->nominal,
+            'jumlah' => $request->jumlah,
             'kategori' => $request->kategori,
             'tanggal' => $request->tanggal,
         ]);
@@ -95,31 +96,31 @@ class ManagementController extends Controller
     public function setBudget(Request $request)
     {
         $request->validate([
-            'budget_bulanan' => 'required|numeric|min:0',
+            'anggaran_bulanan' => 'required|numeric|min:0',
         ]);
 
         $user = Auth::user();
-        $user->budget_bulanan = $request->budget_bulanan;
+        $user->anggaran_bulanan = $request->anggaran_bulanan;
         $user->save();
 
-        return redirect()->route('management.index')->with('success', 'Budget bulanan berhasil diperbarui.');
+        return redirect()->route('management.index')->with('success', 'Anggaran bulanan berhasil diperbarui.');
     }
 
     public function storeAutomation(Request $request)
     {
         $request->validate([
-            'tipe' => 'required|in:income,expense',
+            'tipe' => 'required|in:pemasukan,pengeluaran',
             'nama' => 'required|string|max:255',
-            'nominal' => 'required|numeric|min:1',
+            'jumlah' => 'required|numeric|min:1',
             'tanggal_rutin' => 'required|integer|min:1|max:31',
             'kategori' => 'nullable|string|max:255',
         ]);
 
-        \App\Models\AutomatedTransaction::create([
-            'user_id' => Auth::id(),
+        TransaksiOtomatis::create([
+            'pengguna_id' => Auth::id(),
             'tipe' => $request->tipe,
             'nama' => $request->nama,
-            'nominal' => $request->nominal,
+            'jumlah' => $request->jumlah,
             'tanggal_rutin' => $request->tanggal_rutin,
             'kategori' => $request->kategori,
         ]);
@@ -129,7 +130,7 @@ class ManagementController extends Controller
 
     public function destroyAutomation($id)
     {
-        $automation = \App\Models\AutomatedTransaction::where('user_id', Auth::id())->findOrFail($id);
+        $automation = TransaksiOtomatis::where('pengguna_id', Auth::id())->findOrFail($id);
         $automation->delete();
 
         return redirect()->route('management.index')->with('success', 'Automasi dihapus.');
