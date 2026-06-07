@@ -10,6 +10,7 @@ use App\Models\Pengguna;
 use App\Models\TransaksiTabungan;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Services\FinancialService;
 use Carbon\Carbon;
 
 class ProfilController extends Controller
@@ -17,28 +18,30 @@ class ProfilController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
-        // Menghitung hari bergabung
+
         $tanggalBergabung = Carbon::parse($user->created_at);
-        $hariBergabung = $tanggalBergabung->diffInDays(now()) + 1; // +1 karena hari H dihitung 1
-        
-        // Menghitung Saldo
-        $totalIncome = Pemasukan::milikPengguna($user->id)->sum('jumlah');
-        $usedForSaving = TransaksiTabungan::setoran()
-            ->whereHas('targetTabungan', function ($q) use ($user) {
-                $q->where('pengguna_id', $user->id);
-            })
-            ->sum('jumlah');
-        $usedForExpense = Pengeluaran::milikPengguna($user->id)->sum('jumlah');
-        $saldo = $totalIncome - $usedForSaving - $usedForExpense;
-        
+        $hariBergabung = $tanggalBergabung->diffInDays(now()) + 1;
+
+        $saldoSaatIni = FinancialService::getSaldoTersedia($user->id);
+        $totalMenabung = FinancialService::getTotalTabungan($user->id);
+
+        $targetAktif = $user->targetTabungan()->aktif()->count();
+        $targetTercapai = $user->targetTabungan()->selesai()->count();
+
+        $targetTerdekat = $user->targetTabungan()->aktif()->with('transaksiTabungan')->get()
+            ->sortByDesc('persentase_progres')
+            ->first();
+
+        $totalTransaksi = TransaksiTabungan::whereHas('targetTabungan', function ($q) use ($user) {
+            $q->where('pengguna_id', $user->id);
+        })->count();
+
         // ==========================================
         // GITHUB-STYLE HEATMAP LOGIC (365 DAYS)
         // ==========================================
-        // Kita butuh data tabungan selama 1 tahun ke belakang
         $endDate = now()->startOfDay();
-        $startDate = now()->subDays(364)->startOfDay(); // 365 hari termasuk hari ini
-        
+        $startDate = now()->subDays(364)->startOfDay();
+
         $dailySavings = TransaksiTabungan::setoran()
             ->whereHas('targetTabungan', function ($q) use ($user) {
                 $q->where('pengguna_id', $user->id);
@@ -50,22 +53,22 @@ class ProfilController extends Controller
 
         $maxDaily = $dailySavings->max() ?: 1;
 
-        // Bikin array kotak-kotak untuk kalender (7 baris, ~52 kolom)
-        // Github menyusun kolom per minggu. Minggu (0) sampai Sabtu (6).
-        // Kita isi dari tanggal mulai sampai tanggal selesai.
         $heatmapData = [];
         $currentDate = clone $startDate;
-        
-        // Padding agar hari pertama cocok dengan urutan minggu (Minggu=0, dst)
-        $startDayOfWeek = $startDate->dayOfWeek; // 0 for Sunday
+
+        $startDayOfWeek = $startDate->dayOfWeek;
         for ($i = 0; $i < $startDayOfWeek; $i++) {
             $heatmapData[] = ['is_padding' => true];
         }
 
+        $hariAktif = 0;
+        $bestStreak = 0;
+        $tempStreak = 0;
+
         while ($currentDate <= $endDate) {
             $dateStr = $currentDate->format('Y-m-d');
             $totalNominal = $dailySavings->get($dateStr, 0);
-            
+
             $level = 0;
             if ($totalNominal > 0) {
                 $percentage = $totalNominal / $maxDaily;
@@ -80,13 +83,38 @@ class ProfilController extends Controller
                 'date' => $dateStr,
                 'total' => $totalNominal,
                 'level' => $level,
-                'monthName' => $currentDate->translatedFormat('M'), // Untuk label bulan di atas
-                'isFirstOfMonth' => $currentDate->day === 1
+                'monthName' => $currentDate->translatedFormat('M'),
+                'isFirstOfMonth' => $currentDate->day === 1,
             ];
+
+            if ($totalNominal > 0) {
+                $hariAktif++;
+                $tempStreak++;
+                if ($tempStreak > $bestStreak) $bestStreak = $tempStreak;
+            } else {
+                $tempStreak = 0;
+            }
+
             $currentDate->addDay();
         }
 
-        return view('profil.index', compact('user', 'tanggalBergabung', 'hariBergabung', 'saldo', 'heatmapData'));
+        $streakSaatIni = 0;
+        for ($i = count($heatmapData) - 1; $i >= 0; $i--) {
+            if (!$heatmapData[$i]['is_padding'] && $heatmapData[$i]['total'] > 0) {
+                $streakSaatIni++;
+            } else {
+                break;
+            }
+        }
+
+        return view('profil.index', compact(
+            'user', 'tanggalBergabung', 'hariBergabung',
+            'saldoSaatIni', 'totalMenabung',
+            'targetAktif', 'targetTercapai',
+            'targetTerdekat', 'totalTransaksi',
+            'hariAktif', 'streakSaatIni', 'bestStreak',
+            'heatmapData'
+        ));
     }
 
     public function update(Request $request)

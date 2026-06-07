@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script>
+        // Terapkan tema dari localStorage sebelum render untuk menghindari FOUC
+        const savedTheme = localStorage.getItem('sakuin_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $mode === 'register' ? 'Daftar' : 'Login' }} - Sakuin</title>

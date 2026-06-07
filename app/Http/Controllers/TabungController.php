@@ -7,6 +7,7 @@ use App\Models\TransaksiTabungan;
 use App\Models\Pengeluaran;
 use App\Models\Pemasukan;
 use App\Models\Pengguna;
+use App\Services\FinancialService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -98,22 +99,18 @@ class TabungController extends Controller
             ->take(5)
             ->get();
 
-        $totalIncome = Pemasukan::milikPengguna($user->id)->sum('jumlah');
+        $totalIncome = FinancialService::getTotalPemasukan($user->id);
 
         $recentIncomes = Pemasukan::milikPengguna($user->id)
             ->latest('tanggal')
             ->take(5)
             ->get();
 
-        $usedForSaving = TransaksiTabungan::setoran()
-            ->whereHas('targetTabungan', function ($q) use ($user) {
-                $q->where('pengguna_id', $user->id);
-            })
-            ->sum('jumlah');
+        $usedForSaving = FinancialService::getTotalTabungan($user->id);
+        $usedForExpense = FinancialService::getTotalPengeluaran($user->id);
 
-        $usedForExpense = Pengeluaran::milikPengguna($user->id)->sum('jumlah');
-
-        $saldo = $totalIncome - $usedForSaving - $usedForExpense;
+        $totalAset = FinancialService::getTotalAset($user->id);
+        $saldoTersedia = FinancialService::getSaldoTersedia($user->id);
 
         // --- HEATMAP ACTIVITY (MONTHLY VIEW) ---
         $monthParam = $request->query('month', now()->format('Y-m'));
@@ -221,6 +218,8 @@ class TabungController extends Controller
                 }
             }
         }
+        
+        $hasSavedToday = count($allDatesDesc) > 0 && $allDatesDesc[0] === now()->format('Y-m-d');
 
         return view('tabung.index', compact(
             'targets',
@@ -238,13 +237,15 @@ class TabungController extends Controller
             'recentIncomes',
             'usedForSaving',
             'usedForExpense',
-            'saldo',
+            'totalAset',
+            'saldoTersedia',
             'heatmapData',
             'heatmapPrevMonth',
             'heatmapNextMonth',
             'heatmapCurrentMonthName',
             'isCurrentMonth',
-            'longestStreak'
+            'longestStreak',
+            'hasSavedToday'
         ));
     }
 
@@ -257,12 +258,23 @@ class TabungController extends Controller
     {
         $user = Auth::user();
 
+        $request->merge([
+            'jumlah_target' => $request->jumlah_target ? convert_to_idr($request->jumlah_target) : null,
+            'rencana_harian' => $request->rencana_harian ? convert_to_idr($request->rencana_harian) : null,
+        ]);
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'jumlah_target' => 'required|numeric|min:1',
             'rencana_harian' => 'nullable|numeric|min:0',
             'tanggal_mulai' => 'nullable|date',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
+        $gambarPath = null;
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')->store('targets', 'public');
+        }
 
         $hasTarget = TargetTabungan::milikPengguna($user->id)->exists();
 
@@ -273,6 +285,7 @@ class TabungController extends Controller
             'rencana_harian' => $request->rencana_harian,
             'tanggal_mulai' => $request->tanggal_mulai,
             'status' => $hasTarget ? 'dijeda' : 'aktif',
+            'gambar' => $gambarPath,
         ]);
 
         return redirect()
@@ -291,19 +304,34 @@ class TabungController extends Controller
     {
         $target = TargetTabungan::milikPengguna(Auth::id())->findOrFail($id);
 
+        $request->merge([
+            'jumlah_target' => $request->jumlah_target ? convert_to_idr($request->jumlah_target) : null,
+            'rencana_harian' => $request->rencana_harian ? convert_to_idr($request->rencana_harian) : null,
+        ]);
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'jumlah_target' => 'required|numeric|min:1',
             'rencana_harian' => 'nullable|numeric|min:0',
             'tanggal_mulai' => 'nullable|date',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $target->update([
+        $updateData = [
             'nama' => $request->nama,
             'jumlah_target' => $request->jumlah_target,
             'rencana_harian' => $request->rencana_harian,
             'tanggal_mulai' => $request->tanggal_mulai,
-        ]);
+        ];
+
+        if ($request->hasFile('gambar')) {
+            if ($target->gambar) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($target->gambar);
+            }
+            $updateData['gambar'] = $request->file('gambar')->store('targets', 'public');
+        }
+
+        $target->update($updateData);
 
         return redirect()
             ->route('tabung.index')
@@ -315,6 +343,10 @@ class TabungController extends Controller
         $target = TargetTabungan::milikPengguna(Auth::id())->findOrFail($id);
 
         $wasActive = $target->status === 'aktif';
+        
+        if ($target->gambar) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($target->gambar);
+        }
 
         $target->delete();
 
@@ -348,6 +380,10 @@ class TabungController extends Controller
 
     public function storeCheckin(Request $request)
     {
+        $request->merge([
+            'jumlah' => $request->jumlah ? convert_to_idr($request->jumlah) : null,
+        ]);
+
         $request->validate([
             'target_tabungan_id' => 'required|exists:target_tabungan,id',
             'tanggal_transaksi' => 'required|date',
@@ -358,20 +394,12 @@ class TabungController extends Controller
         $user = Auth::user();
 
         // Validasi Saldo: Tidak boleh nabung lebih dari saldo yang dimiliki
-        $totalIncome = Pemasukan::milikPengguna($user->id)->sum('jumlah');
-        $usedForSaving = TransaksiTabungan::setoran()
-            ->whereHas('targetTabungan', function ($q) use ($user) {
-                $q->where('pengguna_id', $user->id);
-            })
-            ->sum('jumlah');
-        $usedForExpense = Pengeluaran::milikPengguna($user->id)->sum('jumlah');
-        
-        $saldoAktif = $totalIncome - $usedForSaving - $usedForExpense;
+        $saldoAktif = FinancialService::getSaldoTersedia($user->id);
 
         if ($request->jumlah > $saldoAktif) {
             $pesanError = $saldoAktif <= 0 
-                ? 'Tidak dapat menabung karena saldo Anda sedang minus atau kosong.' 
-                : 'Saldo tidak cukup! Sisa saldo Anda saat ini hanya Rp ' . number_format($saldoAktif, 0, ',', '.');
+                ? 'Tidak dapat menabung karena saldo tersedia sedang kosong.' 
+                : 'Saldo tidak cukup! Sisa saldo tersedia Anda saat ini hanya ' . format_currency($saldoAktif);
                 
             return back()->with('error', $pesanError)->withInput();
         }

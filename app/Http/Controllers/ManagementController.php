@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use App\Models\TransaksiOtomatis;
+use App\Services\FinancialService;
 
 class ManagementController extends Controller
 {
@@ -17,13 +18,17 @@ class ManagementController extends Controller
         $totalIncome = Pemasukan::milikPengguna($userId)->whereMonth('tanggal', now()->month)->sum('jumlah');
         $totalExpense = Pengeluaran::milikPengguna($userId)->whereMonth('tanggal', now()->month)->sum('jumlah');
         
-        $totalAllIncome = Pemasukan::milikPengguna($userId)->sum('jumlah');
-        $totalAllExpense = Pengeluaran::milikPengguna($userId)->sum('jumlah');
-        $saldo = $totalAllIncome - $totalAllExpense;
+        // Menggunakan FinancialService sebagai Single Source of Truth
+        $metrics = FinancialService::getMetrics($userId);
+        $saldoTersedia = $metrics['saldo_tersedia'];
+        $totalTabungan = $metrics['total_tabungan'];
+        $totalAset = $metrics['total_aset'];
 
         $budget = Auth::user()->anggaran_bulanan;
+        $budgetPct = $budget > 0 ? min(100, round(($totalExpense / $budget) * 100)) : 0;
         $sisaBudget = max(0, $budget - $totalExpense);
         $isOverBudget = $totalExpense > $budget && $budget > 0;
+        $budgetStatus = $budget > 0 ? ($budgetPct >= 80 ? 'bahaya' : ($budgetPct >= 50 ? 'waspada' : 'aman')) : 'belum';
 
         // Group expenses by category
         $expensesByCategory = Pengeluaran::milikPengguna($userId)
@@ -39,24 +44,48 @@ class ManagementController extends Controller
         $chartKeys = array_keys($chartData);
         $chartValues = array_values($chartData);
 
+        // Insights
+        $daysPassed = now()->day;
+        $rataHarian = $daysPassed > 0 ? round($totalExpense / $daysPassed) : 0;
+
+        $largestCategory = $expensesByCategory->sortByDesc('total')->first();
+        $kategoriTerbesar = $largestCategory ? $largestCategory->kategori : null;
+        $nominalTerbesar = $largestCategory ? $largestCategory->total : 0;
+
+        $daysInMonth = now()->daysInMonth;
+        $prediksiTotalPengeluaran = $rataHarian * $daysInMonth;
+        $prediksiSisaBudget = $budget - $prediksiTotalPengeluaran;
+
         // Fetch Automations
         $automations = TransaksiOtomatis::where('pengguna_id', $userId)->get();
 
         return view('management.index', compact(
-            'totalIncome', 
-            'totalExpense', 
-            'saldo',
+            'totalIncome',
+            'totalExpense',
+            'saldoTersedia',
+            'totalTabungan',
+            'totalAset',
             'budget',
+            'budgetPct',
             'sisaBudget',
             'isOverBudget',
+            'budgetStatus',
             'chartKeys',
             'chartValues',
+            'rataHarian',
+            'kategoriTerbesar',
+            'nominalTerbesar',
+            'prediksiSisaBudget',
             'automations'
         ));
     }
 
     public function storeIncome(Request $request)
     {
+        $request->merge([
+            'jumlah' => $request->jumlah ? convert_to_idr($request->jumlah) : null,
+        ]);
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'jumlah' => 'required|numeric|min:1',
@@ -75,10 +104,14 @@ class ManagementController extends Controller
 
     public function storeExpense(Request $request)
     {
+        $request->merge([
+            'jumlah' => $request->jumlah ? convert_to_idr($request->jumlah) : null,
+        ]);
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'jumlah' => 'required|numeric|min:1',
-            'kategori' => 'required|in:Kebutuhan Pokok,Mendesak,Kebutuhan Lain',
+            'kategori' => 'required|in:Kebutuhan Pokok,Mendesak,Kebutuhan Lain,Cicilan,Hiburan',
             'tanggal' => 'required|date',
         ]);
 
@@ -95,6 +128,10 @@ class ManagementController extends Controller
 
     public function setBudget(Request $request)
     {
+        $request->merge([
+            'anggaran_bulanan' => $request->anggaran_bulanan ? convert_to_idr($request->anggaran_bulanan) : 0,
+        ]);
+
         $request->validate([
             'anggaran_bulanan' => 'required|numeric|min:0',
         ]);
@@ -108,6 +145,10 @@ class ManagementController extends Controller
 
     public function storeAutomation(Request $request)
     {
+        $request->merge([
+            'jumlah' => $request->jumlah ? convert_to_idr($request->jumlah) : null,
+        ]);
+
         $request->validate([
             'tipe' => 'required|in:pemasukan,pengeluaran',
             'nama' => 'required|string|max:255',

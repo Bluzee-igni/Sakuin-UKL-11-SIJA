@@ -15,6 +15,10 @@ class IncomeController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'jumlah' => $request->jumlah ? convert_to_idr($request->jumlah) : null,
+        ]);
+
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'jumlah' => 'required|numeric|min:1',

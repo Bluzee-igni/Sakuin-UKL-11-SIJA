@@ -25,6 +25,7 @@ class TargetTabungan extends Model
         'prioritas',
         'ikon',
         'warna',
+        'gambar',
     ];
 
     protected $casts = [

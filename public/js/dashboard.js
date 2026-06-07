@@ -57,7 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const currentVal = easeProgress * targetValue;
                     
                     if (isCurrency) {
-                        el.textContent = 'Rp ' + Math.floor(currentVal).toLocaleString('id-ID');
+                        const symbol = el.getAttribute('data-symbol') || 'Rp';
+                        const space = ['Rp', 'RM', 'S$', 'A$', 'ر.س'].includes(symbol) ? ' ' : '';
+                        el.textContent = symbol + space + Math.floor(currentVal).toLocaleString('id-ID');
                     } else {
                         el.textContent = Math.floor(currentVal);
                     }
@@ -66,7 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.requestAnimationFrame(step);
                     } else {
                         if (isCurrency) {
-                            el.textContent = 'Rp ' + targetValue.toLocaleString('id-ID');
+                            const symbol = el.getAttribute('data-symbol') || 'Rp';
+                            const space = ['Rp', 'RM', 'S$', 'A$', 'ر.س'].includes(symbol) ? ' ' : '';
+                            el.textContent = symbol + space + targetValue.toLocaleString('id-ID', {maximumFractionDigits: 2});
                         } else {
                             el.textContent = targetValue;
                         }

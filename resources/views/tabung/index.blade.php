@@ -112,6 +112,8 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 6px;
+            max-width: 320px;
+            margin: 0 auto;
         }
         .heatmap-box {
             aspect-ratio: 1;
@@ -233,30 +235,30 @@
             <div class="fintech-card card-hero p-4 rounded-4 flex-grow-0" data-widget-id="saldo">
                 <i class="ph-fill ph-wallet icon-bg-hero"></i>
                 <div class="position-relative" style="z-index: 1;">
-                    <p class="mb-1 text-white-50 fw-medium small text-uppercase tracking-wide">Total Saldo</p>
+                    <p class="mb-1 text-white-50 fw-medium small text-uppercase tracking-wide">Saldo Tersedia</p>
                     @if($privacyClass === 'saldo-hidden')
                         <div class="text-hero-balance font-poppins mb-4 saldo-hidden" style="font-size: 2rem;">{{ $currencySymbol }} {{ $dots }}</div>
                     @else
-                        <div class="text-hero-balance font-poppins js-count-up mb-4 {{ $privacyClass }} {{ $privasiSensitif }}" data-value="{{ $saldo ?? 0 }}" data-currency="true" style="font-size: 2rem;">
-                            {{ format_currency($saldo ?? 0) }}
+                        <div class="text-hero-balance font-poppins js-count-up mb-4 {{ $privacyClass }} {{ $privasiSensitif }}" data-value="{{ convert_currency_value($saldoTersedia ?? 0) }}" data-currency="true" data-symbol="{{ get_currency_symbol() }}" style="font-size: 2rem;">
+                            {{ format_currency($saldoTersedia ?? 0) }}
                         </div>
                     @endif
                     
                     <div class="bg-white bg-opacity-10 rounded-3 p-3 mt-auto">
                         <div class="d-flex justify-content-between align-items-center border-bottom border-white-50 pb-2 mb-2">
-                            <span class="small text-white-50 d-flex align-items-center gap-1"><i class="ph-fill ph-arrow-circle-down text-light"></i> Pemasukan</span>
+                            <span class="small text-white-50 d-flex align-items-center gap-1"><i class="ph-fill ph-piggy-bank text-light"></i> Total Tabungan</span>
                             @if($privacyClass === 'saldo-hidden')
                                 <span class="fw-bold fs-6 saldo-hidden">{{ $currencySymbol }} {{ $dots }}</span>
                             @else
-                                <span class="fw-bold fs-6 {{ $privacyClass }} {{ $privasiSensitif }}">{{ format_currency($totalIncome ?? 0) }}</span>
+                                <span class="fw-bold fs-6 {{ $privacyClass }} {{ $privasiSensitif }}">{{ format_currency($usedForSaving ?? 0) }}</span>
                             @endif
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="small text-white-50 d-flex align-items-center gap-1"><i class="ph-fill ph-arrow-circle-up text-light"></i> Pengeluaran</span>
+                            <span class="small text-white-50 d-flex align-items-center gap-1"><i class="ph-fill ph-chart-line-up text-light"></i> Total Aset</span>
                             @if($privacyClass === 'saldo-hidden')
                                 <span class="fw-bold fs-6 saldo-hidden">{{ $currencySymbol }} {{ $dots }}</span>
                             @else
-                                <span class="fw-bold fs-6 {{ $privacyClass }} {{ $privasiSensitif }}">{{ format_currency(($usedForSaving ?? 0) + ($usedForExpense ?? 0)) }}</span>
+                                <span class="fw-bold fs-6 {{ $privacyClass }} {{ $privasiSensitif }}">{{ format_currency($totalAset ?? 0) }}</span>
                             @endif
                         </div>
                     </div>
@@ -266,10 +268,10 @@
             {{-- MOTIVATIONAL STREAK --}}
             @if(!isset($widgetVisibility) || $widgetVisibility['streak'])
             <div class="fintech-card p-4 rounded-4 text-center border-0 flex-grow-1 d-flex flex-column justify-content-center" data-widget-id="streak" style="background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);">
-                <div class="icon-container bg-white text-warning mx-auto mb-3 shadow-sm" style="width: 56px; height: 56px; border-radius: 50%;">
+                <div class="icon-container bg-white {{ $hasSavedToday ? 'text-danger' : 'text-secondary' }} mx-auto mb-3 shadow-sm" style="width: 56px; height: 56px; border-radius: 50%;">
                     <i class="ph-fill ph-fire" style="font-size: 2rem;"></i>
                 </div>
-                <h3 class="font-poppins fw-bold text-warning mb-1 js-count-up" data-value="{{ $streak ?? 0 }}" style="font-size: 2.5rem; letter-spacing: -1px;">
+                <h3 class="font-poppins fw-bold text-dark mb-1 js-count-up" data-value="{{ $streak ?? 0 }}" style="font-size: 2.5rem; letter-spacing: -1px;">
                     {{ $streak ?? 0 }} Hari
                 </h3>
                 <h6 class="fw-bold text-dark mb-2">Konsistensi Menabung!</h6>
@@ -279,18 +281,22 @@
                     <div>
                         <div class="small text-muted mb-1" style="font-size: 0.7rem;">Bulan Ini</div>
                         @if($privacyClass === 'saldo-hidden')
-                            <div class="fw-bold text-success saldo-hidden" style="font-size: 0.9rem;">{{ $currencySymbol }} {{ $dots }}</div>
+                            <div class="fw-bold text-success saldo-hidden" style="font-size: 0.9rem;">{{ get_currency_symbol() }} {{ $dots }}</div>
                         @else
-                            <div class="fw-bold text-success {{ $privasiSensitif }}" style="font-size: 0.9rem;">{{ format_currency($totalBulanIni ?? 0) }}</div>
+                            <div class="fw-bold text-success js-count-up {{ $privasiSensitif }}" data-value="{{ convert_currency_value($totalBulanIni ?? 0) }}" data-currency="true" data-symbol="{{ get_currency_symbol() }}" style="font-size: 0.9rem;">
+                                {{ format_currency($totalBulanIni ?? 0) }}
+                            </div>
                         @endif
                     </div>
                     <div class="border-start"></div>
                     <div>
                         <div class="small text-muted mb-1" style="font-size: 0.7rem;">Rata-rata</div>
                         @if($privacyClass === 'saldo-hidden')
-                            <div class="fw-bold text-dark saldo-hidden" style="font-size: 0.9rem;">{{ $currencySymbol }} {{ $dots }}</div>
+                            <div class="fw-bold text-dark saldo-hidden" style="font-size: 0.9rem;">{{ get_currency_symbol() }} {{ $dots }}</div>
                         @else
-                            <div class="fw-bold text-dark {{ $privasiSensitif }}" style="font-size: 0.9rem;">{{ format_currency($rata2PerCheckin ?? 0) }}</div>
+                            <div class="fw-bold text-dark js-count-up {{ $privasiSensitif }}" data-value="{{ convert_currency_value($rata2PerCheckin ?? 0) }}" data-currency="true" data-symbol="{{ get_currency_symbol() }}" style="font-size: 0.9rem;">
+                                {{ format_currency($rata2PerCheckin ?? 0) }}
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -309,12 +315,26 @@
                     
                     {{-- Target Progress --}}
                     <div class="col-md-6 p-4 border-end-md" style="background-color: var(--bg-light-success);">
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <i class="ph-fill ph-target text-success fs-4"></i>
-                            <h6 class="mb-0 font-poppins fw-bold text-dark text-uppercase tracking-wide" style="font-size: 0.8rem;">Target Aktif</h6>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="ph-fill ph-target text-success fs-4"></i>
+                                <h6 class="mb-0 font-poppins fw-bold text-dark text-uppercase tracking-wide" style="font-size: 0.8rem;">Target Aktif</h6>
+                            </div>
+                            @if($activeTarget)
+                            <button type="button" class="btn btn-sm text-danger p-0 shadow-none" onclick="confirmDeleteTarget('{{ $activeTarget->id }}', '{{ addslashes($activeTarget->nama) }}', {{ $activeTarget->total_terkumpul }})" title="Hapus Target">
+                                <i class="ph ph-trash fs-5"></i>
+                            </button>
+                            <form id="delete-form-{{ $activeTarget->id }}" action="{{ route('tabung.destroy', $activeTarget->id) }}" method="POST" class="d-none">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                            @endif
                         </div>
                         
                         @if($activeTarget)
+                            @if($activeTarget->gambar)
+                                <img src="{{ asset('storage/' . $activeTarget->gambar) }}" class="img-fluid rounded-4 mb-3 shadow-sm w-100" style="height: 140px; object-fit: cover;" alt="{{ $activeTarget->nama }}">
+                            @endif
                             <h4 class="fw-bold text-dark mb-3">{{ $activeTarget->nama }}</h4>
                             <div class="mt-auto">
                                 <div class="d-flex justify-content-between align-items-end mb-2">
@@ -378,6 +398,12 @@
                                 <button type="submit" class="btn btn-success-modern w-100 py-2 mt-1 rounded-3 fw-bold shadow-sm">
                                     <i class="ph-fill ph-paper-plane-right me-1"></i> Simpan
                                 </button>
+                                <div class="text-center mt-2">
+                                    <small class="text-muted" style="font-size: 0.72rem;">
+                                        <i class="ph ph-info"></i> Sisa Saldo Tersedia: 
+                                        <span class="fw-bold text-dark {{ $privasiSensitif }}">{{ format_currency($saldoTersedia ?? 0) }}</span>
+                                    </small>
+                                </div>
                             </form>
                         @else
                             <div class="text-center py-4">
@@ -410,7 +436,7 @@
                 </div>
 
                 <div class="heatmap-container mb-4 px-2">
-                    <div class="d-flex justify-content-between mb-2 px-1">
+                    <div class="d-flex justify-content-between mb-2 px-1" style="max-width: 320px; margin: 0 auto;">
                         <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Min</small>
                         <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Sen</small>
                         <small class="text-muted fw-bold" style="font-size: 0.75rem; width: 14.28%; text-align: center;">Sel</small>
@@ -478,18 +504,39 @@
                 <div class="list-group list-group-flush" style="max-height: 250px; overflow-y: auto;">
                     @foreach($targets as $tg)
                         @if(!$activeTarget || $activeTarget->id !== $tg->id)
-                            <div class="list-group-item px-3 py-2 border-0 border-bottom">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.85rem; max-width: 150px;">{{ $tg->nama }}</div>
-                                    <span class="small text-muted" style="font-size: 0.7rem;">{{ number_format($tg->persentase_progres, 0) }}%</span>
+                            <div class="list-group-item px-3 py-3 border-0 border-bottom">
+                                <div class="d-flex gap-3">
+                                    @if($tg->gambar)
+                                        <img src="{{ asset('storage/' . $tg->gambar) }}" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;" alt="{{ $tg->nama }}">
+                                    @else
+                                        <div class="rounded-3 d-flex justify-content-center align-items-center text-success" style="width: 50px; height: 50px; background-color: var(--bg-light-success); flex-shrink: 0;">
+                                            <i class="ph-fill ph-target fs-3"></i>
+                                        </div>
+                                    @endif
+                                    <div class="flex-grow-1 min-w-0 d-flex flex-column justify-content-center">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="fw-bold text-dark text-truncate pe-2" style="font-size: 0.85rem;">{{ $tg->nama }}</div>
+                                            <span class="small fw-bold text-muted" style="font-size: 0.7rem;">{{ number_format($tg->persentase_progres, 0) }}%</span>
+                                        </div>
+                                        <div class="progress-modern w-100 mb-2" style="height: 5px; background-color: #f1f5f9;">
+                                            <div class="progress-bar-modern bg-success" style="width: {{ $tg->persentase_progres }}%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <button type="button" class="btn btn-sm text-danger p-0 shadow-none" onclick="confirmDeleteTarget('{{ $tg->id }}', '{{ addslashes($tg->nama) }}', {{ $tg->total_terkumpul }})" title="Hapus Target">
+                                                <i class="ph ph-trash fs-6"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $tg->id }}" action="{{ route('tabung.destroy', $tg->id) }}" method="POST" class="d-none">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                            
+                                            <form action="{{ route('targets.active', $tg->id) }}" method="POST" class="text-end">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm text-primary p-0 shadow-none text-decoration-none" style="font-size: 0.75rem; font-weight: 600;">Jadikan Aktif <i class="ph-bold ph-arrow-right"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="progress-modern w-100" style="height: 4px; background-color: #f1f5f9;">
-                                    <div class="progress-bar-modern bg-secondary" style="width: {{ $tg->persentase_progres }}%"></div>
-                                </div>
-                                <form action="{{ route('targets.active', $tg->id) }}" method="POST" class="mt-2 text-end">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm text-primary p-0 shadow-none" style="font-size: 0.7rem; font-weight: 600;">Jadikan Aktif</button>
-                                </form>
                             </div>
                         @endif
                     @endforeach
@@ -578,6 +625,36 @@
 
 @push('scripts')
 <script>
+    function confirmDeleteTarget(id, name, totalSavings) {
+        let text = "Tindakan ini tidak dapat dibatalkan.";
+        if (totalSavings > 0) {
+            // Format currency in JS
+            let formattedSavings = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalSavings);
+            text = `Target ini sudah memiliki saldo terkumpul sebesar ${formattedSavings}. Jika dihapus, saldo tersebut akan dikembalikan ke Saldo Tersedia Anda.`;
+        }
+
+        Swal.fire({
+            title: `Hapus Target "${name}"?`,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp animate__faster'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`delete-form-${id}`).submit();
+            }
+        });
+    }
+
     // Initialize tooltips for heatmap
     document.addEventListener('DOMContentLoaded', function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

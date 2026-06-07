@@ -83,4 +83,14 @@ class Pengguna extends Authenticatable
         $setting = $this->pengaturan()->where('kunci', $kunci)->first();
         return $setting ? $setting->nilai : $default;
     }
+
+    public function getFotoUrlAttribute(): ?string
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
+    }
+
+    public function getInisialAttribute(): string
+    {
+        return strtoupper(substr($this->nama ?? 'U', 0, 1));
+    }
 }

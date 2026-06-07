@@ -31,9 +31,9 @@
         </div>
 
         {{-- DAFTAR TRANSAKSI --}}
-        <div class="list-group list-group-flush notifikasi-list">
+        <div class="list-group list-group-flush">
             @forelse($transactions as $trx)
-                <div class="list-group-item p-4 border-bottom border-color list-item-modern dropdown-item" style="cursor: default;">
+                <div class="list-group-item p-4 border-bottom border-color list-item-modern" style="cursor: default;">
                     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
                         
                         <div class="d-flex align-items-center gap-3">
@@ -56,6 +56,7 @@
                                 <h5 class="mb-0 fw-bold text-success {{ isset($modePrivasi) && $modePrivasi ? 'privasi-sensitif' : '' }}">+{{ format_currency($trx->jumlah) }}</h5>
                             @endif
                         </div>
+                    </div>
                 </div>
             @empty
                 <div class="p-5 text-center">

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="{{ $userTheme ?? 'light' }}">
 <head>
+    <script>
+        // Sync theme ke localStorage agar halaman login/register bisa mengikuti
+        localStorage.setItem('sakuin_theme', '{{ $userTheme ?? 'light' }}');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sakuin - @yield('title', 'Aplikasi Keuangan')</title>
@@ -97,18 +101,23 @@
             </div>
 
             <div class="dropdown">
+                @php $navUser = auth()->user(); @endphp
                 <button class="btn btn-light rounded-pill d-flex align-items-center gap-2 px-3 py-2 border border-color dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: var(--bg-card); color: var(--text-main);">
-                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.8rem; font-weight: bold;">
-                        {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 1)) }}
-                    </div>
-                    <span class="d-none d-md-block fw-medium small">{{ auth()->user()->nama ?? 'User' }}</span>
+                    @if($navUser->foto_url)
+                        <img src="{{ $navUser->foto_url }}" alt="{{ $navUser->inisial }}" class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;">
+                    @else
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.8rem; font-weight: bold;">
+                            {{ $navUser->inisial }}
+                        </div>
+                    @endif
+                    <span class="d-none d-md-block fw-medium small">{{ $navUser->nama ?? 'User' }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2 rounded-4 p-2">
                     <li><a class="dropdown-item rounded-3 mb-1" href="{{ route('profil.index') }}"><i class="ph ph-user me-2"></i>Profil</a></li>
                     <li>
-                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        <form action="{{ route('logout') }}" method="POST" class="m-0" id="logout-form-nav">
                             @csrf
-                            <button type="submit" class="dropdown-item rounded-3 text-danger">
+                            <button type="button" class="dropdown-item rounded-3 text-danger" onclick="confirmLogout('logout-form-nav')">
                                 <i class="ph ph-sign-out me-2"></i>Logout
                             </button>
                         </form>
@@ -149,7 +158,7 @@
                     </a>
                     <a href="{{ route('riwayat.index') }}" class="nav-link {{ request()->routeIs('riwayat.index') ? 'active' : '' }}">
                         <i class="ph ph-clock-counter-clockwise"></i>
-                        <span>Riwayat Transaksi</span>
+                        <span>Riwayat </span>
                     </a>
                 </nav>
 
@@ -160,9 +169,9 @@
                             <i class="ph ph-gear"></i>
                             <span>Pengaturan</span>
                         </a>
-                        <form action="{{ route('logout') }}" method="POST" class="m-0 mt-2">
+                        <form action="{{ route('logout') }}" method="POST" class="m-0 mt-2" id="logout-form-sidebar">
                             @csrf
-                            <button type="submit" class="nav-link text-danger w-100 text-start border-0 bg-transparent">
+                            <button type="button" class="nav-link text-danger w-100 text-start border-0 bg-transparent" onclick="confirmLogout('logout-form-sidebar')">
                                 <i class="ph ph-sign-out"></i>
                                 <span>Keluar</span>
                             </button>
@@ -190,6 +199,33 @@
     <!-- Optional Scripts -->
     @stack('scripts')
     
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmLogout(formId) {
+            Swal.fire({
+                title: 'Apakah Anda Yakin?',
+                text: "Anda akan keluar dari sesi ini.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Keluar!',
+                cancelButtonText: 'Batal',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp animate__faster'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    </script>
+
     <!-- Custom JS -->
     <script src="{{ asset('js/dashboard.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('js/auth-toggle.js') }}?v={{ time() }}"></script>

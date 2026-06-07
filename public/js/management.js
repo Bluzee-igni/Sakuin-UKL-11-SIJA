@@ -1,78 +1,58 @@
-// public/js/management.js
-
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Initialize Chart using dynamic data from Backend (window.chartData)
     const initChart = () => {
         const ctx = document.getElementById('expenseChart');
         if (!ctx) return;
 
-        // Data from PHP Backend
         const cData = window.chartData || { labels: [], data: [] };
         const hasData = cData.labels.length > 0;
 
-        // Generate soft colors based on label index
         const baseColors = [
-            '#10B981', // Emerald
-            '#F59E0B', // Amber
-            '#3B82F6', // Blue
-            '#8B5CF6', // Purple
-            '#EF4444', // Red
-            '#06B6D4', // Cyan
-            '#F43F5E', // Rose
-            '#84CC16', // Lime
+            '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6',
+            '#EF4444', '#06B6D4', '#F43F5E', '#84CC16',
         ];
 
-        const generateColors = (count) => {
-            let colors = [];
-            for (let i = 0; i < count; i++) {
-                colors.push(baseColors[i % baseColors.length]);
-            }
-            return colors;
+        const getColors = (count) => {
+            return Array.from({ length: count }, (_, i) => baseColors[i % baseColors.length]);
         };
 
-        const chartInstance = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: hasData ? cData.labels : ['Belum Ada Data'],
                 datasets: [{
-                    data: hasData ? cData.data : [1], // Show gray ring if 0
-                    backgroundColor: hasData ? generateColors(cData.labels.length) : ['#E5E7EB'],
+                    data: hasData ? cData.data : [1],
+                    backgroundColor: hasData ? getColors(cData.labels.length) : ['#E5E7EB'],
                     borderWidth: 0,
-                    hoverOffset: hasData ? 4 : 0
+                    hoverOffset: hasData ? 4 : 0,
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '70%',
+                cutout: '78%',
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            font: {
-                                family: "'Poppins', sans-serif",
-                                size: 12
-                            }
-                        }
-                    },
+                    legend: { display: false },
                     tooltip: {
                         enabled: hasData,
+                        backgroundColor: '#1F2937',
+                        titleFont: { size: 11, weight: '600' },
+                        bodyFont: { size: 11 },
+                        padding: 10,
+                        cornerRadius: 8,
+                        displayColors: true,
                         callbacks: {
                             label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.raw !== null) {
-                                    label += 'Rp ' + context.raw.toLocaleString('id-ID');
-                                }
-                                return label;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const pct = total > 0 ? ((context.raw / total) * 100).toFixed(1) : '0';
+                                const formatted = new Intl.NumberFormat('id-ID').format(context.raw);
+                                return ` ${context.label}: Rp ${formatted} (${pct}%)`;
                             }
                         }
                     }
+                },
+                animation: {
+                    animateRotate: true,
+                    duration: 600,
                 }
             }
         });
