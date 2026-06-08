@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Models\Pengguna;
 use App\Models\TargetTabungan;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -18,12 +18,14 @@ class DashboardController extends Controller
     public function ringkasan(Request $request)
     {
         $penggunaId = Auth::id();
+        /** @var Pengguna $user */
+        $user = Auth::user();
         
         $totalPemasukan = Pemasukan::milikPengguna($penggunaId)->sum('jumlah') ?? 0;
         $totalPengeluaran = Pengeluaran::milikPengguna($penggunaId)->sum('jumlah') ?? 0;
         
         $targetAktif = TargetTabungan::milikPengguna($penggunaId)
-            ->aktif()
+            ->where('status', 'aktif')
             ->with(['transaksiTabungan'])
             ->get();
             
@@ -41,8 +43,8 @@ class DashboardController extends Controller
             'total_pengeluaran' => (float) $totalPengeluaran,
             'total_ditabung' => (float) $totalTerkumpul,
             'pengeluaran_bulan_ini' => (float) $pengeluaranBulanIni,
-            'anggaran_bulanan' => (float) Auth::user()->anggaran_bulanan,
-            'sisa_anggaran' => (float) max(0, Auth::user()->anggaran_bulanan - $pengeluaranBulanIni),
+            'anggaran_bulanan' => (float) $user->anggaran_bulanan,
+            'sisa_anggaran' => (float) max(0, $user->anggaran_bulanan - $pengeluaranBulanIni),
             'jumlah_target_aktif' => $targetAktif->count(),
         ];
 

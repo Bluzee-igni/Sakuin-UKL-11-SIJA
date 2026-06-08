@@ -112,7 +112,7 @@ class TargetTabunganController extends Controller
             'persentase' => (float) $target->persentase_progres,
             'sisa_target' => max(0, $target->jumlah_target - $target->total_terkumpul),
             'jumlah_transaksi' => $target->transaksiTabungan()->count(),
-            'rata_rata_setoran' => $target->transaksiTabungan()->setoran()->avg('jumlah') ?? 0,
+            'rata_rata_setoran' => $target->transaksiTabungan()->where('tipe', 'setor')->avg('jumlah') ?? 0,
         ];
 
         return $this->successResponse($summary, 'Ringkasan target tabungan');

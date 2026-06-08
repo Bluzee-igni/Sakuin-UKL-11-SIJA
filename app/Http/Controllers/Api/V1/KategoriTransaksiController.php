@@ -8,7 +8,6 @@ use App\Http\Requests\Api\V1\SimpanKategoriTransaksiRequest;
 use App\Http\Requests\Api\V1\PerbaruiKategoriTransaksiRequest;
 use App\Http\Resources\KategoriTransaksiResource;
 use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 

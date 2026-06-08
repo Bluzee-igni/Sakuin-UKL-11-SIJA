@@ -61,8 +61,8 @@
         
         <div class="row g-4">
             <div class="col-lg-8">
-                <div class="fintech-card p-4 p-md-5 h-100 border-0 shadow-sm">
-                    <h6 class="fw-bold mb-4 border-bottom pb-2">Informasi Target</h6>
+                <div class="fintech-card p-4 p-md-5 h-100 rounded-4 border-color">
+                    <h6 class="font-poppins fw-bold mb-4 border-bottom pb-2">Informasi Target</h6>
 
                     <div class="mb-4">
                         <label class="form-label text-dark small fw-bold">Nama Target Impian</label>
@@ -116,8 +116,8 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="fintech-card p-4 h-100 border-0 shadow-sm bg-white d-flex flex-column">
-                    <h6 class="fw-bold mb-4 border-bottom pb-2">Visualisasi Target</h6>
+                <div class="fintech-card p-4 h-100 rounded-4 border-color d-flex flex-column">
+                    <h6 class="font-poppins fw-bold mb-4 border-bottom pb-2">Visualisasi Target</h6>
                     
                     <label class="form-label text-dark small fw-bold mb-2">Unggah Gambar (Opsional)</label>
                     <p class="small text-muted mb-3" style="font-size: 0.75rem;">Ubah gambar target tabungan ini. Kosongkan jika tidak ingin mengubah.</p>

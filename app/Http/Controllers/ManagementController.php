@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Models\Pengguna;
 use App\Models\TransaksiOtomatis;
 use App\Services\FinancialService;
 
@@ -14,6 +15,8 @@ class ManagementController extends Controller
     public function index()
     {
         $userId = Auth::id();
+        /** @var Pengguna $user */
+        $user = Auth::user();
 
         $totalIncome = Pemasukan::milikPengguna($userId)->whereMonth('tanggal', now()->month)->sum('jumlah');
         $totalExpense = Pengeluaran::milikPengguna($userId)->whereMonth('tanggal', now()->month)->sum('jumlah');
@@ -24,7 +27,7 @@ class ManagementController extends Controller
         $totalTabungan = $metrics['total_tabungan'];
         $totalAset = $metrics['total_aset'];
 
-        $budget = Auth::user()->anggaran_bulanan;
+        $budget = $user->anggaran_bulanan;
         $budgetPct = $budget > 0 ? min(100, round(($totalExpense / $budget) * 100)) : 0;
         $sisaBudget = max(0, $budget - $totalExpense);
         $isOverBudget = $totalExpense > $budget && $budget > 0;
@@ -136,6 +139,7 @@ class ManagementController extends Controller
             'anggaran_bulanan' => 'required|numeric|min:0',
         ]);
 
+        /** @var Pengguna $user */
         $user = Auth::user();
         $user->anggaran_bulanan = $request->anggaran_bulanan;
         $user->save();

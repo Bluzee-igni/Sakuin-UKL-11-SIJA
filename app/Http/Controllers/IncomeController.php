@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemasukan;
+use App\Models\Pengguna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +27,9 @@ class IncomeController extends Controller
             'catatan' => 'nullable|string|max:255',
         ]);
 
-        Auth::user()->pemasukan()->create($validated);
+        /** @var Pengguna $user */
+        $user = Auth::user();
+        $user->pemasukan()->create($validated);
 
         return redirect()->route('incomes.create')->with('success', 'Pemasukan berhasil ditambahkan');
     }

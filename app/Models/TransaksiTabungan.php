@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static> setoran()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> penarikan()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> rentangTanggal($mulai, $selesai)
+ *
+ * @property int $id
+ * @property int $target_tabungan_id
+ * @property string $tipe
+ * @property float|int $jumlah
+ */
 class TransaksiTabungan extends Model
 {
     use HasFactory;

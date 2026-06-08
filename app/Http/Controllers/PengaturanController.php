@@ -160,9 +160,7 @@ class PengaturanController extends Controller
         $userId = Auth::id();
 
         $this->pengaturanService->simpanBanyak($userId, [
-            'sembunyikan_saldo' => $request->has('sembunyikan_saldo') ? '1' : '0',
-            'mode_privasi'      => $request->has('mode_privasi') ? '1' : '0',
-            'blur_saldo'        => $request->has('blur_saldo') ? '1' : '0',
+            'hide_balance' => $request->has('hide_balance') ? '1' : '0',
         ]);
 
         return redirect()->route('pengaturan.index', '#privasi')

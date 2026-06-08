@@ -583,33 +583,13 @@
                 <form action="{{ route('pengaturan.privasi') }}" method="POST">
                     @csrf
                     
-                    <div class="switch-modern">
-                        <div>
-                            <div class="fw-bold text-dark">Sembunyikan Nominal Saldo</div>
-                            <div class="small text-muted">Ubah tampilan saldo menjadi •••••••• secara permanen di dashboard.</div>
-                        </div>
-                        <div class="form-check form-switch fs-4 mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" name="sembunyikan_saldo" value="1" {{ ($settings['sembunyikan_saldo'] ?? '0') == '1' ? 'checked' : '' }}>
-                        </div>
-                    </div>
-
-                    <div class="switch-modern">
-                        <div>
-                            <div class="fw-bold text-dark">Mode Blur Layar (Anti-Peeping)</div>
-                            <div class="small text-muted">Nominal akan terlihat buram (blur). Cukup arahkan kursor (hover) untuk melihat nominal aslinya.</div>
-                        </div>
-                        <div class="form-check form-switch fs-4 mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" name="blur_saldo" value="1" {{ ($settings['blur_saldo'] ?? '0') == '1' ? 'checked' : '' }}>
-                        </div>
-                    </div>
-
                     <div class="switch-modern border-danger-subtle bg-danger-subtle bg-opacity-10">
                         <div>
-                            <div class="fw-bold text-danger">Mode Privasi Ketat</div>
-                            <div class="small text-muted">Menyamarkan semua data sensitif sekaligus (saldo, nominal target, histori). Cocok saat membuka app di tempat umum.</div>
+                            <div class="fw-bold text-danger">🔒 Sembunyikan Semua Nominal</div>
+                            <div class="small text-muted">Sembunyikan seluruh nominal uang (saldo, target tabungan, ringkasan keuangan, statistik) menjadi •••••••• di semua halaman. Cocok saat membuka aplikasi di tempat umum.</div>
                         </div>
                         <div class="form-check form-switch fs-4 mb-0">
-                            <input class="form-check-input border-danger" type="checkbox" role="switch" name="mode_privasi" value="1" {{ ($settings['mode_privasi'] ?? '0') == '1' ? 'checked' : '' }}>
+                            <input class="form-check-input border-danger" type="checkbox" role="switch" name="hide_balance" value="1" {{ ($settings['hide_balance'] ?? '0') == '1' ? 'checked' : '' }}>
                         </div>
                     </div>
 

@@ -21,7 +21,16 @@ class RegisterController extends Controller
             'password' => 'required|min:6',
         ]);
 
+        $baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', explode('@', $validated['email'])[0]));
+        $username = $baseUsername;
+        $counter = 1;
+        while (Pengguna::where('username', $username)->exists()) {
+            $username = $baseUsername . $counter;
+            $counter++;
+        }
+
         $user = Pengguna::create([
+            'username' => $username,
             'nama' => $validated['name'],
             'email' => $validated['email'],
             'kata_sandi' => $validated['password'],

@@ -38,7 +38,7 @@ class NotifikasiController extends Controller
     public function tandaiSemuaBaca()
     {
         Notifikasi::where('pengguna_id', Auth::id())
-            ->belumDibaca()
+            ->whereNull('dibaca_pada')
             ->update(['dibaca_pada' => now()]);
 
         return $this->successResponse(null, 'Semua notifikasi ditandai sudah dibaca');

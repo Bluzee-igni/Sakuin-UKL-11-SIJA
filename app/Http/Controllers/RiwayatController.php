@@ -8,7 +8,6 @@ use App\Models\TransaksiTabungan;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class RiwayatController extends Controller
 {

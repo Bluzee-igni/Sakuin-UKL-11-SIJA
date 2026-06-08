@@ -3,7 +3,7 @@
 @section('title', 'Profil Saya - Sakuin')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid px-3 px-xl-4 py-4">
     <div class="d-flex align-items-center justify-content-between mb-4">
         <div>
             <h4 class="mb-0 font-poppins fw-bold text-dark">Profil Saya</h4>
@@ -88,7 +88,7 @@
                     <span class="text-muted small d-flex align-items-center gap-1">
                         <i class="ph-fill ph-wallet text-primary"></i> Saldo Tersedia
                     </span>
-                    <span class="fw-bold text-dark fs-5 {{ isset($modePrivasi) && $modePrivasi ? 'privasi-sensitif' : '' }}">{{ format_currency($saldoSaatIni) }}</span>
+                    <span class="fw-bold text-dark fs-5 {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}">{{ $hideBalance ? '••••••••' : format_currency($saldoSaatIni) }}</span>
                 </div>
 
                 @php
@@ -126,11 +126,11 @@
                         <span class="fs-3">{{ $targetTerdekat->ikon ?? '🎯' }}</span>
                         <div>
                             <p class="fw-bold text-dark mb-0">{{ $targetTerdekat->nama }}</p>
-                            <small class="text-muted">{{ format_currency($targetTerdekat->total_terkumpul) }} dari {{ format_currency($targetTerdekat->jumlah_target) }}</small>
+                            <small class="text-muted">{{ $hideBalance ? '••••••••' : format_currency($targetTerdekat->total_terkumpul) }} dari {{ $hideBalance ? '••••••••' : format_currency($targetTerdekat->jumlah_target) }}</small>
                         </div>
                     </div>
                     <div class="progress-modern mb-2">
-                        <div class="progress-bar-modern" style="width: {{ $targetTerdekat->persentase_progres }}%"></div>
+                        <div class="progress-bar-modern js-progress-bar" data-width="{{ number_format($targetTerdekat->persentase_progres, 1) }}"></div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-bold text-primary" style="font-size: 0.85rem;">{{ $targetTerdekat->persentase_progres }}%</span>
@@ -178,7 +178,7 @@
                             </div>
                             <span class="text-muted" style="font-size: 0.7rem;">Saldo Saat Ini</span>
                         </div>
-                        <p class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">{{ format_currency($saldoSaatIni) }}</p>
+                        <p class="fw-bold text-dark mb-0 {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}" style="font-size: 0.95rem;">{{ $hideBalance ? '••••••••' : format_currency($saldoSaatIni) }}</p>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -189,7 +189,7 @@
                             </div>
                             <span class="text-muted" style="font-size: 0.7rem;">Total Menabung</span>
                         </div>
-                        <p class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">{{ format_currency($totalMenabung) }}</p>
+                        <p class="fw-bold text-dark mb-0 {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}" style="font-size: 0.95rem;">{{ $hideBalance ? '••••••••' : format_currency($totalMenabung) }}</p>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -324,6 +324,53 @@
                     <div style="width: 12px; height: 12px; border-radius: 2px;" class="heatmap-level-3"></div>
                     <div style="width: 12px; height: 12px; border-radius: 2px;" class="heatmap-level-4"></div>
                     <span>Banyak</span>
+                </div>
+            </div>
+
+            {{-- ACHIEVEMENTS --}}
+            <div class="fintech-card p-4 rounded-4 border-color">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div>
+                        <h6 class="font-poppins fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                            <i class="ph-fill ph-trophy text-warning"></i> Prestasi
+                        </h6>
+                        <small class="text-muted">{{ $achievements['total_tercapai'] }} dari {{ $achievements['total_semua'] }} terkunci</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $achievements['persentase'] }}%</span>
+                        <div style="width: 60px; height: 6px; background: #f3f4f6; border-radius: 10px; overflow: hidden;">
+                            <div class="js-progress-bar" data-width="{{ number_format($achievements['persentase'], 1) }}" style="height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: 10px; transition: width 0.6s ease;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    @foreach($achievements['daftar'] as $ach)
+                        @php $isUnlocked = $ach['status'] === 'tercapai'; @endphp
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3 p-3 rounded-4 border {{ $isUnlocked ? 'border-success bg-light-success' : 'border-color bg-light' }}" style="transition: all 0.15s ease;">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 js-achievement-badge" 
+                                     data-bg="{{ $isUnlocked ? $ach['warna'] : '#e5e7eb' }}"
+                                     data-text-color="{{ $isUnlocked ? '#ffffff' : '#9ca3af' }}"
+                                     style="width: 44px; height: 44px;">
+                                    <i class="{{ $ach['ikon'] }}" style="font-size: 1.3rem; color: white;"></i>
+                                </div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="fw-bold text-dark" style="font-size: 0.8rem;">{{ $ach['judul'] }}</div>
+                                    <div class="text-muted" style="font-size: 0.7rem;">{{ $ach['deskripsi'] }}</div>
+                                    @if($isUnlocked && $ach['tercapai_pada'])
+                                        <div class="text-success d-flex align-items-center gap-1 mt-1" style="font-size: 0.65rem;">
+                                            <i class="ph-fill ph-check-circle"></i> Tercapai
+                                        </div>
+                                    @elseif(!$isUnlocked)
+                                        <div class="text-muted d-flex align-items-center gap-1 mt-1" style="font-size: 0.65rem;">
+                                            <i class="ph ph-lock"></i> Belum Tercapai
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -492,6 +539,17 @@
                     icon.className = 'ph ph-eye-slash';
                 }
             });
+        });
+
+        // Apply dynamic progress bar widths
+        document.querySelectorAll('.js-progress-bar').forEach(function(el) {
+            el.style.width = el.getAttribute('data-width') + '%';
+        });
+
+        // Apply dynamic achievement badge styles
+        document.querySelectorAll('.js-achievement-badge').forEach(function(el) {
+            el.style.background = el.getAttribute('data-bg');
+            el.style.color = el.getAttribute('data-text-color');
         });
 
         // Loading state on form submit

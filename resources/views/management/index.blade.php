@@ -257,7 +257,7 @@
                     <div class="row g-3">
                         {{-- INCOME --}}
                         <div class="col-md-6">
-                            <div class="fintech-card p-4 h-100" style="border-top: 3px solid var(--success);">
+                            <div class="fintech-card p-4 h-100 rounded-4 border-color" style="border-top: 3px solid var(--success);">
                                 <div class="d-flex align-items-center gap-2 mb-4">
                                     <div class="insight-icon bg-light-success text-success rounded-circle">
                                         <i class="ph-fill ph-trend-up fs-5"></i>
@@ -293,7 +293,7 @@
 
                         {{-- EXPENSE --}}
                         <div class="col-md-6">
-                            <div class="fintech-card p-4 h-100" style="border-top: 3px solid var(--danger);">
+                            <div class="fintech-card p-4 h-100 rounded-4 border-color" style="border-top: 3px solid var(--danger);">
                                 <div class="d-flex align-items-center gap-2 mb-4">
                                     <div class="insight-icon bg-light-danger text-danger rounded-circle">
                                         <i class="ph-fill ph-trend-down fs-5"></i>
@@ -342,7 +342,7 @@
 
                 {{-- === TAB: Automasi === --}}
                 <div class="tab-pane fade" id="automasi" role="tabpanel">
-                    <div class="fintech-card p-4 mb-4">
+                    <div class="fintech-card p-4 mb-4 rounded-4 border-color">
                         <div class="d-flex align-items-center gap-2 mb-3">
                             <div class="insight-icon rounded-circle" style="background: rgba(5, 150, 105, 0.1); color: var(--primary);">
                                 <i class="ph-fill ph-robot fs-5"></i>
@@ -402,7 +402,7 @@
                     </h6>
 
                     @forelse($automations as $auto)
-                        <div class="fintech-card p-3 mb-2 d-flex align-items-center justify-content-between">
+                        <div class="fintech-card p-3 mb-2 d-flex align-items-center justify-content-between rounded-4 border-color">
                             <div class="d-flex align-items-center gap-3 min-w-0">
                                 <div class="insight-icon rounded-circle flex-shrink-0 {{ $auto->tipe == 'pemasukan' ? 'bg-light-success text-success' : 'bg-light-danger text-danger' }}">
                                     <i class="ph-fill {{ $auto->tipe == 'pemasukan' ? 'ph-trend-up' : 'ph-trend-down' }} fs-5"></i>
@@ -428,7 +428,7 @@
                             </form>
                         </div>
                     @empty
-                        <div class="fintech-card p-4 text-center">
+                        <div class="fintech-card p-4 text-center rounded-4 border-color">
                             <div class="insight-icon bg-light text-muted rounded-circle mx-auto mb-2" style="width: 48px; height: 48px;">
                                 <i class="ph ph-robot fs-4"></i>
                             </div>
@@ -443,7 +443,7 @@
         <div class="col-lg-5 d-flex flex-column gap-4">
 
             {{-- === BUDGET CARD === --}}
-            <div class="fintech-card p-4">
+            <div class="fintech-card p-4 rounded-4 border-color">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="d-flex align-items-center gap-2">
                         <div class="insight-icon rounded-circle" style="background: {{ $budgetStatus === 'bahaya' ? 'var(--budget-bahaya-bg)' : ($budgetStatus === 'waspada' ? 'var(--budget-waspada-bg)' : ($budgetStatus === 'aman' ? 'var(--budget-aman-bg)' : 'var(--bg-main)')) }}; color: {{ $budgetColor }};">
@@ -571,7 +571,7 @@
             </div>
 
             {{-- === CHART CARD === --}}
-            <div class="fintech-card p-4">
+            <div class="fintech-card p-4 rounded-4 border-color">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="d-flex align-items-center gap-2">
                         <div class="insight-icon rounded-circle" style="width: 32px; height: 32px; background: rgba(5, 150, 105, 0.1); color: var(--primary);">

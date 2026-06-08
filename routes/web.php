@@ -23,9 +23,9 @@ Route::post('/logout', [\App\Http\Controllers\LoginController::class, 'logout'])
 
 // protected (wajib login)
 Route::middleware('auth')->group(function () {
-    Route::resource('tabung', \App\Http\Controllers\TabungController::class);
+    Route::resource('tabung', \App\Http\Controllers\TabungController::class)->except(['show']);
 
-    Route::post('/targets', [\App\Http\Controllers\TabungController::class, 'storeTarget'])->name('targets.store');
+    Route::post('/targets', [\App\Http\Controllers\TabungController::class, 'store'])->name('targets.store');
     Route::post('/targets/{target}/active', [\App\Http\Controllers\TabungController::class, 'setActive'])->name('targets.active');
 
     Route::post('/checkins', [\App\Http\Controllers\TabungController::class, 'storeCheckin'])->name('checkins.store');
@@ -68,4 +68,27 @@ Route::middleware('auth')->group(function () {
 // Riwayat Transaksi
 Route::middleware('auth')->group(function () {
     Route::get('/riwayat-transaksi', [\App\Http\Controllers\RiwayatController::class, 'index'])->name('riwayat.index');
+});
+
+// Sosial Feed — Bagikan Progres & Interaksi
+Route::middleware('auth')->prefix('sosial')->name('sosial.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\SocialController::class, 'index'])->name('index');
+    Route::post('/bagikan', [\App\Http\Controllers\SocialController::class, 'share'])->name('share');
+    Route::post('/{share}/suka', [\App\Http\Controllers\SocialController::class, 'toggleLike'])->name('like');
+    Route::post('/{share}/komentar', [\App\Http\Controllers\SocialController::class, 'comment'])->name('comment');
+    Route::delete('/{share}', [\App\Http\Controllers\SocialController::class, 'destroy'])->name('destroy');
+
+    // User Search
+    Route::get('/cari-user', [\App\Http\Controllers\SocialController::class, 'search'])->name('search');
+});
+
+// Public Profile
+Route::middleware('auth')->get('/user/{username}', [\App\Http\Controllers\SocialController::class, 'profile'])->name('user.profile');
+
+// Friend System
+Route::middleware('auth')->prefix('friends')->name('friends.')->group(function () {
+    Route::post('/send/{user}', [\App\Http\Controllers\SocialController::class, 'sendFriendRequest'])->name('send');
+    Route::post('/accept/{friendRequest}', [\App\Http\Controllers\SocialController::class, 'acceptFriendRequest'])->name('accept');
+    Route::post('/reject/{friendRequest}', [\App\Http\Controllers\SocialController::class, 'rejectFriendRequest'])->name('reject');
+    Route::post('/remove/{user}', [\App\Http\Controllers\SocialController::class, 'removeFriend'])->name('remove');
 });

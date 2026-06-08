@@ -30,21 +30,23 @@ class NotifikasiService
 
             // 1. Pengingat Menabung (Jika belum nabung hari ini)
             if ($user->getSetting('notif_menabung', '1') === '1') {
-                $hasNabugToday = TransaksiTabungan::whereHas('targetTabungan', function ($q) use ($user) {
+                $hasNabungToday = TransaksiTabungan::whereHas('targetTabungan', function ($q) use ($user) {
                     $q->where('pengguna_id', $user->id);
                 })
-                ->where('jenis', 'setoran')
+                ->where('tipe', 'setor')
                 ->where('tanggal_transaksi', $today)
                 ->exists();
 
-                if (!$hasNabugToday) {
+                if (!$hasNabungToday) {
                     $this->createNotif($user->id, 'pengingat', 'Tingkatkan streakmu hari ini', 'Jangan lupa menabung hari ini untuk menjaga streak konsistensimu!');
                 }
             }
 
             // 2. Pengingat Target (Jika target > 90% tapi belum selesai)
             if ($user->getSetting('notif_target', '1') === '1') {
-                $targets = TargetTabungan::milikPengguna($user->id)->aktif()->get();
+                $targets = TargetTabungan::milikPengguna($user->id)
+                    ->where('status', 'aktif')
+                    ->get();
                 foreach ($targets as $target) {
                     $progress = $target->persentase_progres;
                     if ($progress >= 90 && $progress < 100) {
@@ -116,7 +118,7 @@ class NotifikasiService
         }
     }
 
-    private function createNotif($userId, $tipe, $judul, $pesan, $data = [])
+    private function createNotif(int $userId, string $tipe, string $judul, string $pesan, array $data = [])
     {
         Notifikasi::create([
             'pengguna_id' => $userId,

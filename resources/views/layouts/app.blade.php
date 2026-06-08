@@ -21,7 +21,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}?v={{ time() }}">
 </head>
-<body class="bg-main {{ isset($compactMode) && $compactMode ? 'compact-mode' : '' }} {{ isset($animasiAktif) && !$animasiAktif ? 'no-animations' : '' }} {{ isset($modePrivasi) && $modePrivasi ? 'privasi-mode' : '' }}">
+<body class="bg-main {{ isset($compactMode) && $compactMode ? 'compact-mode' : '' }} {{ isset($animasiAktif) && !$animasiAktif ? 'no-animations' : '' }} {{ ($hideBalance ?? false) ? 'privasi-mode' : '' }}">
 
     {{-- TOP NAVBAR --}}
     <nav class="top-navbar d-flex justify-content-between align-items-center px-4 shadow-sm">
@@ -68,14 +68,41 @@
                             @foreach($unreadNotifs as $notif)
                                 <div class="dropdown-item p-3 border-bottom border-color text-wrap position-relative">
                                     <div class="d-flex gap-3">
-                                        <div class="icon-container rounded-circle flex-shrink-0
-                                            {{ $notif->tipe == 'pencapaian' ? 'bg-light-success text-success' : 
-                                               ($notif->tipe == 'peringatan' ? 'bg-light-warning text-warning' : 
-                                               ($notif->tipe == 'pengingat' ? 'bg-light-primary text-primary' : 'bg-light-info text-info')) }}" 
+                                        @php
+                                            $notifIcon = 'ph-info';
+                                            $notifBg = 'bg-light-info text-info';
+                                            $notifData = $notif->data ?? [];
+                                            $notifJenis = $notifData['jenis'] ?? '';
+
+                                            if ($notif->tipe == 'pencapaian') {
+                                                $notifIcon = 'ph-trophy';
+                                                $notifBg = 'bg-light-success text-success';
+                                            } elseif ($notif->tipe == 'peringatan') {
+                                                $notifIcon = 'ph-warning';
+                                                $notifBg = 'bg-light-warning text-warning';
+                                            } elseif ($notif->tipe == 'pengingat') {
+                                                $notifIcon = 'ph-clock';
+                                                $notifBg = 'bg-light-primary text-primary';
+                                            } elseif ($notif->tipe == 'info' && $notifJenis === 'friend_request') {
+                                                $notifIcon = 'ph-user-plus';
+                                                $notifBg = 'bg-light-primary text-primary';
+                                            } elseif ($notif->tipe == 'info' && $notifJenis === 'friend_accepted') {
+                                                $notifIcon = 'ph-user-check';
+                                                $notifBg = 'bg-light-success text-success';
+                                            } elseif ($notif->tipe == 'info' && $notifJenis === 'share') {
+                                                $notifIcon = 'ph-share-network';
+                                                $notifBg = 'bg-light-success text-success';
+                                            } elseif ($notif->tipe == 'info' && $notifJenis === 'like') {
+                                                $notifIcon = 'ph-heart';
+                                                $notifBg = 'bg-light-danger text-danger';
+                                            } elseif ($notif->tipe == 'info' && $notifJenis === 'comment') {
+                                                $notifIcon = 'ph-chat-circle-dots';
+                                                $notifBg = 'bg-light-info text-info';
+                                            }
+                                        @endphp
+                                        <div class="icon-container rounded-circle flex-shrink-0 {{ $notifBg }}"
                                             style="width: 36px; height: 36px;">
-                                            <i class="ph-fill {{ $notif->tipe == 'pencapaian' ? 'ph-trophy' : 
-                                                                ($notif->tipe == 'peringatan' ? 'ph-warning' : 
-                                                                ($notif->tipe == 'pengingat' ? 'ph-clock' : 'ph-info')) }} fs-5"></i>
+                                            <i class="ph-fill {{ $notifIcon }} fs-5"></i>
                                         </div>
                                         <div>
                                             <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.85rem;">{{ $notif->judul }}</h6>
@@ -86,7 +113,7 @@
                                 </div>
                             @endforeach
                             <div class="p-2 text-center bg-light border-top border-color">
-                                <a href="#" class="text-decoration-none small text-primary fw-medium">Lihat Semua Notifikasi</a>
+                                <span class="small text-muted">Notifikasi hanya ditampilkan di sini</span>
                             </div>
                         @else
                             <div class="p-4 text-center">
@@ -158,7 +185,11 @@
                     </a>
                     <a href="{{ route('riwayat.index') }}" class="nav-link {{ request()->routeIs('riwayat.index') ? 'active' : '' }}">
                         <i class="ph ph-clock-counter-clockwise"></i>
-                        <span>Riwayat </span>
+                        <span>Riwayat</span>
+                    </a>
+                    <a href="{{ route('sosial.index') }}" class="nav-link {{ request()->routeIs('sosial.*') ? 'active' : '' }}">
+                        <i class="ph ph-users-three"></i>
+                        <span>Sosial</span>
                     </a>
                 </nav>
 

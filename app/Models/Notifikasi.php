@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static> belumDibaca()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> berdasarkanTipe(string $tipe)
+ */
 class Notifikasi extends Model
 {
     use HasFactory;

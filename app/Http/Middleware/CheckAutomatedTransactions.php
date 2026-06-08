@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Pengguna;
 use App\Models\TransaksiOtomatis;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
@@ -16,6 +17,7 @@ class CheckAutomatedTransactions
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
+            /** @var Pengguna $user */
             $user = Auth::user();
             $now = Carbon::now();
             $currentMonthString = $now->format('Y-m');
@@ -59,7 +61,7 @@ class CheckAutomatedTransactions
                                     \App\Models\TransaksiTabungan::create([
                                         'target_tabungan_id' => $target->id,
                                         'jumlah' => $nominalPotong,
-                                        'jenis' => 'setoran',
+                                        'tipe' => 'setor',
                                         'tanggal_transaksi' => $now->format('Y-m') . '-' . sprintf('%02d', $auto->tanggal_rutin),
                                         'catatan' => 'Alokasi Otomatis dari ' . $auto->nama,
                                     ]);

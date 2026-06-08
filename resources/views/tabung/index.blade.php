@@ -321,9 +321,19 @@
                                 <h6 class="mb-0 font-poppins fw-bold text-dark text-uppercase tracking-wide" style="font-size: 0.8rem;">Target Aktif</h6>
                             </div>
                             @if($activeTarget)
-                            <button type="button" class="btn btn-sm text-danger p-0 shadow-none" onclick="confirmDeleteTarget('{{ $activeTarget->id }}', '{{ addslashes($activeTarget->nama) }}', {{ $activeTarget->total_terkumpul }})" title="Hapus Target">
-                                <i class="ph ph-trash fs-5"></i>
-                            </button>
+                            <div class="d-flex gap-1">
+                                <form action="{{ route('sosial.share') }}" method="POST" class="m-0" title="Bagikan Progres">
+                                    @csrf
+                                    <input type="hidden" name="target_tabungan_id" value="{{ $activeTarget->id }}">
+                                    <input type="hidden" name="pesan" value="Ayo semangat! Targetku: {{ $activeTarget->nama }} sudah {{ number_format($activeTarget->persentase_progres, 0) }}%! 🎯">
+                                    <button type="submit" class="btn btn-sm text-primary p-0 shadow-none">
+                                        <i class="ph ph-share-network fs-5"></i>
+                                    </button>
+                                </form>
+                                <button type="button" class="btn btn-sm text-danger p-0 shadow-none" onclick="confirmDeleteTarget('{{ $activeTarget->id }}', '{{ addslashes($activeTarget->nama) }}', {{ $activeTarget->total_terkumpul }})" title="Hapus Target">
+                                    <i class="ph ph-trash fs-5"></i>
+                                </button>
+                            </div>
                             <form id="delete-form-{{ $activeTarget->id }}" action="{{ route('tabung.destroy', $activeTarget->id) }}" method="POST" class="d-none">
                                 @csrf
                                 @method('DELETE')
@@ -401,7 +411,7 @@
                                 <div class="text-center mt-2">
                                     <small class="text-muted" style="font-size: 0.72rem;">
                                         <i class="ph ph-info"></i> Sisa Saldo Tersedia: 
-                                        <span class="fw-bold text-dark {{ $privasiSensitif }}">{{ format_currency($saldoTersedia ?? 0) }}</span>
+                                        <span class="fw-bold text-dark {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}">{{ $hideBalance ? '••••••••' : format_currency($saldoTersedia ?? 0) }}</span>
                                     </small>
                                 </div>
                             </form>

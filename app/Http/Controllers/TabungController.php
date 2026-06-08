@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\TargetTabungan;
 use App\Models\TransaksiTabungan;
-use App\Models\Pengeluaran;
 use App\Models\Pemasukan;
 use App\Models\Pengguna;
 use App\Services\FinancialService;
@@ -28,7 +27,9 @@ class TabungController extends Controller
             ->latest()
             ->get();
 
-        $activeTarget = TargetTabungan::milikPengguna($user->id)->aktif()->first();
+        $activeTarget = TargetTabungan::milikPengguna($user->id)
+            ->where('status', 'aktif')
+            ->first();
 
         if (!$activeTarget) {
             $activeTarget = $targets->first();
@@ -41,11 +42,11 @@ class TabungController extends Controller
 
         if ($activeTarget) {
             $checkins = $activeTarget->transaksiTabungan()
-                ->setoran()
+                ->where('tipe', 'setor')
                 ->orderBy('tanggal_transaksi', 'desc')
                 ->get();
 
-            $total = $activeTarget->transaksiTabungan()->setoran()->sum('jumlah');
+            $total = $activeTarget->transaksiTabungan()->where('tipe', 'setor')->sum('jumlah');
 
 
 
@@ -53,7 +54,7 @@ class TabungController extends Controller
 
             if ($total > 0 && $sisa > 0) {
                 $rataRata = $activeTarget->transaksiTabungan()
-                    ->setoran()
+                    ->where('tipe', 'setor')
                     ->where('tanggal_transaksi', '>=', now()->subDays(14)->toDateString())
                     ->avg('jumlah');
 
@@ -409,7 +410,7 @@ class TabungController extends Controller
 
         TransaksiTabungan::create([
             'target_tabungan_id' => $target->id,
-            'tipe' => 'setor', // or 'setoran' depending on what is expected (Wait, your index uses scope setoran(), let's check)
+            'tipe' => 'setor',
             'tanggal_transaksi' => $request->tanggal_transaksi,
             'jumlah' => $request->jumlah,
             'catatan' => $request->catatan,

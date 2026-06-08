@@ -3,7 +3,7 @@
 @section('title', 'Riwayat Transaksi - Sakuin')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid px-3 px-xl-4 py-4">
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
         <div>
             <h4 class="mb-1 font-poppins fw-bold text-dark">Riwayat Transaksi</h4>
@@ -51,9 +51,9 @@
 
                         <div class="text-md-end ms-5 ms-md-0">
                             @if($trx->kategori === 'Pengeluaran' || $trx->kategori === 'Penarikan Tabungan')
-                                <h5 class="mb-0 fw-bold text-danger {{ isset($modePrivasi) && $modePrivasi ? 'privasi-sensitif' : '' }}">-{{ format_currency($trx->jumlah) }}</h5>
+                                <h5 class="mb-0 fw-bold text-danger {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}">{{ $hideBalance ? '••••••••' : '-' . format_currency($trx->jumlah) }}</h5>
                             @else
-                                <h5 class="mb-0 fw-bold text-success {{ isset($modePrivasi) && $modePrivasi ? 'privasi-sensitif' : '' }}">+{{ format_currency($trx->jumlah) }}</h5>
+                                <h5 class="mb-0 fw-bold text-success {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}">{{ $hideBalance ? '••••••••' : '+' . format_currency($trx->jumlah) }}</h5>
                             @endif
                         </div>
                     </div>

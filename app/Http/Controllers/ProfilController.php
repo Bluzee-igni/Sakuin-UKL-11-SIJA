@@ -8,15 +8,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Pengguna;
 use App\Models\TransaksiTabungan;
-use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use App\Services\FinancialService;
+use App\Services\AchievementService;
 use Carbon\Carbon;
 
 class ProfilController extends Controller
 {
     public function index()
     {
+        /** @var Pengguna $user */
         $user = Auth::user();
 
         $tanggalBergabung = Carbon::parse($user->created_at);
@@ -25,10 +26,10 @@ class ProfilController extends Controller
         $saldoSaatIni = FinancialService::getSaldoTersedia($user->id);
         $totalMenabung = FinancialService::getTotalTabungan($user->id);
 
-        $targetAktif = $user->targetTabungan()->aktif()->count();
-        $targetTercapai = $user->targetTabungan()->selesai()->count();
+        $targetAktif = $user->targetTabungan()->where('status', 'aktif')->count();
+        $targetTercapai = $user->targetTabungan()->where('status', 'selesai')->count();
 
-        $targetTerdekat = $user->targetTabungan()->aktif()->with('transaksiTabungan')->get()
+        $targetTerdekat = $user->targetTabungan()->where('status', 'aktif')->with('transaksiTabungan')->get()
             ->sortByDesc('persentase_progres')
             ->first();
 
@@ -107,18 +108,25 @@ class ProfilController extends Controller
             }
         }
 
+        // ==========================================
+        // ACHIEVEMENT SYSTEM
+        // ==========================================
+        $achievements = AchievementService::hitungAchievement($user->id);
+
         return view('profil.index', compact(
             'user', 'tanggalBergabung', 'hariBergabung',
             'saldoSaatIni', 'totalMenabung',
             'targetAktif', 'targetTercapai',
             'targetTerdekat', 'totalTransaksi',
             'hariAktif', 'streakSaatIni', 'bestStreak',
-            'heatmapData'
+            'heatmapData',
+            'achievements'
         ));
     }
 
     public function update(Request $request)
     {
+        /** @var Pengguna $user */
         $user = Auth::user();
 
         $request->validate([

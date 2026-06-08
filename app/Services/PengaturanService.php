@@ -38,6 +38,8 @@ class PengaturanService
         'alokasi_persen'    => '20',
 
         // Privasi
+        'hide_balance'      => '0',
+        // Legacy keys (fallback)
         'sembunyikan_saldo' => '0',
         'mode_privasi'      => '0',
         'blur_saldo'        => '0',

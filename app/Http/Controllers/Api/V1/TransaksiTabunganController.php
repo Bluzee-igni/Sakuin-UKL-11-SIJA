@@ -61,6 +61,24 @@ class TransaksiTabunganController extends Controller
         );
     }
 
+    public function update(Request $request, $id)
+    {
+        $transaksi = TransaksiTabungan::whereHas('targetTabungan', function ($q) {
+            $q->where('pengguna_id', Auth::id());
+        })->find($id);
+
+        if (!$transaksi) {
+            return $this->errorResponse('Transaksi tidak ditemukan', [], 404);
+        }
+
+        $transaksi->update($request->only(['jumlah', 'catatan', 'tanggal_transaksi']));
+
+        return $this->successResponse(
+            new TransaksiTabunganResource($transaksi->load(['kategori', 'targetTabungan'])),
+            'Transaksi berhasil diperbarui'
+        );
+    }
+
     public function show($id)
     {
         $transaksi = TransaksiTabungan::with(['kategori', 'targetTabungan'])

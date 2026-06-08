@@ -7,6 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static> aktif()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> selesai()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> milikPengguna(int $penggunaId)
+ *
+ * @property int $id
+ * @property int $pengguna_id
+ * @property string $nama
+ * @property float|int $jumlah_target
+ * @property string $status
+ * @property float|int $total_terkumpul
+ * @property float|int $persentase_progres
+ */
 class TargetTabungan extends Model
 {
     use HasFactory;
@@ -65,8 +78,8 @@ class TargetTabungan extends Model
 
     public function getTotalTerkumpulAttribute()
     {
-        $setoran = $this->transaksiTabungan()->setoran()->sum('jumlah');
-        $penarikan = $this->transaksiTabungan()->penarikan()->sum('jumlah');
+        $setoran = $this->transaksiTabungan()->where('tipe', 'setor')->sum('jumlah');
+        $penarikan = $this->transaksiTabungan()->where('tipe', 'tarik')->sum('jumlah');
         return max(0, $setoran - $penarikan);
     }
 

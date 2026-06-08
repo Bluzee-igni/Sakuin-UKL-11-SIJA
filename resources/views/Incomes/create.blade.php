@@ -35,7 +35,7 @@
     @endif
 
     {{-- FORM --}}
-    <div class="fintech-card p-4 p-md-5">
+    <div class="fintech-card p-4 p-md-5 rounded-4 border-color">
         <form action="{{ route('incomes.store') }}" method="POST">
             @csrf
 

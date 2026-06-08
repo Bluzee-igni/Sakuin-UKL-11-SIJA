@@ -60,13 +60,13 @@
                 </div>
 
                 @if($mode === 'login' && session('loginError'))
-                    <div class="alert bg-danger bg-opacity-10 text-danger border-0 rounded-3 py-2 small d-flex align-items-center gap-2">
+                    <div class="alert bg-light-danger text-danger border border-danger border-opacity-25 rounded-4 py-2 small d-flex align-items-center gap-2">
                         <i class="ph-fill ph-warning-circle fs-5"></i> {{ session('loginError') }}
                     </div>
                 @endif
 
                 @if($errors->any())
-                    <div class="alert bg-danger bg-opacity-10 text-danger border-0 rounded-3 py-2 small">
+                    <div class="alert bg-light-danger text-danger border border-danger border-opacity-25 rounded-4 py-2 small">
                         <ul class="mb-0 ps-3">
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
