@@ -605,9 +605,7 @@
                 <p class="settings-section-desc mb-4">Informasi aplikasi dan versi rilis.</p>
 
                 <div class="text-center mb-4 pb-4 border-bottom">
-                    <div class="icon-container bg-light-primary text-primary mx-auto mb-3" style="width: 64px; height: 64px;">
-                        <i class="ph-fill ph-wallet fs-1"></i>
-                    </div>
+                    <img src="{{ asset('images/logo-sakuin.jpg') }}" alt="SakuinAja" class="mx-auto mb-3" style="height: 80px; width: auto; object-fit: contain;">
                     <h4 class="font-poppins fw-bold text-dark mb-1">Sakuin Aja</h4>
                     <span class="badge bg-light text-muted border border-color rounded-pill">Versi 1.0.0</span>
                 </div>

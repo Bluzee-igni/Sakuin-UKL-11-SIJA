@@ -124,37 +124,19 @@
                 <div class="col-6">
                     <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
                         <div class="d-flex align-items-center justify-content-center gap-1 mb-1">
-                            <i class="ph-fill ph-fire text-danger" style="font-size: 1.2rem;"></i>
-                            <span class="fw-bold text-dark" style="font-size: 1.5rem;">{{ $user->streak_saat_ini }}</span>
+                            <i class="ph-fill ph-target text-primary" style="font-size: 1rem;"></i>
+                            <span class="fw-bold text-dark" style="font-size: 1.3rem;">{{ $totalTarget }}</span>
                         </div>
-                        <span class="text-muted" style="font-size: 0.65rem;">Streak Saat Ini</span>
+                        <span class="text-muted" style="font-size: 0.6rem;">Total Target</span>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
                         <div class="d-flex align-items-center justify-content-center gap-1 mb-1">
-                            <i class="ph-fill ph-trophy text-warning" style="font-size: 1.2rem;"></i>
-                            <span class="fw-bold text-dark" style="font-size: 1.5rem;">{{ $user->streak_terbaik }}</span>
+                            <i class="ph-fill ph-check-circle text-success" style="font-size: 1rem;"></i>
+                            <span class="fw-bold text-success" style="font-size: 1.3rem;">{{ $targetTercapai }}</span>
                         </div>
-                        <span class="text-muted" style="font-size: 0.65rem;">Rekor Streak</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
-                        <span class="fw-bold text-dark d-block" style="font-size: 1.2rem;">{{ $totalTarget }}</span>
-                        <span class="text-muted" style="font-size: 0.6rem;">Total Target</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
-                        <span class="fw-bold text-success d-block" style="font-size: 1.2rem;">{{ $targetTercapai }}</span>
                         <span class="text-muted" style="font-size: 0.6rem;">Tercapai</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
-                        <span class="fw-bold text-primary d-block {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}" style="font-size: 1.2rem;">{{ $hideBalance ? '••••••••' : ($totalMenabung > 0 ? format_currency($totalMenabung) : 'Rp0') }}</span>
-                        <span class="text-muted" style="font-size: 0.6rem;">Total Nabung</span>
                     </div>
                 </div>
             </div>
@@ -162,34 +144,69 @@
 
         {{-- RIGHT COLUMN --}}
         <div class="col-xl-8 col-lg-7 d-flex flex-column gap-4">
+            {{-- STATS ROW --}}
+            <div class="row g-2">
+                <div class="col-6 col-md-3">
+                    <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <i class="ph-fill ph-calendar-check text-primary" style="font-size: 1.3rem;"></i>
+                            <span class="fw-bold text-dark lh-1" style="font-size: 1.8rem;">{{ $hariAktif }}</span>
+                            <span class="text-muted" style="font-size: 0.65rem;">Hari Aktif</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <i class="ph-fill ph-fire text-danger" style="font-size: 1.3rem;"></i>
+                            <span class="fw-bold text-dark lh-1" style="font-size: 1.8rem;">{{ $user->streak_saat_ini }}</span>
+                            <span class="text-muted" style="font-size: 0.65rem;">Streak Saat Ini</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <i class="ph-fill ph-trophy text-warning" style="font-size: 1.3rem;"></i>
+                            <span class="fw-bold text-dark lh-1" style="font-size: 1.8rem;">{{ $user->streak_terbaik }}</span>
+                            <span class="text-muted" style="font-size: 0.65rem;">Rekor Streak</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="fintech-card p-3 rounded-4 border-color text-center h-100">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <i class="ph-fill ph-chart-bar text-success" style="font-size: 1.3rem;"></i>
+                            <span class="fw-bold text-dark lh-1 {{ ($hideBalance ?? false) ? 'saldo-hidden' : '' }}" style="font-size: 1.8rem;">{{ $hideBalance ? '••••••••' : ($totalMenabung > 0 ? format_currency($totalMenabung) : 'Rp0') }}</span>
+                            <span class="text-muted" style="font-size: 0.65rem;">Total Tabungan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- HEATMAP --}}
-            <div class="fintech-card p-4 rounded-4 border-color">
+            <div class="fintech-card p-3 p-lg-4 rounded-4 border-color">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div>
                         <h6 class="font-poppins fw-bold text-dark mb-0">Aktivitas Menabung</h6>
                         <small class="text-muted">Konsistensi 1 tahun terakhir</small>
                     </div>
-                    <div class="icon-container bg-light-success text-success rounded-circle" style="width: 36px; height: 36px;">
-                        <i class="ph-fill ph-git-commit fs-5"></i>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fw-bold text-dark px-3 py-1 bg-light rounded-3 d-flex align-items-center gap-1" style="font-size: 0.85rem;">
+                            <i class="ph-fill ph-fire text-danger"></i> {{ $user->streak_saat_ini }}
+                        </span>
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-center mb-3">
-                    <span class="fw-bold text-dark px-4 py-2 bg-light rounded-3" style="font-size: 1rem;">
-                        <i class="ph-fill ph-fire text-danger me-1"></i> {{ $user->streak_saat_ini }} Hari Streak
-                    </span>
-                </div>
-
-                <div class="heatmap-wrapper position-relative w-100 overflow-x-auto pb-2" style="scrollbar-width: thin;">
-                    <div class="d-inline-flex flex-column" style="min-width: 800px;">
-                        <div class="d-flex mb-1" style="margin-left: 25px;">
+                <div class="heatmap-wrapper">
+                    <div class="d-inline-flex flex-column" style="min-width: 700px;">
+                        {{-- Month labels --}}
+                        <div class="d-flex" style="margin-left: 33px; margin-bottom: 4px; height: 16px;">
                             @php
                                 $renderedMonths = [];
-                                $colCount = 0;
                             @endphp
                             @foreach(array_chunk($heatmapData, 7) as $weekData)
                                 @php
-                                    $colCount++;
                                     $showMonth = false;
                                     $monthName = '';
                                     foreach($weekData as $day) {
@@ -201,32 +218,34 @@
                                         }
                                     }
                                 @endphp
-                                <div style="width: 14px; margin-right: 2px;">
+                                <div style="width: 16px; position: relative;">
                                     @if($showMonth)
-                                        <span class="text-muted" style="font-size: 0.65rem; position: absolute;">{{ $monthName }}</span>
+                                        <span class="text-muted" style="font-size: 0.65rem; position: absolute; bottom: 0; left: 0; white-space: nowrap; line-height: 1;">{{ $monthName }}</span>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
 
+                        {{-- Grid --}}
                         <div class="d-flex">
-                            <div class="d-flex flex-column justify-content-between text-muted me-2" style="font-size: 0.65rem; height: 105px; padding-top: 5px;">
-                                <div style="visibility: hidden;">Sun</div>
-                                <div>Mon</div>
-                                <div style="visibility: hidden;">Tue</div>
-                                <div>Wed</div>
-                                <div style="visibility: hidden;">Thu</div>
-                                <div>Fri</div>
-                                <div style="visibility: hidden;">Sat</div>
+                            {{-- Day labels --}}
+                            <div class="d-flex flex-column text-muted flex-shrink-0" 
+                                 style="font-size: 0.6rem; width: 30px; gap: 2px; padding-top: 1px;">
+                                @php $dayLabels = ['', 'Mon', '', 'Wed', '', 'Fri', '']; @endphp
+                                @foreach($dayLabels as $label)
+                                    <div style="height: 13px; line-height: 13px;">{{ $label }}</div>
+                                @endforeach
                             </div>
-                            <div class="d-flex gap-1" style="height: 105px;">
+
+                            {{-- Cells --}}
+                            <div class="d-flex" style="gap: 3px;">
                                 @foreach(array_chunk($heatmapData, 7) as $weekData)
-                                    <div class="d-flex flex-column gap-1">
+                                    <div class="d-flex flex-column" style="gap: 2px;">
                                         @foreach($weekData as $day)
                                             @if($day['is_padding'])
-                                                <div style="width: 12px; height: 12px; background: transparent;"></div>
+                                                <div style="width: 13px; height: 13px; background: transparent;"></div>
                                             @else
-                                                <div style="width: 12px; height: 12px; border-radius: 2px;"
+                                                <div style="width: 13px; height: 13px; border-radius: 3px;"
                                                      class="heatmap-level-{{ $day['level'] }} border {{ $day['level'] == 0 ? 'border-color' : 'border-0' }}"
                                                      data-bs-toggle="tooltip"
                                                      data-bs-placement="top"
@@ -241,13 +260,14 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end align-items-center mt-3 gap-2 text-muted" style="font-size: 0.7rem;">
+                {{-- Legend --}}
+                <div class="d-flex align-items-center justify-content-end mt-3 gap-2 text-muted" style="font-size: 0.7rem;">
                     <span>Sedikit</span>
-                    <div style="width: 12px; height: 12px; border-radius: 2px;" class="heatmap-level-0 border border-color"></div>
-                    <div style="width: 12px; height: 12px; border-radius: 2px;" class="heatmap-level-1"></div>
-                    <div style="width: 12px; height: 12px; border-radius: 2px;" class="heatmap-level-2"></div>
-                    <div style="width: 12px; height: 12px; border-radius: 2px;" class="heatmap-level-3"></div>
-                    <div style="width: 12px; height: 12px; border-radius: 2px;" class="heatmap-level-4"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 3px;" class="heatmap-level-0 border border-color"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 3px;" class="heatmap-level-1"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 3px;" class="heatmap-level-2"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 3px;" class="heatmap-level-3"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 3px;" class="heatmap-level-4"></div>
                     <span>Banyak</span>
                 </div>
             </div>
@@ -308,21 +328,21 @@
     .heatmap-level-3 { background-color: #059669; }
     .heatmap-level-4 { background-color: #064e3b; }
 
-    .heatmap-wrapper::-webkit-scrollbar { height: 6px; }
-    .heatmap-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
-    .heatmap-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
-    .heatmap-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
-    [data-theme="dark"] .heatmap-wrapper::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-    [data-theme="dark"] .heatmap-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+    .heatmap-wrapper {
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: thin;
+    }
+    .heatmap-wrapper::-webkit-scrollbar { height: 4px; }
+    .heatmap-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .heatmap-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+    [data-theme="dark"] .heatmap-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (el) { return new bootstrap.Tooltip(el); });
-
-        var wrapper = document.querySelector('.heatmap-wrapper');
-        if (wrapper) { wrapper.scrollLeft = wrapper.scrollWidth; }
 
         document.querySelectorAll('.js-progress-bar').forEach(function(el) {
             el.style.width = el.getAttribute('data-width') + '%';

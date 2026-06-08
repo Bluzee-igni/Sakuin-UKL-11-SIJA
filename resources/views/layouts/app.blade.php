@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sakuin - @yield('title', 'Aplikasi Keuangan')</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-sakuin.jpg') }}">
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,11 +32,8 @@
         </button>
 
         <!-- Brand/Logo (Kiri) -->
-        <div class="d-flex align-items-center gap-2">
-            <div class="icon-container bg-light-primary text-primary" style="width: 36px; height: 36px;">
-                <i class="ph-fill ph-wallet fs-4"></i>
-            </div>
-            <span class="fs-5 fw-bold font-poppins text-primary d-none d-sm-block">Sakuin</span>
+        <div class="d-flex align-items-center">
+            <img src="{{ asset('images/logo-sakuin.jpg') }}" alt="SakuinAja" style="height: 36px; width: auto; object-fit: contain;">
         </div>
 
         <!-- Profil & Notifikasi (Kanan) -->

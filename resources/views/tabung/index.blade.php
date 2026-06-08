@@ -268,7 +268,7 @@
             {{-- MOTIVATIONAL STREAK --}}
             @if(!isset($widgetVisibility) || $widgetVisibility['streak'])
             <div class="fintech-card p-4 rounded-4 text-center border-0 flex-grow-1 d-flex flex-column justify-content-center" data-widget-id="streak" style="background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);">
-                <div class="icon-container bg-white {{ $hasSavedToday ? 'text-danger' : 'text-secondary' }} mx-auto mb-3 shadow-sm" style="width: 56px; height: 56px; border-radius: 50%;">
+                <div class="icon-container bg-white {{ $hasSavedToday ? 'text-danger shadow-sm' : 'text-secondary opacity-50 shadow-sm' }} mx-auto mb-3" style="width: 56px; height: 56px; border-radius: 50%;">
                     <i class="ph-fill ph-fire" style="font-size: 2rem;"></i>
                 </div>
                 <h3 class="font-poppins fw-bold text-dark mb-1 js-count-up" data-value="{{ $streak ?? 0 }}" style="font-size: 2.5rem; letter-spacing: -1px;">
@@ -367,6 +367,39 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{-- PREDIKSI TARGET --}}
+                            @if($prediction['status'] === 'selesai')
+                                <div class="mt-3 p-3 bg-white rounded-4 shadow-sm text-center">
+                                    <div class="fs-4 mb-1">🎉</div>
+                                    <div class="fw-bold text-success" style="font-size: 0.85rem;">{{ $prediction['message'] }}</div>
+                                </div>
+                            @elseif($prediction['status'] === 'on_track')
+                                <div class="mt-3 p-3 bg-white rounded-4 shadow-sm border border-success border-opacity-10">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="fs-6">🎯</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.75rem;">Prediksi Target</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted" style="font-size: 0.7rem;">Sisa Target</span>
+                                        <span class="fw-bold text-success" style="font-size: 0.8rem;">{{ format_currency($prediction['sisa_target']) }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted" style="font-size: 0.7rem;">Estimasi Waktu</span>
+                                        <span class="fw-bold text-warning" style="font-size: 0.8rem;">⏳ {{ $prediction['formatted_prediksi'] }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted" style="font-size: 0.7rem;">Perkiraan Selesai</span>
+                                        <span class="fw-bold text-dark" style="font-size: 0.8rem;">📅 {{ \Carbon\Carbon::parse($prediction['tanggal_prediksi'])->isoFormat('D MMMM YYYY') }}</span>
+                                    </div>
+                                </div>
+                            @elseif($prediction['status'] === 'no_data' && $prediction['message'])
+                                <div class="mt-3 p-3 bg-white rounded-4 shadow-sm text-center">
+                                    <div class="text-muted" style="font-size: 0.75rem;">
+                                        <i class="ph ph-chart-bar"></i> {{ $prediction['message'] }}
+                                    </div>
+                                </div>
+                            @endif
                         @else
                             <div class="empty-state bg-transparent border-0 p-2 text-start align-items-start">
                                 <span class="fw-bold d-block mb-1">Belum Ada Target</span>

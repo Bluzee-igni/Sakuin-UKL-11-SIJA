@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sakuin - Login</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-sakuin.jpg') }}">
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -57,10 +58,7 @@
 
     {{-- SPLASH SCREEN --}}
     <div id="splash-screen" class="d-flex flex-column justify-content-center align-items-center" style="display: none;">
-        <div class="icon-container bg-light-primary text-primary mb-3" style="width: 80px; height: 80px; animation: bounceIn 1s ease-out forwards;">
-            <i class="ph-fill ph-wallet" style="font-size: 3rem;"></i>
-        </div>
-        <h2 class="font-poppins fw-bold text-primary" style="animation: fadeInUp 1s ease-out 0.2s forwards;">Sakuin</h2>
+        <img src="{{ asset('images/logo-sakuin.jpg') }}" alt="SakuinAja" class="mb-3" style="width: 120px; height: auto; object-fit: contain; animation: bounceIn 1s ease-out forwards;">
         <p class="text-muted small" style="animation: fadeInUp 1s ease-out 0.4s forwards;">Mengatur keuangan dengan mudah</p>
     </div>
 
@@ -69,11 +67,8 @@
             
             {{-- LEFT SECTION --}}
             <div class="login-left text-center text-md-start">
-                <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-4">
-                    <div class="icon-container bg-white text-primary" style="width: 48px; height: 48px;">
-                        <i class="ph-fill ph-wallet fs-3"></i>
-                    </div>
-                    <span class="fs-3 fw-bold font-poppins">Sakuin</span>
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-4">
+                    <img src="{{ asset('images/logo-sakuin.jpg') }}" alt="SakuinAja" style="height: 56px; width: auto; object-fit: contain; filter: brightness(0) invert(1);">
                 </div>
                 
                 <h2 class="font-poppins fw-bold mb-3">Selamat Datang!</h2>

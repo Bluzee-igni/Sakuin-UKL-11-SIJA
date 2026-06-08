@@ -12,6 +12,7 @@ use App\Models\SavingShare;
 use App\Models\TargetTabungan;
 use App\Services\AchievementService;
 use App\Services\FinancialService;
+use App\Services\TargetPredictionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,10 +42,21 @@ class SocialController extends Controller
             if ($share->user && isset($streakCache[$share->user_id])) {
                 $share->user->cached_streak = $streakCache[$share->user_id];
             }
+
+            if ($share->target) {
+                $share->prediction = TargetPredictionService::calculatePrediction(
+                    $share->target->jumlah_target,
+                    $share->target->total_terkumpul,
+                    $share->target->rencana_harian,
+                    $share->target->id,
+                    $share->user_id
+                );
+            } else {
+                $share->prediction = null;
+            }
         }
 
         $shareableTargets = TargetTabungan::milikPengguna($user->id)
-            ->aktif()
             ->whereHas('transaksiTabungan', function ($q) {
                 $q->setoran();
             })

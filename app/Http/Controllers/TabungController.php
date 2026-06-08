@@ -7,6 +7,7 @@ use App\Models\TransaksiTabungan;
 use App\Models\Pemasukan;
 use App\Models\Pengguna;
 use App\Services\FinancialService;
+use App\Services\TargetPredictionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -64,6 +65,22 @@ class TabungController extends Controller
                 }
             }
         }
+
+        $prediction = $activeTarget
+            ? TargetPredictionService::calculatePrediction(
+                $activeTarget->jumlah_target,
+                $activeTarget->total_terkumpul,
+                $activeTarget->rencana_harian,
+                $activeTarget->id,
+                $user->id
+            )
+            : [
+                'sisa_target' => 0,
+                'hari_prediksi' => null,
+                'tanggal_prediksi' => null,
+                'status' => 'no_data',
+                'message' => null,
+            ];
 
         $now = now();
 
@@ -229,6 +246,7 @@ class TabungController extends Controller
             'total',
             'streak',
             'estimasiTanggal',
+            'prediction',
             'totalBulanIni',
             'jumlahCheckinBulanIni',
             'rata2PerCheckin',

@@ -230,26 +230,30 @@
 
                 <div class="row g-2 mb-4">
                     <div class="col-3">
-                        <div class="bg-light rounded-3 p-2 text-center">
-                            <p class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">{{ $hariAktif }}</p>
+                        <div class="bg-light rounded-3 p-2 text-center d-flex flex-column align-items-center justify-content-center h-100">
+                            <i class="ph-fill ph-calendar-check text-primary mb-1" style="font-size: 1.2rem;"></i>
+                            <p class="fw-bold text-dark mb-0 lh-1" style="font-size: 1rem;">{{ $hariAktif }}</p>
                             <span class="text-muted" style="font-size: 0.6rem;">Hari Aktif</span>
                         </div>
                     </div>
                     <div class="col-3">
-                        <div class="bg-light rounded-3 p-2 text-center">
-                            <p class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">{{ $streakSaatIni }}</p>
+                        <div class="bg-light rounded-3 p-2 text-center d-flex flex-column align-items-center justify-content-center h-100">
+                            <i class="ph-fill ph-fire text-danger mb-1" style="font-size: 1.2rem;"></i>
+                            <p class="fw-bold text-dark mb-0 lh-1" style="font-size: 1rem;">{{ $streakSaatIni }}</p>
                             <span class="text-muted" style="font-size: 0.6rem;">Streak Saat Ini</span>
                         </div>
                     </div>
                     <div class="col-3">
-                        <div class="bg-light rounded-3 p-2 text-center">
-                            <p class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">{{ $bestStreak }}</p>
+                        <div class="bg-light rounded-3 p-2 text-center d-flex flex-column align-items-center justify-content-center h-100">
+                            <i class="ph-fill ph-trophy text-warning mb-1" style="font-size: 1.2rem;"></i>
+                            <p class="fw-bold text-dark mb-0 lh-1" style="font-size: 1rem;">{{ $bestStreak }}</p>
                             <span class="text-muted" style="font-size: 0.6rem;">Streak Terbaik</span>
                         </div>
                     </div>
                     <div class="col-3">
-                        <div class="bg-light rounded-3 p-2 text-center">
-                            <p class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">{{ $totalTransaksi }}</p>
+                        <div class="bg-light rounded-3 p-2 text-center d-flex flex-column align-items-center justify-content-center h-100">
+                            <i class="ph-fill ph-receipt text-success mb-1" style="font-size: 1.2rem;"></i>
+                            <p class="fw-bold text-dark mb-0 lh-1" style="font-size: 1rem;">{{ $totalTransaksi }}</p>
                             <span class="text-muted" style="font-size: 0.6rem;">Total Transaksi</span>
                         </div>
                     </div>
@@ -257,14 +261,12 @@
 
                 <div class="heatmap-wrapper position-relative w-100 overflow-x-auto pb-2" style="scrollbar-width: thin;">
                     <div class="d-inline-flex flex-column" style="min-width: 800px;">
-                        <div class="d-flex mb-1" style="margin-left: 25px;">
+                        <div class="d-flex" style="margin-left: 28px; margin-bottom: 4px; height: 16px;">
                             @php
                                 $renderedMonths = [];
-                                $colCount = 0;
                             @endphp
                             @foreach(array_chunk($heatmapData, 7) as $weekData)
                                 @php
-                                    $colCount++;
                                     $showMonth = false;
                                     $monthName = '';
                                     foreach($weekData as $day) {
@@ -276,16 +278,16 @@
                                         }
                                     }
                                 @endphp
-                                <div style="width: 14px; margin-right: 2px;">
+                                <div style="width: 16px; position: relative;">
                                     @if($showMonth)
-                                        <span class="text-muted" style="font-size: 0.65rem; position: absolute;">{{ $monthName }}</span>
+                                        <span class="text-muted" style="font-size: 0.65rem; position: absolute; bottom: 0; left: 0; white-space: nowrap; line-height: 1;">{{ $monthName }}</span>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
 
                         <div class="d-flex">
-                            <div class="d-flex flex-column justify-content-between text-muted me-2" style="font-size: 0.65rem; height: 105px; padding-top: 5px;">
+                            <div class="d-flex flex-column justify-content-between text-muted me-2" style="font-size: 0.65rem; height: 105px; padding-top: 5px; width: 20px;">
                                 <div style="visibility: hidden;">Sun</div>
                                 <div>Mon</div>
                                 <div style="visibility: hidden;">Tue</div>

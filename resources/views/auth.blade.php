@@ -9,6 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $mode === 'register' ? 'Daftar' : 'Login' }} - Sakuin</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-sakuin.jpg') }}">
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,10 +29,7 @@
 
     {{-- SPLASH SCREEN ANIMATION (Dedicated Login) --}}
     <div id="splash-screen">
-        <div class="splash-logo">
-            <i class="ph-fill ph-wallet" style="font-size: 3.5rem;"></i>
-        </div>
-        <h2 class="font-poppins fw-bold text-primary splash-text">Sakuin</h2>
+        <img src="{{ asset('images/logo-sakuin.jpg') }}" alt="SakuinAja" class="splash-logo" style="width: 120px; height: auto; object-fit: contain; border-radius: 16px; background: transparent;">
         <p class="text-muted small splash-text" style="animation-delay: 0.3s;">Mengatur keuangan dengan cerdas</p>
     </div>
 
@@ -44,10 +42,7 @@
                 
                 {{-- LOGO BALANCE DI ATAS FORM --}}
                 <div class="logo-container">
-                    <div class="icon-box">
-                        <i class="ph-fill ph-wallet"></i>
-                    </div>
-                    <h1 class="logo-text text-primary">Sakuin</h1>
+                    <img src="{{ asset('images/logo-sakuin.jpg') }}" alt="SakuinAja" style="height: 56px; width: auto; object-fit: contain;">
                 </div>
 
                 <div class="mb-4 text-center">

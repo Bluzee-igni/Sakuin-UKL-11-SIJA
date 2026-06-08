@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - Sakuin Aja</title>
+  <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-sakuin.jpg') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/auth-diprella.css') }}">
 </head>
@@ -12,8 +13,7 @@
   <div class="auth-wrap">
     <div class="left">
       <div class="brand">
-        <div class="brand-badge">💰</div>
-        <div>SakuinAja</div>
+        <img src="{{ asset('images/logo-sakuin.jpg') }}" alt="SakuinAja" style="height: 48px; width: auto; object-fit: contain; filter: brightness(0) invert(1);">
       </div>
 
       <h1>Hello, Friend!</h1>

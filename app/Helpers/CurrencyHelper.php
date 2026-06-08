@@ -122,6 +122,38 @@ if (!function_exists('convert_currency_value')) {
     }
 }
 
+if (!function_exists('formatPredictionTime')) {
+    function formatPredictionTime($days)
+    {
+        if ($days === null || $days === '') {
+            return null;
+        }
+
+        $days = (int) $days;
+        $bulan = 30;
+
+        if ($days < $bulan) {
+            return "{$days} Hari Lagi";
+        }
+
+        $tahun = (int) floor($days / 365);
+        $sisaHari = $days % 365;
+        $bulanSisa = (int) floor($sisaHari / $bulan);
+
+        if ($tahun > 0) {
+            if ($tahun > 10) {
+                return "{$tahun} Tahun Lagi";
+            }
+            if ($bulanSisa > 0) {
+                return "{$tahun} Tahun {$bulanSisa} Bulan Lagi";
+            }
+            return "{$tahun} Tahun Lagi";
+        }
+
+        return "{$bulanSisa} Bulan Lagi";
+    }
+}
+
 if (!function_exists('convert_to_idr')) {
     /**
      * Convert an inputted amount from the user's currency BACK to IDR before saving to the database.

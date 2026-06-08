@@ -302,6 +302,21 @@
         background: #f0fdf4;
     }
 
+    .share-target-scroll {
+        max-height: 240px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .share-target-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .share-target-scroll::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 2px;
+    }
+
     .share-target-progress {
         font-size: 0.85rem;
         font-weight: 700;
@@ -402,6 +417,10 @@
     [data-theme="dark"] .share-target-card.selected {
         border-color: #059669;
         background: rgba(5, 150, 105, 0.1);
+    }
+
+    [data-theme="dark"] .share-target-scroll::-webkit-scrollbar-thumb {
+        background: #4b5563;
     }
 
     [data-theme="dark"] .friend-request-card {
@@ -605,6 +624,24 @@
                                     </div>
                                 </div>
 
+                                @if($share->prediction)
+                                    @php $prd = $share->prediction; @endphp
+                                    @if($prd['status'] === 'selesai')
+                                        <div class="small fw-bold text-success">
+                                            🎉 {{ $prd['message'] }}
+                                        </div>
+                                    @elseif($prd['status'] === 'on_track')
+                                        <div class="small text-muted">
+                                            <span>🎯 Prediksi selesai: {{ $prd['formatted_prediksi'] }}</span>
+                                            <span class="d-block" style="font-size: 0.7rem;">📅 Target diperkirakan selesai: {{ \Carbon\Carbon::parse($prd['tanggal_prediksi'])->isoFormat('D MMMM YYYY') }}</span>
+                                        </div>
+                                    @elseif($prd['status'] === 'no_data' && $prd['message'])
+                                        <div class="small text-muted">
+                                            <i class="ph ph-chart-bar"></i> {{ $prd['message'] }}
+                                        </div>
+                                    @endif
+                                @endif
+
                                 @if($share->pesan)
                                     <div class="social-message">
                                         <i class="ph ph-quotes me-1 opacity-50"></i>
@@ -710,7 +747,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ route('sosial.share') }}" method="POST">
+            <form action="{{ route('sosial.share') }}" method="POST" id="shareForm">
                 @csrf
                 <div class="modal-body">
                     <p class="text-muted small mb-3">Pilih target yang sudah punya setoran untuk dibagikan ke feed sosial.</p>
@@ -718,27 +755,29 @@
                     @if($shareableTargets->count() > 0)
                         <div class="mb-3">
                             <label class="form-label fw-bold small">Pilih Target</label>
-                            @foreach($shareableTargets as $target)
-                                <label class="share-target-card d-block mb-2" for="target-{{ $target->id }}">
-                                    <input type="radio" name="target_tabungan_id" value="{{ $target->id }}" id="target-{{ $target->id }}" class="d-none" required>
-                                    <div class="d-flex align-items-center gap-3 w-100">
-                                        @if($target->gambar)
-                                            <img src="{{ asset('storage/' . $target->gambar) }}" style="width: 48px; height: 48px; border-radius: 0.75rem; object-fit: cover;">
-                                        @else
-                                            <div style="width: 48px; height: 48px; border-radius: 0.75rem; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; font-size: 1.5rem;">
-                                                <i class="ph-fill ph-target"></i>
+                            <div class="share-target-scroll">
+                                @foreach($shareableTargets as $target)
+                                    <div class="share-target-card d-block mb-2" data-target-id="{{ $target->id }}" role="button">
+                                        <input type="radio" name="target_tabungan_id" value="{{ $target->id }}" class="d-none" required>
+                                        <div class="d-flex align-items-center gap-3 w-100">
+                                            @if($target->gambar)
+                                                <img src="{{ asset('storage/' . $target->gambar) }}" style="width: 48px; height: 48px; border-radius: 0.75rem; object-fit: cover;">
+                                            @else
+                                                <div style="width: 48px; height: 48px; border-radius: 0.75rem; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; font-size: 1.5rem;">
+                                                    <i class="ph-fill ph-target"></i>
+                                                </div>
+                                            @endif
+                                            <div class="flex-grow-1">
+                                                <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $target->nama }}</div>
+                                                <div class="progress-modern mt-1" style="height: 5px;">
+                                                    <div class="progress-bar-modern" style="width: {{ $target->persentase_progres > 0 ? max($target->persentase_progres, 2) : 0 }}%"></div>
+                                                </div>
                                             </div>
-                                        @endif
-                                        <div class="flex-grow-1">
-                                            <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $target->nama }}</div>
-                                            <div class="progress-modern mt-1" style="height: 5px;">
-                                                <div class="progress-bar-modern" style="width: {{ $target->persentase_progres > 0 ? max($target->persentase_progres, 2) : 0 }}%"></div>
-                                            </div>
+                                            <span class="share-target-progress">{{ number_format($target->persentase_progres, 2) }}%</span>
                                         </div>
-                                        <span class="share-target-progress">{{ number_format($target->persentase_progres, 2) }}%</span>
                                     </div>
-                                </label>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
 
                         <div class="mb-2">
@@ -749,7 +788,7 @@
                         <div class="text-center py-4">
                             <i class="ph ph-target fs-1 text-muted opacity-50 d-block mb-2"></i>
                             @if($ownedTargetCount > 0)
-                                <p class="text-muted mb-0">Belum ada target yang punya setoran.</p>
+                                <p class="text-muted mb-0">Belum ada target yang memiliki progres untuk dibagikan.</p>
                                 <a href="{{ route('tabung.index') }}" class="btn btn-sm btn-success-modern rounded-pill mt-3">Tambah Setoran</a>
                             @else
                                 <p class="text-muted mb-0">Belum ada target tabungan.</p>
@@ -761,7 +800,7 @@
                 @if($shareableTargets->count() > 0)
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="btn btn-outline-modern rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success-modern rounded-pill px-4">
+                    <button type="submit" class="btn btn-success-modern rounded-pill px-4" id="shareSubmitBtn">
                         <i class="ph ph-share-network"></i> Bagikan
                     </button>
                 </div>
@@ -816,14 +855,33 @@
             });
         });
 
-        document.querySelectorAll('.share-target-card').forEach(function(card) {
+        // Share modal: select target card
+        const shareTargetCards = document.querySelectorAll('.share-target-card');
+        const shareSubmitBtn = document.getElementById('shareSubmitBtn');
+
+        function selectShareTarget(card) {
+            shareTargetCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            const radio = card.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        }
+
+        shareTargetCards.forEach(function(card) {
             card.addEventListener('click', function() {
-                document.querySelectorAll('.share-target-card').forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-                const radio = this.querySelector('input[type="radio"]');
-                if (radio) radio.checked = true;
+                selectShareTarget(this);
             });
         });
+
+        // Auto-select first target when modal opens
+        const shareModal = document.getElementById('shareModal');
+        if (shareModal) {
+            shareModal.addEventListener('shown.bs.modal', function() {
+                const firstCard = document.querySelector('.share-target-card');
+                if (firstCard) {
+                    selectShareTarget(firstCard);
+                }
+            });
+        }
     });
 </script>
 @endpush
