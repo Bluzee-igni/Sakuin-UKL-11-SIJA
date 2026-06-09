@@ -4,10 +4,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // root
-Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('tabung.index')
-        : redirect()->route('login');
+Route::middleware('auth')->group(function () {
+    return redirect()->route('tabung.index');
 });
 
 // auth public (guest only)
