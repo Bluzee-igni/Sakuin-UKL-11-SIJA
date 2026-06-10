@@ -7,6 +7,7 @@ use App\Models\TransaksiTabungan;
 use App\Models\Pemasukan;
 use App\Models\Pengguna;
 use App\Services\FinancialService;
+use App\Services\PengaturanService;
 use App\Services\TargetPredictionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,13 @@ use Carbon\Carbon;
 
 class TabungController extends Controller
 {
+    protected PengaturanService $pengaturanService;
+
+    public function __construct(PengaturanService $pengaturanService)
+    {
+        $this->pengaturanService = $pengaturanService;
+    }
+
     public function index(Request $request)
     {
         /** @var Pengguna|null $user */
@@ -21,6 +29,27 @@ class TabungController extends Controller
 
         if (!$user) {
             return redirect()->route('login');
+        }
+
+        // Load user settings
+        $userSettings = $this->pengaturanService->ambilSemua($user->id);
+
+        $widgetVisibility = [
+            'heatmap'   => ($userSettings['tampil_heatmap'] ?? '1') === '1',
+            'streak'    => ($userSettings['tampil_streak'] ?? '1') === '1',
+            'target'    => ($userSettings['tampil_target'] ?? '1') === '1',
+            'riwayat'   => ($userSettings['tampil_riwayat'] ?? '1') === '1',
+            'statistik' => ($userSettings['tampil_statistik'] ?? '1') === '1',
+        ];
+
+        $sembunyikanSaldo = ($userSettings['sembunyikan_saldo'] ?? '0') === '1';
+        $blurSaldo = ($userSettings['blur_saldo'] ?? '0') === '1';
+        $modePrivasi = ($userSettings['mode_privasi'] ?? '0') === '1';
+        $hideBalance = ($userSettings['hide_balance'] ?? '0') === '1';
+        if (!$hideBalance) {
+            $hideBalance = ($userSettings['sembunyikan_saldo'] ?? '0') === '1'
+                || ($userSettings['mode_privasi'] ?? '0') === '1'
+                || ($userSettings['blur_saldo'] ?? '0') === '1';
         }
 
         $targets = TargetTabungan::milikPengguna($user->id)
@@ -264,7 +293,13 @@ class TabungController extends Controller
             'heatmapCurrentMonthName',
             'isCurrentMonth',
             'longestStreak',
-            'hasSavedToday'
+            'hasSavedToday',
+            'widgetVisibility',
+            'userSettings',
+            'sembunyikanSaldo',
+            'blurSaldo',
+            'modePrivasi',
+            'hideBalance',
         ));
     }
 

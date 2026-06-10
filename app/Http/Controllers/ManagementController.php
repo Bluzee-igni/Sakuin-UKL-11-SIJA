@@ -41,7 +41,7 @@ class ManagementController extends Controller
             ->get();
         
         $chartData = $expensesByCategory->mapWithKeys(function ($item) {
-            return [$item->kategori => $item->total];
+            return [$item->kategori => (float) $item->total];
         })->toArray();
         
         $chartKeys = array_keys($chartData);

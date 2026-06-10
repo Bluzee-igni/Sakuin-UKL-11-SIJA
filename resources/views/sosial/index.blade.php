@@ -155,6 +155,36 @@
         padding: 0.75rem 1.25rem;
     }
 
+    .comments-scroll {
+        max-height: 240px;
+        overflow-y: auto;
+    }
+
+    .comments-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .comments-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .comments-scroll::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 2px;
+    }
+
+    .comments-scroll::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+
+    [data-theme="dark"] .comments-scroll::-webkit-scrollbar-thumb {
+        background: #4b5563;
+    }
+
+    [data-theme="dark"] .comments-scroll::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+    }
+
     .comment-item {
         display: flex;
         gap: 0.6rem;
@@ -432,6 +462,10 @@
         background: #111827;
     }
 
+    .feed-grid {
+        align-items: flex-start;
+    }
+
     @media (max-width: 575.98px) {
         .social-body {
             flex-direction: column;
@@ -559,7 +593,7 @@
 
     {{-- FEED GRID --}}
     @if($shares->count() > 0)
-        <div class="row g-4">
+        <div class="row g-4 feed-grid">
             @foreach($shares as $share)
                 <div class="col-12 col-lg-6 col-xl-4">
                     <div class="social-card" id="share-{{ $share->id }}">
@@ -675,7 +709,7 @@
                         {{-- Comments --}}
                         <div class="social-comments" id="comments-{{ $share->id }}" style="display: none;">
                             @if($commentCount > 0)
-                                <div class="mb-2">
+                                <div class="comments-scroll mb-2">
                                     @foreach($share->comments as $comment)
                                         <div class="comment-item">
                                             @if($comment->user->foto_url)

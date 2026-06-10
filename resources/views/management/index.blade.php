@@ -596,7 +596,7 @@
                                 @foreach($chartKeys as $i => $key)
                                     @php
                                         $colors = ['#10B981','#F59E0B','#3B82F6','#8B5CF6','#EF4444','#06B6D4','#F43F5E','#84CC16'];
-                                        $pct = $totalExpense > 0 ? round(($chartValues[$i] / $totalExpense) * 100) : 0;
+                                        $pct = $totalExpense > 0 ? round(($chartValues[$i] / $totalExpense) * 100, 1) : 0;
                                     @endphp
                                     <div class="d-flex align-items-center gap-2 py-1">
                                         <span class="rounded-circle flex-shrink-0" style="width: 8px; height: 8px; background: {{ $colors[$i % 8] }};"></span>
