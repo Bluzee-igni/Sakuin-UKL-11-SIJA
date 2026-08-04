@@ -2,6 +2,37 @@
 
 @section('title', 'Tambah Pemasukan')
 
+@push('styles')
+<style>
+    .fintech-card {
+        background: linear-gradient(140deg, rgba(255,255,255,0.98), rgba(236,253,245,0.96)) !important;
+        border-color: rgba(5,150,105,0.14) !important;
+        box-shadow: 0 28px 80px rgba(5,150,105,0.14) !important;
+    }
+
+    .form-control-modern {
+        background: rgba(255,255,255,0.95) !important;
+        border-color: rgba(5,150,105,0.16) !important;
+        box-shadow: inset 0 1px 3px rgba(5,150,105,0.08) !important;
+    }
+
+    .form-control-modern:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 4px rgba(5,150,105,0.14) !important;
+    }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, var(--primary), #0ea5e9) !important;
+        color: white !important;
+        box-shadow: 0 18px 40px rgba(5,150,105,0.22) !important;
+    }
+
+    .btn-primary-modern:hover {
+        background: linear-gradient(135deg, #047857, #0b86c2) !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid p-0" style="max-width: 800px; margin: 0 auto;">
 

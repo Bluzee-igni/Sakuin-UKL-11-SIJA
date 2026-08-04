@@ -377,6 +377,36 @@
         background: #f9fafb;
     }
 
+    .social-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,253,244,0.95)) !important;
+        border-color: rgba(5,150,105,0.16) !important;
+        box-shadow: 0 24px 65px rgba(5,150,105,0.13) !important;
+    }
+
+    .social-header {
+        background: rgba(255,255,255,0.96) !important;
+        border-color: rgba(5,150,105,0.12) !important;
+    }
+
+    .social-body {
+        background: rgba(255,255,255,0.92) !important;
+    }
+
+    .social-actions {
+        background: rgba(255,255,255,0.96) !important;
+        border-color: rgba(5,150,105,0.12) !important;
+    }
+
+    .social-action-btn {
+        background: rgba(255,255,255,0.92) !important;
+        border: 1px solid rgba(5,150,105,0.15) !important;
+    }
+
+    .social-action-btn:hover {
+        background: rgba(5,150,105,0.15) !important;
+        color: var(--text-main) !important;
+    }
+
     [data-theme="dark"] .social-card {
         background: #1f2937;
         border-color: #374151;

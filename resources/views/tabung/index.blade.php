@@ -154,12 +154,63 @@
             justify-content: center;
             align-items: center;
         }
+
+            .tabung-page .fintech-card {
+            border-color: rgba(5,150,105,0.14) !important;
+            background: rgba(255,255,255,0.96) !important;
+            box-shadow: 0 30px 95px rgba(5,150,105,0.16) !important;
+        }
+
+        .tabung-page .card-hero {
+            border: none !important;
+            background: linear-gradient(135deg, rgba(2,78,91,0.98), rgba(5,150,105,0.98)) !important;
+            color: white !important;
+        }
+
+        .tabung-page .progress-modern {
+            background: rgba(5,150,105,0.08) !important;
+        }
+
+        .tabung-page .progress-bar-modern {
+            background: linear-gradient(135deg, #22c55e, #047857) !important;
+            box-shadow: 0 8px 18px rgba(5,150,105,0.18) !important;
+        }
+
+        .tabung-highlight {
+            background: linear-gradient(135deg, rgba(5,150,105,0.08), rgba(14,165,233,0.08)) !important;
+            border: 1px solid rgba(5,150,105,0.12) !important;
+            border-radius: 1.75rem !important;
+            box-shadow: 0 18px 50px rgba(5,150,105,0.12) !important;
+        }
+
+        .tabung-hero-banner::before {
+            content: '' !important;
+            position: absolute !important;
+            width: 180px !important;
+            height: 180px !important;
+            top: -60px !important;
+            right: -60px !important;
+            background: rgba(255,255,255,0.16) !important;
+            border-radius: 50% !important;
+        }
+
+        .tabung-progress-bar {
+            height: 14px !important;
+            border-radius: 999px !important;
+            background: rgba(255,255,255,0.16) !important;
+            overflow: hidden !important;
+        }
+
+        .tabung-progress-bar .progress-bar {
+            background: linear-gradient(135deg, #22c55e, #047857) !important;
+            box-shadow: 0 8px 18px rgba(5,150,105,0.18) !important;
+        }
     </style>
 @endpush
 
 @section('content')
 <!-- MENGGUNAKAN CONTAINER-FLUID PENUH TANPA MAX-WIDTH UNTUK MEMANFAATKAN LAYAR DESKTOP -->
-<div class="container-fluid px-3 px-xl-4 py-2">
+<div class="container-fluid tabung-page px-3 px-xl-4 py-2">
 
     {{-- HEADER --}}
     <div class="d-flex justify-content-between align-items-center mb-4">

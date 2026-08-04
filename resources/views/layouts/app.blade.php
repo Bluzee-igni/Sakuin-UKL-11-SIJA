@@ -12,15 +12,22 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Fullcalendar CSS (Yielded conditionally if needed) -->
-    @stack('styles')
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- Fonts: unify to Plus Jakarta Sans for cleaner modern UI -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+        <style>
+            /* Override default font variable to use Plus Jakarta Sans across app */
+            :root { --default-font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+            html,body { font-family: var(--default-font-family); }
+        </style>
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}?v={{ time() }}">
+    @stack('styles')
 </head>
 <body class="bg-main {{ isset($compactMode) && $compactMode ? 'compact-mode' : '' }} {{ isset($animasiAktif) && !$animasiAktif ? 'no-animations' : '' }} {{ ($hideBalance ?? false) ? 'privasi-mode' : '' }}">
 

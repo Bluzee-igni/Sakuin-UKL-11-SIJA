@@ -98,6 +98,39 @@
         font-weight: 600;
     }
 
+    .ringkasan-stat {
+        background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(14,165,233,0.12)) !important;
+        border: 1px solid rgba(5,150,105,0.16) !important;
+        box-shadow: 0 18px 40px rgba(5,150,105,0.12) !important;
+    }
+
+    .budget-progress {
+        height: 14px !important;
+        background: rgba(15,23,42,0.06) !important;
+    }
+    .budget-progress .progress-bar {
+        background: linear-gradient(135deg, var(--budget-aman), var(--budget-waspada)) !important;
+        box-shadow: 0 10px 26px rgba(5,150,105,0.14) !important;
+    }
+
+    .insight-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(229,246,255,0.95)) !important;
+        border-color: rgba(5,150,105,0.12) !important;
+        box-shadow: 0 22px 56px rgba(5,150,105,0.12) !important;
+    }
+
+    .budget-indicator.aman,
+    .budget-indicator.waspada,
+    .budget-indicator.bahaya {
+        background: rgba(255,255,255,0.95) !important;
+        border: 1px solid rgba(5,150,105,0.12) !important;
+    }
+
+    .budget-modal-icon {
+        background: linear-gradient(135deg, var(--primary), #047857) !important;
+        box-shadow: 0 16px 40px rgba(5,150,105,0.18) !important;
+    }
+
     @media (max-width: 768px) {
         .ringkasan-hero-saldo {
             font-size: 1.6rem !important;

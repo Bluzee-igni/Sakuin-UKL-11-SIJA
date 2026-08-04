@@ -2,8 +2,48 @@
 
 @section('title', 'Profil Saya - Sakuin')
 
+@push('styles')
+<style>
+    .profile-page .fintech-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(236,253,245,0.96)) !important;
+        border: 1px solid rgba(5,150,105,0.16) !important;
+        box-shadow: 0 28px 90px rgba(5,150,105,0.14) !important;
+    }
+    .profile-page .fintech-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 32px 110px rgba(5,150,105,0.18) !important;
+    }
+    .profile-summary-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(236,253,245,0.96)) !important;
+        border: 1px solid rgba(5,150,105,0.16) !important;
+        box-shadow: 0 28px 90px rgba(5,150,105,0.14) !important;
+    }
+    .profile-summary-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 32px 110px rgba(5,150,105,0.18) !important;
+    }
+    .profile-stat-card {
+        background: rgba(255,255,255,0.96) !important;
+        border: 1px solid rgba(5,150,105,0.12) !important;
+        border-radius: 1.6rem !important;
+        box-shadow: 0 20px 55px rgba(5,150,105,0.11) !important;
+    }
+    .profile-stat-card h6 {
+        color: var(--primary) !important;
+    }
+    .progress-modern {
+        height: 12px !important;
+        border-radius: 999px !important;
+        background: rgba(15,23,42,0.06) !important;
+    }
+    .progress-bar-modern {
+        background: linear-gradient(135deg, var(--primary), #0ea5e9) !important;
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="container-fluid px-3 px-xl-4 py-4">
+<div class="container-fluid profile-page px-3 px-xl-4 py-4">
     <div class="d-flex align-items-center justify-content-between mb-4">
         <div>
             <h4 class="mb-0 font-poppins fw-bold text-dark">Profil Saya</h4>

@@ -15,42 +15,142 @@
     
     <style>
         body {
-            background-color: var(--bg-main);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: radial-gradient(circle at top left, rgba(5,150,105,0.24) !important, transparent 18%) !important;
+            min-height: 100vh !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 2rem !important;
+            background-color: #e7fbf2 !important;
         }
         .login-card {
-            background-color: var(--bg-card);
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            overflow: hidden;
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
+            background: rgba(255,255,255,0.94) !important;
+            border: 1px solid rgba(5,150,105,0.14) !important;
+            backdrop-filter: blur(26px) !important;
+            border-radius: 2rem !important;
+            box-shadow: 0 36px 120px rgba(5,150,105,0.18) !important;
+            overflow: hidden !important;
+            width: 100% !important;
+            max-width: 980px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: relative !important;
+        }
+        .login-card::before,
+        .login-card::after {
+            content: '' !important;
+            position: absolute !important;
+            border-radius: 50% !important;
+            filter: blur(30px) !important;
+            opacity: 0.5 !important;
+            pointer-events: none !important;
+        }
+        .login-card::before {
+            width: 260px !important;
+            height: 260px !important;
+            top: -70px !important;
+            right: -70px !important;
+            background: rgba(14,165,233,0.28) !important;
+        }
+        .login-card::after {
+            width: 200px !important;
+            height: 200px !important;
+            bottom: -50px !important;
+            left: -50px !important;
+            background: rgba(5,150,105,0.38) !important;
         }
         @media (min-width: 768px) {
             .login-card {
-                flex-direction: row;
+                flex-direction: row !important;
             }
         }
         .login-left {
-            background: linear-gradient(135deg, var(--primary) 0%, #022C22 100%);
-            padding: 3rem;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex: 1;
+            background: linear-gradient(135deg, rgba(5,150,105,0.95) 0%, rgba(13,81,98,0.95) 100%) !important;
+            padding: 3rem !important;
+            color: white !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            flex: 1 !important;
+            position: relative !important;
+        }
+        .login-left::after {
+            content: '' !important;
+            position: absolute !important;
+            width: 180px !important;
+            height: 180px !important;
+            bottom: -45px !important;
+            left: 30px !important;
+            border-radius: 50% !important;
+            background: rgba(255,255,255,0.1) !important;
+            filter: blur(10px) !important;
         }
         .login-right {
-            padding: 3rem;
-            flex: 1.2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            padding: 3rem !important;
+            flex: 1.2 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            background: rgba(255,255,255,0.96) !important;
+            box-shadow: inset 0 0 0 1px rgba(5,150,105,0.1) !important;
+        }
+        .login-heading {
+            font-size: clamp(2rem, 2.5vw, 3rem) !important;
+            line-height: 1.05 !important;
+            letter-spacing: -0.03em !important;
+            color: var(--text-main) !important;
+        }
+        .login-copy {
+            color: rgba(15,23,42,0.8) !important;
+            max-width: 28rem !important;
+            margin-top: 1rem !important;
+            line-height: 1.85 !important;
+        }
+        .feature-pill {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            background: rgba(255,255,255,0.16) !important;
+            color: rgba(255,255,255,0.95) !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 9999px !important;
+            margin-top: 1.5rem !important;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12) !important;
+        }
+        .login-right .form-control {
+            background: rgba(245,249,250,0.98) !important;
+            border: 1px solid rgba(5,150,105,0.14) !important;
+            border-radius: 1rem !important;
+            padding: 1rem 1.1rem !important;
+            transition: all 0.2s ease !important;
+            color: var(--text-main) !important;
+        }
+        .login-right .form-control:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 4px rgba(5,150,105,0.16) !important;
+        }
+        .login-right .btn-primary-modern {
+            width: 100% !important;
+            padding: 1rem 1.2rem !important;
+            font-size: 1rem !important;
+        }
+        .input-group-text {
+            background: rgba(255,255,255,0.95) !important;
+            border: 1px solid rgba(5,150,105,0.14) !important;
+            border-right: none !important;
+            color: var(--text-muted) !important;
+        }
+        .input-group .form-control {
+            border-left: none !important;
+        }
+        .form-check-input:checked {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+        .login-note {
+            color: var(--text-muted) !important;
         }
     </style>
 </head>

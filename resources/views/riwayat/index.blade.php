@@ -2,8 +2,38 @@
 
 @section('title', 'Riwayat Transaksi - Sakuin')
 
+@push('styles')
+<style>
+    .history-page-wrapper {
+        background: linear-gradient(180deg, rgba(225,251,238,0.9), rgba(245,255,255,0.98)) !important;
+        padding: 1rem !important;
+        border-radius: 2rem !important;
+    }
+    .history-page-wrapper .nav-link {
+        border: 1px solid rgba(5,150,105,0.16) !important;
+        background: rgba(255,255,255,0.98) !important;
+        color: var(--text-main) !important;
+        box-shadow: 0 18px 38px rgba(5,150,105,0.08) !important;
+    }
+    .history-page-wrapper .nav-link.active {
+        background: linear-gradient(135deg, rgba(5,150,105,0.98), rgba(14,165,233,0.98)) !important;
+        color: white !important;
+        box-shadow: 0 20px 48px rgba(5,150,105,0.18) !important;
+    }
+    .list-item-modern {
+        border: 1px solid rgba(5,150,105,0.16) !important;
+        background: rgba(255,255,255,0.98) !important;
+        box-shadow: 0 20px 55px rgba(5,150,105,0.1) !important;
+    }
+    .icon-container {
+        background: rgba(5,150,105,0.08) !important;
+        color: var(--primary) !important;
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="container-fluid px-3 px-xl-4 py-4">
+<div class="container-fluid history-page-wrapper px-3 px-xl-4 py-4">
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
         <div>
             <h4 class="mb-1 font-poppins fw-bold text-dark">Riwayat Transaksi</h4>
